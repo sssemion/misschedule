@@ -19,6 +19,7 @@ class Project(SqlAlchemyBase, SerializerMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     team_leader_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
+    project_name = sqlalchemy.Column(sqlalchemy.String, nullable=False, unique=True)
     title = sqlalchemy.Column(sqlalchemy.String)
     description = sqlalchemy.Column(sqlalchemy.String)
     reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
