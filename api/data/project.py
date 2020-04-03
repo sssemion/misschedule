@@ -24,3 +24,7 @@ class Project(SqlAlchemyBase, SerializerMixin):
     reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
 
     team_leader = orm.relation('User', foreign_keys=[team_leader_id])
+
+    users = orm.relation("user",
+                         secondary="user to project",
+                         backref="project")

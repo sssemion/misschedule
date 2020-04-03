@@ -2,6 +2,7 @@ import sqlalchemy
 import datetime
 
 from flask_login import UserMixin
+from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -17,6 +18,10 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     last_name = sqlalchemy.Column(sqlalchemy.String)
     reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
+
+    projects = orm.relation("project",
+                            secondary="user to project",
+                            backref="user")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
