@@ -3,8 +3,9 @@ import datetime
 from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
 from api.data.db_session import SqlAlchemyBase
+from api.data.task import Task
 
-association_table = sqlalchemy.Table('user to project', SqlAlchemyBase.metadata,
+association_table = sqlalchemy.Table('user_to_project', SqlAlchemyBase.metadata,
                                      sqlalchemy.Column('user', sqlalchemy.Integer,
                                                        sqlalchemy.ForeignKey('users.id')),
                                      sqlalchemy.Column('project', sqlalchemy.Integer,
@@ -26,6 +27,8 @@ class Project(SqlAlchemyBase, SerializerMixin):
 
     team_leader = orm.relation('User', foreign_keys=[team_leader_id])
 
-    users = orm.relation("user",
-                         secondary="user to project",
+    users = orm.relation("User",
+                         secondary="user_to_project",
                          backref="project")
+
+    tasks = orm.relation("Task", back_populates="project", foreign_keys=[Task.project_id], lazy="subquery")

@@ -7,6 +7,7 @@ from sqlalchemy_serializer import SerializerMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from api.data.db_session import SqlAlchemyBase
+from api.data.task import Task
 
 
 class User(SqlAlchemyBase, UserMixin, SerializerMixin):
@@ -20,9 +21,13 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
 
-    projects = orm.relation("project",
-                            secondary="user to project",
+    projects = orm.relation("Project",
+                            secondary="user_to_project",
                             backref="user")
+
+    created_tasks = orm.relation("Task", back_populates="creator", foreign_keys=[Task.creator_id], lazy="subquery")
+    performing_tasks = orm.relation("Task", back_populates="worker", foreign_keys=[Task.worker_id], lazy="subquery")
+
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

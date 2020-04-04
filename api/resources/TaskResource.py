@@ -39,7 +39,8 @@ class TaskResource(Resource):
         session = db_session.create_session()
         task = session.query(Task).get(task_id)
         for key, value in args.items():
-            exec(f"task.{key} = value")
+            if value is not None:
+                exec(f"task.{key} = '{value}'")
         session.commit()
         return jsonify({'success': True})
 
@@ -52,8 +53,7 @@ class TaskListResource(Resource):
             project_id=args['project_id'],
             title=args['title'],
             description=args['description'],
-            date=args['date'],
-            deadline=args['deadline'],
+            duration=args['duration'],
             creator_id=args['creator_id'],
             worker_id=args['worker_id'],
             tag=args['tag'],

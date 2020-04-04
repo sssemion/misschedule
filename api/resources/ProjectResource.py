@@ -23,7 +23,7 @@ class ProjectResource(Resource):
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
         return jsonify({'project': project.to_dict(
-            only=('team_leader_id', 'title', 'description', 'reg_date'))})
+            only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date'))})
 
     @abort_if_project_not_found
     def delete(self, project_id):
@@ -40,7 +40,8 @@ class ProjectResource(Resource):
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
         for key, value in args.items():
-            exec(f"project.{key} = {value}")
+            if value is not None:
+                exec(f"project.{key} = '{value}'")
         session.commit()
         return jsonify({'success': True})
 
@@ -49,17 +50,17 @@ class ProjectListResource(Resource):
     def get(self):
         session = db_session.create_session()
         project = session.query(Project).all()
-        return jsonify({'project': [item.to_dict(
-            only=('team_leader_id', 'title', 'description', 'reg_date')) for item in project]})
+        return jsonify({'projects': [item.to_dict(
+            only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')) for item in project]})
 
     def post(self):
-        args = project_parser_for_adding.parse_args()
+        args = project_parser_for_adding.parse_args(strict=True)
         session = db_session.create_session()
         project = Project(
             team_leader_id=args['team_leader_id'],
+            project_name=args['project_name'],
             title=args['title'],
             description=args['description'],
-            reg_date=args['reg_date']
         )
         session.add(project)
         session.commit()

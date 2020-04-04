@@ -23,7 +23,7 @@ class UserResource(Resource):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
         return jsonify({'user': user.to_dict(
-            only=('email', 'first_name', 'last_name', 'reg_date'))})
+            only=('email', 'username', 'first_name', 'last_name', 'reg_date'))})
 
     @abort_if_user_not_found
     def delete(self, user_id):
@@ -40,7 +40,8 @@ class UserResource(Resource):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
         for key, value in args.items():
-            exec(f"user.{key} = {value}")
+            if value is not None:
+                exec(f"user.{key} = '{value}'")
         session.commit()
         return jsonify({'success': True})
 
@@ -50,14 +51,15 @@ class UserListResource(Resource):
     def get(self):
         session = db_session.create_session()
         user = session.query(User).all()
-        return jsonify({'user': [item.to_dict(
-            only=('email', 'first_name', 'last_name', 'reg_date')) for item in user]})
+        return jsonify({'users': [item.to_dict(
+            only=('email', 'username', 'first_name', 'last_name', 'reg_date')) for item in user]})
 
     def post(self):
-        args = user_parser_for_adding.parse_args()
+        args = user_parser_for_adding.parse_args(strict=True)
         session = db_session.create_session()
         user = User(
             email=args['email'],
+            username=args['username'],
             first_name=args['first_name'],
             last_name=args['last_name'],
         )

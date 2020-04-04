@@ -7,3 +7,4 @@
 /api/db/
 **/logs/
 /venv/
+/api_runner.py
