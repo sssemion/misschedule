@@ -1,10 +1,9 @@
-import datetime
-
 from flask import jsonify
 from flask_restful import Resource, abort
 
 from api.data import db_session
 from api.data.task import Task
+from api.resources.parsers import task_parser_for_adding, task_parser_for_updating
 
 
 def abort_if_task_not_found(func):
@@ -35,30 +34,18 @@ class TaskResource(Resource):
 
     @abort_if_task_not_found
     def put(self, task_id):
+        args = task_parser_for_updating.parse_args()
         session = db_session.create_session()
         task = session.query(Task).get(task_id)
-        # TODO: возможнлсть изменить некоторые поля задачи
+        for key, value in args.items():
+            exec(f"task.{key} = value")
+        session.commit()
+        return jsonify({'success': True})
 
 
 class TaskListResource(Resource):
-    from flask_restful import reqparse
-
-    parser = reqparse.RequestParser()
-    parser.add_argument('project_id', required=True, type=int)
-    parser.add_argument('title', required=True)
-    parser.add_argument('description')
-    parser.add_argument('date', type=datetime.datetime)
-    parser.add_argument('deadline')
-    parser.add_argument('creator_id', required=True, type=int)
-    parser.add_argument('worker_id', type=int)
-    parser.add_argument('tag')
-    parser.add_argument('color')
-    parser.add_argument('condition', type=int, choices=[0, 1, 2])
-    parser.add_argument('items', type=dict)
-    parser.add_argument('image', type=str)
-
     def post(self):
-        args = self.parser.parse_args()
+        args = task_parser_for_adding.parse_args()
         session = db_session.create_session()
         task = Task(
             project_id=args['project_id'],
