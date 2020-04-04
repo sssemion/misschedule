@@ -19,3 +19,5 @@ api.add_resource(TaskResource, "/api/tasks/<int:task_id>")
 api.add_resource(TaskListResource, "/api/tasks")
 
 db_session.global_init("api/db/misschedule.sqlite")
+
+from api import controllesrs

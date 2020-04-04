@@ -22,8 +22,9 @@ class ProjectResource(Resource):
     def get(self, project_id):
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
-        return jsonify({'project': project.to_dict(
-            only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date'))})
+        return jsonify({
+            'project': project.to_dict(only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
+            'users': [item.id for item in project.users]})
 
     @abort_if_project_not_found
     def delete(self, project_id):
@@ -49,9 +50,14 @@ class ProjectResource(Resource):
 class ProjectListResource(Resource):
     def get(self):
         session = db_session.create_session()
-        project = session.query(Project).all()
-        return jsonify({'projects': [item.to_dict(
-            only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')) for item in project]})
+        projects= session.query(Project).all()
+        return jsonify({
+            'projects': [
+                {
+                    'project': item.to_dict(),
+                    'users': [user.id for user in item.users]
+                } for item in projects],
+        })
 
     def post(self):
         args = project_parser_for_adding.parse_args(strict=True)
