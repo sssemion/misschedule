@@ -34,7 +34,8 @@ class TaskResource(Resource):
 
     @abort_if_task_not_found
     def put(self, task_id):
-        args = task_parser_for_updating.parse_args()
+        args = task_parser_for_updating.parse_args(strict=True)  # Вызовет ошибку, если запрос
+        # будет содержать поля, которых нет в парсере
         session = db_session.create_session()
         task = session.query(Task).get(task_id)
         for key, value in args.items():
