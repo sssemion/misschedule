@@ -2,7 +2,7 @@ from flask import jsonify
 from flask_restful import abort, Resource
 
 from api.data import db_session
-from api.resources.parsers import user_parser
+from api.resources.parsers import user_parser_for_adding, user_parser_for_updating
 from api.data.user import User
 
 
@@ -31,7 +31,18 @@ class UserResource(Resource):
         user = session.query(User).get(user_id)
         session.delete(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': True})
+
+    @abort_if_user_not_found
+    def put(self, user_id):
+        args = user_parser_for_updating.parse_args(strict=True)  # Вызовет ошибку, если запрос 
+        # будет содержать поля, которых нет в парсере
+        session = db_session.create_session()
+        user = session.query(User).get(user_id)
+        for key, value in args.items():
+            exec(f"user.{key} = {value}")
+        session.commit()
+        return jsonify({'success': True})
 
 
 class UserListResource(Resource):
@@ -43,7 +54,7 @@ class UserListResource(Resource):
             only=('email', 'first_name', 'last_name', 'reg_date')) for item in user]})
 
     def post(self):
-        args = user_parser.parse_args()
+        args = user_parser_for_adding.parse_args()
         session = db_session.create_session()
         user = User(
             email=args['email'],
@@ -53,4 +64,4 @@ class UserListResource(Resource):
         user.set_password(args['password'])
         session.add(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': True})
