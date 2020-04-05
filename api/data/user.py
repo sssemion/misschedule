@@ -28,7 +28,6 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     created_tasks = orm.relation("Task", back_populates="creator", foreign_keys=[Task.creator_id], lazy="subquery")
     performing_tasks = orm.relation("Task", back_populates="worker", foreign_keys=[Task.worker_id], lazy="subquery")
 
-
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 

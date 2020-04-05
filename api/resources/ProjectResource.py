@@ -50,13 +50,13 @@ class ProjectResource(Resource):
 class ProjectListResource(Resource):
     def get(self):
         session = db_session.create_session()
-        projects= session.query(Project).all()
+        projects = session.query(Project).all()
         return jsonify({
             'projects': [
                 {
-                    'project': item.to_dict(),
-                    'users': [user.id for user in item.users]
-                } for item in projects],
+                    'project': project.to_dict(
+                        only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
+                    'users': [item.id for item in project.users]} for project in projects],
         })
 
     def post(self):
@@ -66,7 +66,7 @@ class ProjectListResource(Resource):
             team_leader_id=args['team_leader_id'],
             project_name=args['project_name'],
             title=args['title'],
-            description=args['description'],
+            description=args['description']
         )
         session.add(project)
         session.commit()

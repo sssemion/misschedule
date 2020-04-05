@@ -49,3 +49,18 @@ task_parser_for_updating.add_argument('color')
 task_parser_for_updating.add_argument('condition', type=int, choices=[0, 1, 2])
 task_parser_for_updating.add_argument('items', type=dict)
 task_parser_for_updating.add_argument('image', type=str)
+
+chat_parser_for_adding = reqparse.RequestParser()
+chat_parser_for_adding.add_argument('project_id', required=True)
+chat_parser_for_adding.add_argument('title', required=True)
+
+chat_parser_for_updating = reqparse.RequestParser()
+chat_parser_for_updating.add_argument('title')
+
+message_parser_for_adding = reqparse.RequestParser()
+message_parser_for_adding.add_argument('chat_id', required=True, type=int)
+message_parser_for_adding.add_argument('user_id', required=True, type=int)
+message_parser_for_adding.add_argument('message', required=True, type=str)
+
+message_parser_for_updating = reqparse.RequestParser()
+message_parser_for_updating.add_argument('message')

@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Api
 
 from api.data import db_session
+from api.resources.ChatResource import ChatResource, ChatListResource
 from api.resources.ProjectResource import ProjectResource, ProjectListResource
 from api.resources.UserResource import UserResource, UserListResource
 from api.resources.TaskResource import TaskResource, TaskListResource
@@ -17,6 +18,9 @@ api.add_resource(ProjectListResource, "/api/projects")
 
 api.add_resource(TaskResource, "/api/tasks/<int:task_id>")
 api.add_resource(TaskListResource, "/api/tasks")
+
+api.add_resource(ChatResource, "/api/chats/<int:chat_id>")
+api.add_resource(ChatListResource, "/api/chats")
 
 db_session.global_init("api/db/misschedule.sqlite")
 
