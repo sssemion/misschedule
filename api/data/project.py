@@ -29,6 +29,7 @@ class Project(SqlAlchemyBase, SerializerMixin):
 
     users = orm.relation("User",
                          secondary="user_to_project",
-                         backref="project")
+                         backref="project",
+                         lazy="subquery")
 
     tasks = orm.relation("Task", back_populates="project", foreign_keys=[Task.project_id], lazy="subquery")
