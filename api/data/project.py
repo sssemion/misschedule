@@ -2,6 +2,8 @@ import sqlalchemy
 import datetime
 from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
+
+from api.data.chat import Chat
 from api.data.db_session import SqlAlchemyBase
 from api.data.task import Task
 
@@ -33,3 +35,4 @@ class Project(SqlAlchemyBase, SerializerMixin):
                          lazy="subquery")
 
     tasks = orm.relation("Task", back_populates="project", foreign_keys=[Task.project_id], lazy="subquery")
+    chats = orm.relation("Chat", back_populates="project", foreign_keys=[Chat.project_id], lazy="subquery")

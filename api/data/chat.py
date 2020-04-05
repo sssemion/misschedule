@@ -24,3 +24,4 @@ class Chat(SqlAlchemyBase, SerializerMixin):
 
     users = orm.relation("User", secondary="user_to_chat", backref="chat")
     messages = orm.relation("Message", back_populates="chat")
+    project = orm.relation("Project", foreign_keys=[project_id])

@@ -56,8 +56,11 @@ def add_user_to_chat(chat_id, user_id):
     if not user:
         abort(404, message=f"User {user_id} not found")
 
-    if user.id not in list(map(lambda x: x.id, chat.users)):
-        chat.users.append(user)
+    if user_id not in list(map(lambda x: x.id, chat.users)):
+        if user_id in list(map(lambda x: x.id, chat.project.users)):
+            chat.users.append(user)
+        else:
+            abort(400, message=f"User {user_id} is not in chat's project")
 
     session.commit()
     return jsonify({'success': True})
@@ -70,12 +73,19 @@ def add_users_to_chat(chat_id):
     chat = session.query(Chat).get(chat_id)
     if not chat:
         abort(404, message=f"Chat {chat_id} not found")
+
+    project_users_ids = list(map(lambda x: x.id, chat.project.users))
+
     for user_id in request.form.getlist('id'):
         user = session.query(User).get(user_id)
         if not user:
             abort(404, message=f"User {user_id} not found")
+        user_id = int(user_id)
         if user_id not in list(map(lambda x: x.id, chat.users)):
-            chat.users.append(user)
+            if user_id in project_users_ids:
+                chat.users.append(user)
+            else:
+                abort(400, message=f"User {user_id} is not in chat's project")
 
     session.commit()
     return jsonify({'success': True})
