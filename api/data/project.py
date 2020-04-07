@@ -1,5 +1,6 @@
-import sqlalchemy
 import datetime
+
+import sqlalchemy
 from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
 
@@ -22,7 +23,7 @@ class Project(SqlAlchemyBase, SerializerMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     team_leader_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
-    project_name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    project_name = sqlalchemy.Column(sqlalchemy.String, nullable=False, index=True)
     title = sqlalchemy.Column(sqlalchemy.String)
     description = sqlalchemy.Column(sqlalchemy.String)
     reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
@@ -31,8 +32,10 @@ class Project(SqlAlchemyBase, SerializerMixin):
 
     users = orm.relation("User",
                          secondary="user_to_project",
-                         backref="project",
+                         back_populates="projects",
                          lazy="subquery")
 
-    tasks = orm.relation("Task", back_populates="project", foreign_keys=[Task.project_id], lazy="subquery")
-    chats = orm.relation("Chat", back_populates="project", foreign_keys=[Chat.project_id], lazy="subquery")
+    tasks = orm.relation("Task", back_populates="project", foreign_keys=[Task.project_id],
+                         lazy="subquery", cascade="all, delete, delete-orphan")
+    chats = orm.relation("Chat", back_populates="project", foreign_keys=[Chat.project_id],
+                         lazy="subquery", cascade="all, delete, delete-orphan")

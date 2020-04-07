@@ -1,6 +1,8 @@
-import sqlalchemy
+import base64
 import datetime
+import os
 
+import sqlalchemy
 from flask_login import UserMixin
 from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
@@ -14,8 +16,8 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'users'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    email = sqlalchemy.Column(sqlalchemy.String, nullable=False, unique=True)
-    username = sqlalchemy.Column(sqlalchemy.String, nullable=False, unique=True)
+    email = sqlalchemy.Column(sqlalchemy.String, nullable=False, unique=True, index=True)
+    username = sqlalchemy.Column(sqlalchemy.String, nullable=False, unique=True, index=True)
     first_name = sqlalchemy.Column(sqlalchemy.String)
     last_name = sqlalchemy.Column(sqlalchemy.String)
     reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
@@ -23,14 +25,30 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     projects = orm.relation("Project",
                             secondary="user_to_project",
-                            backref="user",
+                            back_populates="users",
                             lazy="subquery")
 
-    created_tasks = orm.relation("Task", back_populates="creator", foreign_keys=[Task.creator_id], lazy="subquery")
-    performing_tasks = orm.relation("Task", back_populates="worker", foreign_keys=[Task.worker_id], lazy="subquery")
+    created_tasks = orm.relation("Task", back_populates="creator", foreign_keys=[Task.creator_id],
+                                 lazy="subquery")
+    performing_tasks = orm.relation("Task", back_populates="worker", foreign_keys=[Task.worker_id],
+                                    lazy="subquery")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
+
+    token = sqlalchemy.Column(sqlalchemy.String, unique=True, index=True)
+    token_expiration = sqlalchemy.Column(sqlalchemy.DateTime)
+
+    def get_token(self, expires_in=3600):
+        now = datetime.datetime.now()
+        if self.token and self.token_expiration > now + datetime.timedelta(seconds=60):
+            return self.token
+        self.token = base64.b64encode(os.urandom(24)).decode("utf-8")
+        self.token_expiration = now + datetime.timedelta(seconds=expires_in)
+        return self.token
+
+    def revoke_token(self):
+        self.token_expiration = datetime.datetime.now() - datetime.timedelta(seconds=1)

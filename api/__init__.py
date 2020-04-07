@@ -28,4 +28,5 @@ api.add_resource(MessageListResource, "/api/messages")
 
 db_session.global_init("api/db/misschedule.sqlite")
 
+from api import auth
 from api import controllers

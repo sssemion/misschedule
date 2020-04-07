@@ -64,6 +64,8 @@ class UserListResource(Resource):
             last_name=args['last_name'],
         )
         user.set_password(args['password'])
+        token = user.get_token()
         session.add(user)
         session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'authToken': {'token': token,
+                                                       'expires': str(user.token_expiration)}})

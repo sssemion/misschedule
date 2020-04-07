@@ -23,5 +23,5 @@ class Chat(SqlAlchemyBase, SerializerMixin):
     reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
 
     users = orm.relation("User", secondary="user_to_chat", backref="chat")
-    messages = orm.relation("Message", back_populates="chat")
+    messages = orm.relation("Message", back_populates="chat", cascade="all, delete, delete-orphan")
     project = orm.relation("Project", foreign_keys=[project_id])
