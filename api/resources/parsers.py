@@ -16,7 +16,6 @@ user_parser_for_updating.add_argument('last_name')
 user_parser_for_updating.add_argument('password')
 
 project_parser_for_adding = reqparse.RequestParser()
-project_parser_for_adding.add_argument('team_leader_id', required=True)
 project_parser_for_adding.add_argument('project_name', required=True)
 project_parser_for_adding.add_argument('title', required=True)
 project_parser_for_adding.add_argument('description', required=True)
