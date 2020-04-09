@@ -39,3 +39,6 @@ class Project(SqlAlchemyBase, SerializerMixin):
                          lazy="subquery", cascade="all, delete, delete-orphan")
     chats = orm.relation("Chat", back_populates="project", foreign_keys=[Chat.project_id],
                          lazy="subquery", cascade="all, delete, delete-orphan")
+
+    def __eq__(self, other):
+        return self.id == other.id

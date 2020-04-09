@@ -1,7 +1,9 @@
-from flask import jsonify
+from flask import jsonify, g
 from flask_restful import abort, Resource
 
+from api.auth import token_auth
 from api.data import db_session
+from api.data.chat import Chat
 from api.data.message import Message
 from api.resources.parsers import message_parser_for_updating, message_parser_for_adding
 
@@ -19,25 +21,34 @@ def abort_if_message_not_found(func):
 
 class MessageResource(Resource):
     @abort_if_message_not_found
+    @token_auth.login_required
     def get(self, message_id):
         session = db_session.create_session()
         message = session.query(Message).get(message_id)
+        if g.current_user not in message.chat.users:
+            abort(403)
         return jsonify({'message': message.to_dict(only=('chat_id', 'user_id', 'message'))})
 
     @abort_if_message_not_found
+    @token_auth.login_required
     def delete(self, message_id):
         session = db_session.create_session()
         message = session.query(Message).get(message_id)
+        if g.current_user != message.chat.user:
+            abort(403)
         session.delete(message)
         session.commit()
         return jsonify({'success': True})
 
     @abort_if_message_not_found
+    @token_auth.login_required
     def put(self, message_id):
         args = message_parser_for_updating.parse_args(strict=True)  # Вызовет ошибку, если запрос
         # будет содержать поля, которых нет в парсере
         session = db_session.create_session()
         message = session.query(Message).get(message_id)
+        if g.current_user != message.chat.user:
+            abort(403)
         for key, value in args.items():
             if value is not None:
                 exec(f"message.{key} = '{value}'")
@@ -46,22 +57,28 @@ class MessageResource(Resource):
 
 
 class MessageListResource(Resource):
+    @token_auth.login_required
     def get(self):
         session = db_session.create_session()
-        messages = session.query(Message).all()
+        messages = session.query(Message).filter(Message.user_id == g.current_user.id)
         return jsonify({
             'messages': [
                 {'message': message.to_dict(only=('chat_id', 'user_id', 'message'))}
                 for message in messages],
         })
-
+    
+    @token_auth.login_required
     def post(self):
         args = message_parser_for_adding.parse_args(strict=True)
         session = db_session.create_session()
-        # noinspection PyArgumentList
+        chat = session.query(Chat).get(args['chat_id'])
+        if chat is None:
+            abort(404, message=f"Chat {args['chat_id']} not found")
+        if chat not in g.current_user.chats:
+            abort(403)
         message = Message(
             chat_id=args['chat_id'],
-            user_id=args['user_id'],
+            user_id=g.current_user.id,
             message=args['message']
         )
         session.add(message)

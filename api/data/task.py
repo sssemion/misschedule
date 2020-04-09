@@ -25,3 +25,6 @@ class Task(SqlAlchemyBase, SerializerMixin):
     creator = orm.relation('User', foreign_keys=[creator_id])
     worker = orm.relation('User', foreign_keys=[worker_id])
     project = orm.relation('Project', foreign_keys=[project_id])
+
+    def __eq__(self, other):
+        return self.id == other.id

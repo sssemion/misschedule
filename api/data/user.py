@@ -33,6 +33,11 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     performing_tasks = orm.relation("Task", back_populates="worker", foreign_keys=[Task.worker_id],
                                     lazy="subquery")
 
+    chats = orm.relation("Chat",
+                         secondary="user_to_chat",
+                         back_populates="users",
+                         lazy="subquery")
+
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
@@ -45,10 +50,16 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     def get_token(self, expires_in=3600):
         now = datetime.datetime.now()
         if self.token and self.token_expiration > now + datetime.timedelta(seconds=60):
+            # Если токен действительный, возвращаем его
             return self.token
+        # Иначе, генерируем новый и устанавливаем срок истечения через час
         self.token = base64.b64encode(os.urandom(24)).decode("utf-8")
         self.token_expiration = now + datetime.timedelta(seconds=expires_in)
         return self.token
 
     def revoke_token(self):
+        # Отзыв токена (Время истечения изменяется на текущее - 1 секунда)
         self.token_expiration = datetime.datetime.now() - datetime.timedelta(seconds=1)
+
+    def __eq__(self, other):
+        return self.id == other.id

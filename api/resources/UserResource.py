@@ -53,6 +53,8 @@ class UserResource(Resource):
         # будет содержать поля, которых нет в парсере
         session = db_session.create_session()
         user = session.query(User).get(user_id)
+        if 'username' in args and session.query(User).filter(User.username == args['username']).first() is not None:
+            abort(400, message=f"User {args['username']} already exists")
         for key, value in args.items():
             if value is not None:
                 exec(f"user.{key} = '{value}'")
@@ -71,6 +73,8 @@ class UserListResource(Resource):
     def post(self):
         args = user_parser_for_adding.parse_args(strict=True)
         session = db_session.create_session()
+        if session.query(User).filter(User.username == args['username']).first() is not None:
+            abort(400, message=f"User {args['username']} already exists")
         user = User(
             email=args['email'],
             username=args['username'],

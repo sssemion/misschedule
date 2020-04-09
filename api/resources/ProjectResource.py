@@ -45,7 +45,7 @@ class ProjectResource(Resource):
     def delete(self, project_id):
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
-        if project.creator != g.current_user:
+        if project.team_leader != g.current_user:
             abort(403)
         session.delete(project)
         session.commit()
@@ -58,8 +58,10 @@ class ProjectResource(Resource):
         # будет содержать поля, которых нет в парсере
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
-        if project.creator != g.current_user:
+        if project.team_leader != g.current_user:
             abort(403)
+        if 'project_name' in args and args['project_name'] in map(lambda x: x.project_name, g.current_user.projects):
+            abort(400, message=f"Project with name '{args['project_name']}' already exists")
         for key, value in args.items():
             if value is not None:
                 exec(f"project.{key} = '{value}'")
@@ -81,13 +83,14 @@ class ProjectListResource(Resource):
     @token_auth.login_required
     def post(self):
         args = project_parser_for_adding.parse_args(strict=True)
-        session = db_session.create_session()
+        if args['project_name'] in map(lambda x: x.project_name, g.current_user.projects):
+            abort(400, message=f"Project with name '{args['project_name']}' already exists")
         project = Project(
             team_leader_id=g.current_user.id,
             project_name=args['project_name'],
             title=args['title'],
             description=args['description']
         )
-        session.add(project)
-        session.commit()
+        g.current_user.projects.append(project)
+        g.db_session.commit()
         return jsonify({'success': True})
