@@ -62,4 +62,4 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
         self.token_expiration = datetime.datetime.now() - datetime.timedelta(seconds=1)
 
     def __eq__(self, other):
-        return self.id == other.id
+        return type(self) == type(other) and self.id == other.id

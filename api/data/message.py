@@ -20,4 +20,4 @@ class Message(SqlAlchemyBase, SerializerMixin):
     chat = orm.relation("Chat", foreign_keys=[chat_id])
 
     def __eq__(self, other):
-        return self.id == other.id
+        return type(self) == type(other) and self.id == other.id

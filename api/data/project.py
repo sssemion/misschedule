@@ -41,4 +41,4 @@ class Project(SqlAlchemyBase, SerializerMixin):
                          lazy="subquery", cascade="all, delete, delete-orphan")
 
     def __eq__(self, other):
-        return self.id == other.id
+        return type(self) == type(other) and self.id == other.id

@@ -1,3 +1,5 @@
+import datetime
+
 from flask import request, jsonify, g
 from flask_restful import abort
 
@@ -6,6 +8,8 @@ from api.auth import basic_auth, token_auth
 from api.data import db_session
 from api.data.chat import Chat
 from api.data.project import Project
+from api.data.task import Task
+from api.data.task_item import TaskItem
 from api.data.user import User
 
 
@@ -119,5 +123,25 @@ def add_users_to_chat(chat_id):
             else:
                 abort(400, message=f"User {user_id} is not in chat's project")
 
+    session.commit()
+    return jsonify({'success': True})
+
+
+@app.route('/api/tasks/<int:task_id>/complete_item/<int:item_id>', methods=['POST'])
+@token_auth.login_required
+def set_task_items(task_id, item_id):
+    session = db_session.create_session()
+
+    task = session.query(Task).get(task_id)
+    item = session.query(TaskItem).get(item_id)
+    if not task:
+        abort(404, message=f"Task {task_id} not found")
+    if not item or item not in task.items:
+        abort(404, messsage=f"TaskItem {item_id} not found")
+    if not (g.current_user == task.worker or g.current_user == task.creator):
+        abort(403)
+    item.completed = True
+    item.completed_by_id = g.current_user.id
+    item.completion_date = datetime.datetime.now()
     session.commit()
     return jsonify({'success': True})

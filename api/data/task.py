@@ -19,12 +19,13 @@ class Task(SqlAlchemyBase, SerializerMixin):
     tag = sqlalchemy.Column(sqlalchemy.String)
     color = sqlalchemy.Column(sqlalchemy.String, default="#ffffff")
     condition = sqlalchemy.Column(sqlalchemy.Integer, default=0)
-    items = sqlalchemy.Column(sqlalchemy.JSON)
     image = sqlalchemy.Column(sqlalchemy.String)
 
     creator = orm.relation('User', foreign_keys=[creator_id])
     worker = orm.relation('User', foreign_keys=[worker_id])
     project = orm.relation('Project', foreign_keys=[project_id])
 
+    items = orm.relation('TaskItem', back_populates='task', cascade="all, delete, delete-orphan")
+
     def __eq__(self, other):
-        return self.id == other.id
+        return type(self) == type(other) and self.id == other.id

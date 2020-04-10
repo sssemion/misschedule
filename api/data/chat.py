@@ -29,4 +29,4 @@ class Chat(SqlAlchemyBase, SerializerMixin):
     creator = orm.relation("User", foreign_keys=[creator_id])
 
     def __eq__(self, other):
-        return self.id == other.id
+        return type(self) == type(other) and self.id == other.id

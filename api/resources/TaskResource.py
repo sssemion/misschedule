@@ -5,6 +5,8 @@ from api.auth import token_auth
 from api.data import db_session
 from api.data.project import Project
 from api.data.task import Task
+from api.data.task_item import TaskItem
+from api.data.user import User
 from api.resources.parsers import task_parser_for_adding, task_parser_for_updating
 
 
@@ -13,7 +15,7 @@ def abort_if_task_not_found(func):
         session = db_session.create_session()
         task = session.query(Task).get(task_id)
         if not task:
-            abort(404, message=f"User {task_id} not found")
+            abort(404, message=f"Task {task_id} not found")
         return func(self, task_id)
 
     return new_func
@@ -27,7 +29,14 @@ class TaskResource(Resource):
         task = session.query(Task).get(task_id)
         if g.current_user not in task.project.users:
             abort(403)
-        return jsonify({'task': task.to_dict()})
+        return jsonify({
+            'task': task.to_dict(only=(
+                "project_id", "title", "description", "duration", "worker_id", "tag", "color",
+                "condition", "image", "date")),
+            'items': [item.to_dict(
+                only=("title", "description", "completed", "completed_by_id", "completion_date")) for
+                      item in task.items]
+        })
 
     @abort_if_task_not_found
     @token_auth.login_required
@@ -43,7 +52,6 @@ class TaskResource(Resource):
     @abort_if_task_not_found
     @token_auth.login_required
     def put(self, task_id):  # Метод для полного изменения (доступно только для создателя)
-        # TODO: Метод для изменения состояния и пунктов (доступно для исполнителя задачи)
         args = task_parser_for_updating.parse_args(strict=True)  # Вызовет ошибку, если запрос
         # будет содержать поля, которых нет в парсере
         session = db_session.create_session()
@@ -81,9 +89,10 @@ class TaskListResource(Resource):
             tag=args['tag'],
             color=args['color'],
             condition=args['condition'],
-            items=args['items'],
             image=args['image'],
         )
+        for title, description in args['items'].items():
+            task.items.append(TaskItem(title=title, description=description))
         session.add(task)
         session.commit()
         return jsonify({'success': True})
