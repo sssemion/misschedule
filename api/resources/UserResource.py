@@ -75,6 +75,8 @@ class UserListResource(Resource):
         session = db_session.create_session()
         if session.query(User).filter(User.username == args['username']).first() is not None:
             abort(400, message=f"User {args['username']} already exists")
+        if session.query(User).filter(User.email == args['email']).first() is not None:
+            abort(400, message=f"User {args['email']} already exists")
         user = User(
             email=args['email'],
             username=args['username'],
