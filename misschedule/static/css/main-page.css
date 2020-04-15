@@ -144,6 +144,8 @@
     right: -41.59px;
     border-radius: 0 8px 8px 0;
     transition: right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .how-it-works .how-it-works__inner .slider .next:active {
+      right: -50px; }
   .how-it-works .how-it-works__inner .slider .prev {
     left: -41.59px;
     border-radius: 8px 0 0 8px;
