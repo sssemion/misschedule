@@ -1,8 +1,12 @@
+from base64 import b64encode
+from http.client import HTTPConnection
+
 import requests
 from flask import send_from_directory, render_template, url_for
+from flask_login import login_user
 from werkzeug.utils import redirect
 from misschedule import app
-from misschedule.forms import RegisterForm
+from misschedule.forms import RegisterForm, LoginForm
 
 
 @app.route("/")
@@ -34,3 +38,22 @@ def register():
             return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form,
                            style_file=url_for('static', filename='css/register.css'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        userAndPass = b64encode(bytes(f"{form.email.data}:{form.password.data}".encode('utf-8'))).decode("ascii")
+        headers = {'Authorization': 'Basic %s' % userAndPass}
+        request = requests.post('http://127.0.0.1:5000/api/login', headers=headers).json()
+        print(request)
+        if not request['success']:
+            return render_template('login.html', title='Авторизация', form=form,
+                                   message="Неправильный логин или пароль",
+                                   style_file=url_for('static', filename='css/login.css'))
+        else:
+            return redirect('/')
+    print(1)
+    return render_template('login.html', title='Авторизация', form=form,
+                           style_file=url_for('static', filename='css/login.css'))
