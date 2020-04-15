@@ -15,7 +15,7 @@ def abort_if_task_not_found(func):
         session = db_session.create_session()
         task = session.query(Task).get(task_id)
         if not task:
-            abort(404, message=f"Task {task_id} not found")
+            abort(404, success=False, message=f"Task {task_id} not found")
         return func(self, task_id)
 
     return new_func
@@ -28,7 +28,7 @@ class TaskResource(Resource):
         session = db_session.create_session()
         task = session.query(Task).get(task_id)
         if g.current_user not in task.project.users:
-            abort(403)
+            abort(403, success=False)
         return jsonify({
             'task': task.to_dict(only=(
                 "project_id", "title", "description", "duration", "worker_id", "tag", "color",
@@ -44,7 +44,7 @@ class TaskResource(Resource):
         session = db_session.create_session()
         task = session.query(Task).get(task_id)
         if g.current_user != task.creator:
-            abort(403)
+            abort(403, success=False)
         session.delete(task)
         session.commit()
         return jsonify({'success': True})
@@ -57,9 +57,9 @@ class TaskResource(Resource):
         session = db_session.create_session()
         task = session.query(Task).get(task_id)
         if g.current_user != task.creator:
-            abort(403)
+            abort(403, success=False)
         if 'title' in args and args['title'] in map(lambda x: x.title, task.project.tasks):
-            abort(400, message=f"Task with title '{args['title']}' already exists")
+            abort(400, success=False, message=f"Task with title '{args['title']}' already exists")
         for key, value in args.items():
             if value is not None:
                 exec(f"task.{key} = '{value}'")
@@ -74,11 +74,11 @@ class TaskListResource(Resource):
         session = db_session.create_session()
         project = session.query(Project).get(args['project_id'])
         if project is None:
-            abort(404, message=f"Project {args['project_id']} not found")
+            abort(404, success=False, message=f"Project {args['project_id']} not found")
         if project not in g.current_user.projects:
-            abort(403)
+            abort(403, success=False)
         if args['title'] in map(lambda x: x.title, project.tasks):
-            abort(400, message=f"Task with title '{args['title']}' already exists")
+            abort(400, success=False, message=f"Task with title '{args['title']}' already exists")
         task = Task(
             project_id=args['project_id'],
             title=args['title'],

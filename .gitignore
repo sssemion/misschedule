@@ -8,3 +8,6 @@
 **/logs/
 /venv/
 /api_runner.py
+/misschedule/node_modules/
+/misschedule/package.json
+/misschedule/gulpfile.js

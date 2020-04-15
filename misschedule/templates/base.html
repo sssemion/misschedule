@@ -1,24 +1,75 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Иконки -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/img/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/img/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/img/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/img/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/img/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/img/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/img/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/img/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/static/img/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/img/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/icons/favicon-16x16.png">
+    <link rel="manifest" href="/static/img/icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/static/img/icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap&subset=cyrillic" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
+    <!-- Bootstrap -->
+    {% if bootstrap %}
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous">
+    {% endif %}
+    <!-- Стили -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="stylesheet" href="{{ style_file }}">
-    <title>{{title}}</title>
+    
+    <title>Misschedule
+        {% if title  %}
+            {{ " | " + title  }}
+        {% endif %}
+    </title>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">Misschedule</a>
-    </nav>
-</header>
-<!-- Begin page content -->
-<main role="main" class="container">
+    <header class="header">
+        <a class="logo" href="/">
+            <img src="/static/img/logo.png">
+            <span>Misschedule</span>
+        </a>
+        <nav class="header__nav">
+            {% block nav %}{% endblock nav %}
+        </nav>
+
+        <div class="login-buttons">
+            <a class="button login" href="/login">Войти</a>
+            <a class="button create-account" href="/signup">Создать аккаунт</a>
+        </div>
+        <div class="burger">
+            <span class="toggle-btn"></span>
+        </div>
+    </header>
+
+    <!-- Begin page content -->
     {% block content %}{% endblock %}
-</main>
+
+    <!-- jQuery -->
+    {% if jquery %}
+        <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>    
+    {% endif %}
+
+    <!-- js scripts -->
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+    <script src="{{ script_file }}"></script>
 </body>
 </html>

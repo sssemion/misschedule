@@ -12,7 +12,7 @@ def abort_if_user_not_found(func):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
         if not user:
-            abort(404, message=f"User {user_id} not found")
+            abort(404, success=False, message=f"User {user_id} not found")
         return func(self, user_id)
 
     return new_func
@@ -21,7 +21,7 @@ def abort_if_user_not_found(func):
 def only_for_current_user(func):
     def new_func(self, user_id):
         if user_id != g.current_user.id:
-            abort(403)
+            abort(403, success=False)
         return func(self, user_id)
 
     return new_func
@@ -54,7 +54,7 @@ class UserResource(Resource):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
         if 'username' in args and session.query(User).filter(User.username == args['username']).first() is not None:
-            abort(400, message=f"User {args['username']} already exists")
+            abort(400, success=False, message=f"User {args['username']} already exists")
         for key, value in args.items():
             if value is not None:
                 exec(f"user.{key} = '{value}'")
@@ -73,10 +73,10 @@ class UserListResource(Resource):
     def post(self):
         args = user_parser_for_adding.parse_args(strict=True)
         session = db_session.create_session()
-        if session.query(User).filter(User.username == args['username']).first() is not None:
-            abort(400, message=f"User {args['username']} already exists")
         if session.query(User).filter(User.email == args['email']).first() is not None:
-            abort(400, message=f"User {args['email']} already exists")
+            abort(400, success=False, message=f"User with email {args['email']} already exists")
+        if session.query(User).filter(User.username == args['username']).first() is not None:
+            abort(400, success=False, message=f"User {args['username']} already exists")
         user = User(
             email=args['email'],
             username=args['username'],

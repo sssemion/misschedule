@@ -13,7 +13,7 @@ def abort_if_chat_not_found(func):
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
         if not chat:
-            abort(404, message=f"Chat {chat_id} not found")
+            abort(404, success=False, message=f"Chat {chat_id} not found")
         return func(self, chat_id)
 
     return new_func
@@ -22,7 +22,7 @@ def abort_if_chat_not_found(func):
 def check_if_user_is_a_member(func):
     def new_func(self, chat_id):
         if chat_id not in map(lambda x: x.id, g.current_user.chats):
-            abort(403)
+            abort(403, success=False)
         return func(self, chat_id)
 
     return new_func
@@ -45,7 +45,7 @@ class ChatResource(Resource):
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
         if chat.creator != g.current_user:
-            abort(403)
+            abort(403, success=False)
         session.delete(chat)
         session.commit()
         return jsonify({'success': True})
@@ -58,9 +58,9 @@ class ChatResource(Resource):
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
         if 'title' in args and args['title'] in map(lambda x: x.title, g.current_user.chats):
-            abort(400, message=f"Chat '{args['title']}' already exists")
+            abort(400, success=False, message=f"Chat '{args['title']}' already exists")
         if chat.creator != g.current_user:
-            abort(403)
+            abort(403, success=False)
         for key, value in args.items():
             if value is not None:
                 exec(f"chat.{key} = '{value}'")
@@ -89,13 +89,13 @@ class ChatListResource(Resource):
         # noinspection PyArgumentList
         project = session.query(Project).get(args['project_id'])
         if project is None:
-            abort(404, message=f"Project {args['project_id']} not found")
+            abort(404, success=False, message=f"Project {args['project_id']} not found")
         if project not in g.current_user.projects:
-            abort(403)
+            abort(403, success=False)
         if project.team_leader != g.current_user:
-            abort(403)
+            abort(403, success=False)
         if 'title' in args and args['title'] in map(lambda x: x.title, g.current_user.chats):
-            abort(400, message=f"Chat '{args['title']}' already exists")
+            abort(400, success=False, message=f"Chat '{args['title']}' already exists")
         chat = Chat(
             project_id=args['project_id'],
             creator_id=g.current_user.id,

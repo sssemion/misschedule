@@ -13,7 +13,7 @@ def abort_if_message_not_found(func):
         session = db_session.create_session()
         message = session.query(Message).get(message_id)
         if not message:
-            abort(404, message=f"Message {message_id} not found")
+            abort(404, success=False, message=f"Message {message_id} not found")
         return func(self, message_id)
 
     return new_func
@@ -26,7 +26,7 @@ class MessageResource(Resource):
         session = db_session.create_session()
         message = session.query(Message).get(message_id)
         if g.current_user not in message.chat.users:
-            abort(403)
+            abort(403, success=False)
         return jsonify({'message': message.to_dict(only=('chat_id', 'user_id', 'message'))})
 
     @abort_if_message_not_found
@@ -35,7 +35,7 @@ class MessageResource(Resource):
         session = db_session.create_session()
         message = session.query(Message).get(message_id)
         if g.current_user != message.chat.user:
-            abort(403)
+            abort(403, success=False)
         session.delete(message)
         session.commit()
         return jsonify({'success': True})
@@ -48,7 +48,7 @@ class MessageResource(Resource):
         session = db_session.create_session()
         message = session.query(Message).get(message_id)
         if g.current_user != message.chat.user:
-            abort(403)
+            abort(403, success=False)
         for key, value in args.items():
             if value is not None:
                 exec(f"message.{key} = '{value}'")
@@ -73,9 +73,9 @@ class MessageListResource(Resource):
         session = db_session.create_session()
         chat = session.query(Chat).get(args['chat_id'])
         if chat is None:
-            abort(404, message=f"Chat {args['chat_id']} not found")
+            abort(404, success=False, message=f"Chat {args['chat_id']} not found")
         if chat not in g.current_user.chats:
-            abort(403)
+            abort(403, success=False)
         message = Message(
             chat_id=args['chat_id'],
             user_id=g.current_user.id,

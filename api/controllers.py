@@ -1,7 +1,9 @@
 import datetime
+import json
 
 from flask import request, jsonify, g
 from flask_restful import abort
+from werkzeug.exceptions import HTTPException
 
 from api import app
 from api.auth import basic_auth, token_auth
@@ -34,6 +36,22 @@ def revoke_token():
     g.current_user = None
     g.db_session = None
     return jsonify({'success': True})
+
+
+@app.errorhandler(HTTPException)
+def error(e):
+    response = e.get_response()
+    params = {
+        'success': False,
+    }
+    try:
+        for key, value in e.data.items():
+            params[key] = value
+    except AttributeError:
+        pass
+    response.data = json.dumps(params)
+    response.content_type = "application/json"
+    return response
 
 
 @app.route("/api/projects/<int:project_id>/add_user/<int:user_id>", methods=['POST'])

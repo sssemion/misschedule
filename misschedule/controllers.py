@@ -7,7 +7,7 @@ from misschedule.forms import RegisterForm
 
 @app.route("/")
 def index():
-    return send_from_directory('static/html', 'index.html')
+    return render_template('main-page.html')
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -15,22 +15,27 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   message="Пароли не совпадают")
-        request = requests.post('http://127.0.0.1:5000/api/users', {
+            form.password.render_kw["class"] = "input-str form-control is-invalid"
+            form.password_again.render_kw["class"] = "input-str form-control is-invalid"
+            return render_template('register.html', form=form, message="Пароли не совпадают")
+        response = requests.post('http://127.0.0.1:5000/api/users', {
             'username': form.username.data,
             'email': form.email.data,
             'first_name': form.first_name.data,
             'last_name': form.last_name.data,
             'password': form.password.data
-        }).json()
-        if request.get('message', False):
-            return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   message=request['message'])
-        print(request)
-        if request['success']:
+        })
+
+        data = response.json()
+
+        if data['success']:
             return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form,
-                           style_file=url_for('static', filename='css/register.css'))
+        if response.status_code == 400:
+            if f"User {form.username.data} " in data.get('message', ''):
+                form.username.render_kw["class"] = "input-str form-control is-invalid"
+                form.username.errors.append('Имя уже занято')
+            if f"email {form.email.data} " in data.get('message', ''):
+                form.email.render_kw["class"] = "input-str form-control is-invalid"
+                form.email.errors.append('Email уже занят')
+        # TODO: проверка надежности пароля
+    return render_template('register.html', form=form)

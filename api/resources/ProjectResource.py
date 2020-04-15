@@ -12,7 +12,7 @@ def abort_if_project_not_found(func):
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
         if not project:
-            abort(404, message=f"Project {project_id} not found")
+            abort(404, success=False, message=f"Project {project_id} not found")
         return func(self, project_id)
 
     return new_func
@@ -21,7 +21,7 @@ def abort_if_project_not_found(func):
 def check_if_user_is_a_member(func):
     def new_func(self, project_id):
         if project_id not in map(lambda x: x.id, g.current_user.projects):
-            abort(403)
+            abort(403, success=False)
         return func(self, project_id)
 
     return new_func
@@ -35,7 +35,7 @@ class ProjectResource(Resource):
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
         if project not in g.current_user.projects:
-            abort(403)
+            abort(403, success=False)
         return jsonify({
             'project': project.to_dict(only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
             'users': [item.id for item in project.users]})
@@ -46,7 +46,7 @@ class ProjectResource(Resource):
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
         if project.team_leader != g.current_user:
-            abort(403)
+            abort(403, success=False)
         session.delete(project)
         session.commit()
         return jsonify({'success': True})
@@ -59,9 +59,9 @@ class ProjectResource(Resource):
         session = db_session.create_session()
         project = session.query(Project).get(project_id)
         if project.team_leader != g.current_user:
-            abort(403)
+            abort(403, success=False)
         if 'project_name' in args and args['project_name'] in map(lambda x: x.project_name, g.current_user.projects):
-            abort(400, message=f"Project with name '{args['project_name']}' already exists")
+            abort(400, success=False, message=f"Project with name '{args['project_name']}' already exists")
         for key, value in args.items():
             if value is not None:
                 exec(f"project.{key} = '{value}'")
@@ -84,7 +84,7 @@ class ProjectListResource(Resource):
     def post(self):
         args = project_parser_for_adding.parse_args(strict=True)
         if args['project_name'] in map(lambda x: x.project_name, g.current_user.projects):
-            abort(400, message=f"Project with name '{args['project_name']}' already exists")
+            abort(400, success=False, message=f"Project with name '{args['project_name']}' already exists")
         project = Project(
             team_leader_id=g.current_user.id,
             project_name=args['project_name'],

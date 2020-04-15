@@ -1,38 +1,19 @@
 $(document).ready(function() {
-    if ($(window).scrollTop() > 0) {
-        $(".header").addClass("scrolled");
-    }
-
-    $(".burger").on("click", function() {
-        $(".burger").toggleClass("active");
-        $(".header__nav").toggleClass("active");
-        $(".login-buttons").toggleClass("active");
-        $(".header").toggleClass("active");
-    })
-
-    $(window).scroll(function(){
-        if ($(window).scrollTop() > 0) {
-            $(".header").addClass("scrolled");
-        } else {
-            $(".header").removeClass("scrolled");
-        }
+    $(".next").on("click", function() {
+        plusSlide();
     });
-});
+    
+    $(".prev").on("click", function() {
+        minusSlide();
+    });
+    
+    $(".slider-dots__item").on("click", function() {
+        currentSlide($(".slider-dots__item").index($(this)) + 1);
+    });
+})
 // slider
 var slideIndex = 1;
 showSlides(slideIndex);
-
-$(".next").on("click", function() {
-    plusSlide();
-})
-
-$(".prev").on("click", function() {
-    minusSlide();
-})
-
-$(".slider-dots__item").on("click", function() {
-    currentSlide($(".slider-dots__item").index($(this)) + 1);
-})
 
 function plusSlide() {
     showSlides(slideIndex += 1);

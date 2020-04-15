@@ -13,7 +13,7 @@ def abort_if_task_item_not_found(func):
         session = db_session.create_session()
         task_item = session.query(TaskItem).get(task_item_id)
         if not task_item:
-            abort(404, message=f"Task item {task_item_id} not found")
+            abort(404, success=False, message=f"Task item {task_item_id} not found")
         return func(self, task_item_id)
 
     return new_func
@@ -26,7 +26,7 @@ class TaskItemResource(Resource):
         session = db_session.create_session()
         task_item = session.query(TaskItem).get(task_item_id)
         if not (g.current_user == task_item.task.creator or g.current_user == task_item.task.worker):
-            abort(403)
+            abort(403, success=False)
         return jsonify({'task_item': task_item.to_dict(only=("title", "description", "completed",
                                                              "completed_by_id", "completion_date"))})
 
@@ -36,7 +36,7 @@ class TaskItemResource(Resource):
         session = db_session.create_session()
         task_item = session.query(TaskItem).get(task_item_id)
         if not (g.current_user == task_item.task.creator or g.current_user == task_item.task.worker):
-            abort(403)
+            abort(403, success=False)
         session.delete(task_item)
         session.commit()
         return jsonify({'success': True})
@@ -48,9 +48,9 @@ class TaskItemResource(Resource):
         session = db_session.create_session()
         task_item = session.query(TaskItem).get(task_item_id)
         if not (g.current_user == task_item.task.creator or g.current_user == task_item.task.worker):
-            abort(403)
+            abort(403, success=False)
         if 'title' in args and args['title'] in map(lambda x: x.title, task_item.task.items):
-            abort(400, message=f"Task item with title '{args['title']}' already exists")
+            abort(400, success=False, message=f"Task item with title '{args['title']}' already exists")
         for key, value in args.items():
             if value is not None:
                 exec(f"task_item.{key} = '{value}'")
@@ -65,11 +65,11 @@ class TaskItemListResource(Resource):
         session = db_session.create_session()
         task = session.query(Project).get(args['task_id'])
         if task is None:
-            abort(404, message=f"Task {args['task_id']} not found")
+            abort(404, success=False, message=f"Task {args['task_id']} not found")
         if not (g.current_user == task.creator or g.current_user == task.worker):
-            abort(403)
+            abort(403, success=False)
         if args['title'] in map(lambda x: x.title, task.items):
-            abort(400, message=f"Task item with title '{args['title']}' already exists")
+            abort(400, success=False, message=f"Task item with title '{args['title']}' already exists")
         task_item = TaskItem(
             task_id=args['task_id'],
             title=args['title'],
