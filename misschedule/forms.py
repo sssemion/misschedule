@@ -36,3 +36,9 @@ class RegisterForm(FlaskForm):
         self.last_name.render_kw["class"] = defualt
         self.password.render_kw["class"] = defualt
         self.password_again.render_kw["class"] = defualt
+
+
+class LoginForm(FlaskForm):
+    email = StringField('Почта', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    submit = SubmitField('Войти')
