@@ -39,6 +39,19 @@ class RegisterForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Почта', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
+    label = 'Email или имя пользователя'
+    email = StringField(label, validators=[DataRequired()], render_kw={
+        "class": "input-str form-control",
+        "required": True,
+        "placeholder": label
+    })
+
+    label = 'Пароль'
+    password = PasswordField(label, validators=[DataRequired()], render_kw={
+        "class": "input-str form-control",
+        "type": "password",
+        "required": True,
+        "placeholder": label
+    })
+
     submit = SubmitField('Войти')

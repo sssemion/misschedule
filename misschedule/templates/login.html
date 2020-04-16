@@ -1,32 +1,36 @@
+{% set style_file = url_for('static', filename='css/login.css') %}
+{% set script_file = url_for('static', filename='js/login.js') %}
+{% set bootstrap = true %}
+{% set jquery = true %}
+{% set title = 'Авторизация' %}
+
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Авторизация</h1>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.email.label }}<br>
-        {{ form.email(class="form-control") }}<br>
-        {% for error in form.email.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-    </p>
-    <p>
-        {{ form.password.label }}<br>
-        {{ form.password(class="form-control", type="password") }}<br>
-        {% for error in form.password.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-    </p>
-    {%if message%}
-    <p class="alert alert-danger" role="alert">
-        {{message}}
-    </p>
-    {%endif%}
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-</form>
+    <main class="container">
+        <form action="" method="post">
+            <h1>Авторизация</h1>
+            {{ form.hidden_tag() }}
+            <div class="form-item">
+                {{ form.email() }}
+            </div>
+            <div class="form-item">
+                {{ form.password() }}
+                <div class="invalid-feedback">
+                    <p>Неверный логин или пароль</p>
+                </div>
+            </div>
+            <div class="form-item">
+                {{ form.submit(type="submit", class="button") }}
+            </div>
+        </form>
+    </main>
+{% endblock %}
+
+{% block script %}
+    {% if login_failed %}
+        <script>
+            $("#password").addClass("is-invalid");
+        </script>
+    {% endif %}
 {% endblock %}

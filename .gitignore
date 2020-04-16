@@ -3,6 +3,8 @@
 *.pyo
 .idea/
 
+**/*.log
+
 /runner.py
 /api/db/
 **/logs/

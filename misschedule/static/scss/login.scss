@@ -1,0 +1,159 @@
+@import "variables.scss";
+
+.container {
+    margin: 0;
+    width: 100vw;
+    height: calc(100vh - #{$header_height} - #{$header_padding * 2});
+    max-width: none;
+
+    position: fixed;
+    top: $header_height + $header_padding * 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-height: 540px) {
+    .header {
+        display: none;
+    }
+
+    .container {
+        height: 100vh;
+        top: 0;
+    }
+}
+
+form {
+    width: 640px;
+    height: 400px;
+    max-height: 90%;
+    padding: 48px 96px;
+    margin: 0 36px;
+    z-index: 0;
+
+    border: none;
+    border-radius: 10px;
+    background: $main_gradient;
+    box-shadow: 16px 16px 4px 4px transparentize($color: #000, $amount: 0.75);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    transition: width 0.5s ease,
+                height 0.5s ease,
+                padding 0.5s ease,
+                box-shadow 0.5s ease;
+
+    &:hover, &:focus-within {
+        width: 680px;
+        height: 420px;
+        box-shadow: 24px 24px 8px 8px transparentize($color: #000, $amount: 0.75);
+    }
+
+    h1 {
+        text-align: center;
+        color: #fff;
+        font-weight: 700;
+
+        cursor: default;
+    }
+    
+    .form-item {
+        margin: 12px 0;
+        width: 100%;
+        text-align: center;
+
+        .input-str {
+            margin-top: 4px;
+            margin-bottom: 4px;
+            $h: calc(1.5em + .75rem + 2px);
+            height: $h;
+            &:hover {
+                margin-left: -2.5%;
+                width: 105%;
+                height: calc(#{$h} + 4px);
+                margin-top: 2px;
+                margin-bottom: 2px;
+            }
+            &:focus {
+                border-color: $main_blue;
+                box-shadow: 0 0 0 0.2rem transparentize($color: $main_blue, $amount: 0.75);
+                margin-left: -10%;
+                width: 120%;
+                height: calc(#{$h} + 8px);
+                margin-top: 0;
+                margin-bottom: 0;
+            
+                border-color: #fff;
+                box-shadow: 0 0 0 0.2rem rgba(255,255,255,.25);
+            }
+
+            &.is-invalid:hover {
+                margin-bottom: 0;
+                margin-top: 0;
+            }
+
+            &.is-invalid:focus {
+                border-color: #dc3545;
+                box-shadow: 0 0 0 0.2rem rgba(220,53,69,.25);
+            }
+        }
+
+        .invalid-feedback {
+            font-size: 16px;
+        }
+
+        .button {
+            border-color: #fff;
+            color: #fff;
+
+            transition: width 0.5s ease,
+                        height 0.5s ease,
+                        margin 0.5s ease,
+                        line-height 0.5s ease,
+                        color 0.5s ease,
+                        background-color 0.5s ease;
+            
+            margin-top: 4px;
+            margin-bottom: 4px;
+            $h: 32px;
+            $w: 50%;
+            width: $w;
+            height: $h;
+            &:hover {
+                color: $main_blue;
+                background-color: rgba(255, 255, 255, 0.75);
+
+                margin-left: $w * 0.05;
+                width: $w * 1.1;
+                height: calc(#{$h} + 4px);
+                line-height: calc(#{$h} + 4px);
+                margin-top: 2px;
+                margin-bottom: 2px;
+            }
+        }
+    }
+
+    @media (max-width: $ipad_vertical) {
+        width: 100%;
+        padding: 10%;
+    }
+
+    @media (max-width: 400px) {
+        padding: 5%;
+        margin: 0 20px;
+
+        .form-item {
+            .input-str {
+                &:focus {
+                    margin-left: -2.5%;
+                    width: 105%;
+                }
+            }
+        }
+    }
+}
