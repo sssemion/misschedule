@@ -2,6 +2,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-
+{%for project in projects%}
+<btn>{project['project_name']} {project['description']}</btn>
+{% endfor %}
 {% endblock %}
