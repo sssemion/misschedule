@@ -1,7 +1,7 @@
 from base64 import b64encode
 
 import requests
-from flask import render_template, url_for
+from flask import render_template, make_response
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm
@@ -9,7 +9,12 @@ from misschedule.forms import RegisterForm, LoginForm
 
 @app.route("/")
 def index():
-    return render_template('main-page.html')
+    token = requests.cookies.get('token', None)
+    if not token:
+        return make_response(render_template('main-page.html'))
+    headers = {"Authorization": f"Bearer {token}"}
+    data = requests.get('http://127.0.0.1:5000/api/projects', headers=headers).json()
+    return make_response(render_template('project-page.html'), data=data)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -31,7 +36,7 @@ def register():
         data = response.json()
 
         if data['success']:
-            return redirect('/login')
+            return make_response(redirect('/')).set_cookie('token', data['token']['token'], max_age=60 * 60)
         if response.status_code == 400:
             if f"User {form.username.data} " in data.get('message', ''):
                 form.username.render_kw["class"] = "input-str form-control is-invalid"
@@ -52,5 +57,5 @@ def login():
         request = requests.post('http://127.0.0.1:5000/api/login', headers=headers).json()
         if not request['success']:
             return render_template('login.html', form=form, login_failed=True)
-        return redirect('/')
+        return make_response(redirect('/')).set_cookie('token', request['token']['token'], max_age=60 * 60)
     return render_template('login.html', form=form)

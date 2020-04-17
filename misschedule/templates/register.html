@@ -7,72 +7,72 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <main class="container">
-        <h1>Регистрация</h1>
-        <form class="needs-validation" novalidate action="" method="post">
-            {{ form.hidden_tag() }}
-            <div class="form-item">
-                {{ form.email.label }}
-                {{ form.email() }}
-                <div class="invalid-feedback">
-                    {% for error in form.email.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
+<main class="container">
+    <h1>Регистрация</h1>
+    <form class="needs-validation" novalidate action="" method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-item">
+            {{ form.email.label }}
+            {{ form.email() }}
+            <div class="invalid-feedback">
+                {% for error in form.email.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
             </div>
-            <div class="form-item">
-                {{ form.username.label }}
-                {{ form.username() }}
-                <div class="invalid-feedback">
-                    {% for error in form.username.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
+        </div>
+        <div class="form-item">
+            {{ form.username.label }}
+            {{ form.username() }}
+            <div class="invalid-feedback">
+                {% for error in form.username.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
             </div>
-            <div class="form-item">
-                {{ form.first_name.label }}
-                {{ form.first_name() }}
-                <div class="invalid-feedback">
-                    {% for error in form.first_name.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
+        </div>
+        <div class="form-item">
+            {{ form.first_name.label }}
+            {{ form.first_name() }}
+            <div class="invalid-feedback">
+                {% for error in form.first_name.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
             </div>
-            <div class="form-item">
-                {{ form.last_name.label }}
-                {{ form.last_name() }}
-                <div class="invalid-feedback">
-                    {% for error in form.last_name.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
+        </div>
+        <div class="form-item">
+            {{ form.last_name.label }}
+            {{ form.last_name() }}
+            <div class="invalid-feedback">
+                {% for error in form.last_name.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
             </div>
-            <div class="form-item">
-                {{ form.password.label }}
-                {{ form.password() }}
-                <div class="invalid-feedback">
-                    {% for error in form.password.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
+        </div>
+        <div class="form-item">
+            {{ form.password.label }}
+            {{ form.password() }}
+            <div class="invalid-feedback">
+                {% for error in form.password.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
             </div>
-            <div class="form-item">
-                {{ form.password_again.label }}
-                {{ form.password_again() }}
-                <div class="invalid-feedback">
-                    {% for error in form.password_again.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            </div class="form-item">
-            {% if message %}
-                <p class="alert alert-danger" role="alert">
-                    {{message}}
-                </p>
-            {% endif %}
-            <div class="form-item">
-                {{ form.submit(type="submit", class="button") }}
+        </div>
+        <div class="form-item">
+            {{ form.password_again.label }}
+            {{ form.password_again() }}
+            <div class="invalid-feedback">
+                {% for error in form.password_again.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
             </div>
-        </form>
-    </main>
+        </div>
+        {% if message %}
+        <p class="alert alert-danger" role="alert">
+            {{message}}
+        </p>
+        {% endif %}
+        <div class="form-item">
+            {{ form.submit(type="submit", class="button") }}
+        </div>
+    </form>
+</main>
 {% endblock %}
