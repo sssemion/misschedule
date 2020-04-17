@@ -1,20 +1,22 @@
 from base64 import b64encode
 
 import requests
-from flask import render_template, make_response
+from flask import render_template, make_response, session
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm
+from misschedule.password_check import check_password, PasswordError
 
 
 @app.route("/")
 def index():
-    token = requests.cookies.get('token', None)
+    token = session['token']
     if not token:
         return make_response(render_template('main-page.html'))
     headers = {"Authorization": f"Bearer {token}"}
     data = requests.get('http://127.0.0.1:5000/api/projects', headers=headers).json()
-    return make_response(render_template('project-page.html'), data=data)
+    print(data['projects'])
+    return render_template('project-page.html', projects=data['projects'])
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -34,9 +36,10 @@ def register():
         })
 
         data = response.json()
-
+        print(data)
         if data['success']:
-            return make_response(redirect('/')).set_cookie('token', data['token']['token'], max_age=60 * 60)
+            session['token'] = data['authToken']['token']
+            return redirect('/')
         if response.status_code == 400:
             if f"User {form.username.data} " in data.get('message', ''):
                 form.username.render_kw["class"] = "input-str form-control is-invalid"
@@ -44,7 +47,11 @@ def register():
             if f"email {form.email.data} " in data.get('message', ''):
                 form.email.render_kw["class"] = "input-str form-control is-invalid"
                 form.email.errors.append('Email уже занят')
-        # TODO: проверка надежности пароля
+        try:
+            check_password(form.password.data)
+        except PasswordError as e:
+            form.password.render_kw["class"] = "input-str form-control is-invalid"
+            form.password.errors.append(e)
     return render_template('register.html', form=form)
 
 
@@ -57,5 +64,6 @@ def login():
         request = requests.post('http://127.0.0.1:5000/api/login', headers=headers).json()
         if not request['success']:
             return render_template('login.html', form=form, login_failed=True)
-        return make_response(redirect('/')).set_cookie('token', request['token']['token'], max_age=60 * 60)
+        session['token'] = request['authToken']['token']
+        return redirect('/')
     return render_template('login.html', form=form)
