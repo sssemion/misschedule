@@ -50,6 +50,9 @@
         <div class="form-item">
             {{ form.password.label }}
             {{ form.password() }}
+            <p id="passwordHelpBlock" class="form-text text-muted">
+                Длина пароля должна быть не меньше 9 символов разного регистра, пароль должен содержать как минимум 1 цифру и не должен содержать комбинацию из 3 символов, стоящих рядом на клавиатуре.
+            </p>
             <div class="invalid-feedback">
                 {% for error in form.password.errors %}
                 <p>{{ error }}</p>

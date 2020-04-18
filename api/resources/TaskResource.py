@@ -35,7 +35,7 @@ class TaskResource(Resource):
                 "condition", "image", "date")),
             'items': [item.to_dict(
                 only=("title", "description", "completed", "completed_by_id", "completion_date")) for
-                      item in task.items]
+                item in task.items]
         })
 
     @abort_if_task_not_found
@@ -69,6 +69,23 @@ class TaskResource(Resource):
 
 class TaskListResource(Resource):
     @token_auth.login_required
+    def get(self):
+        return jsonify({
+            'tasks': [
+                {
+                    'task': task.to_dict(only=(
+                        "project_id", "title", "description", "duration", "worker_id", "tag",
+                        "color",
+                        "condition", "image", "date")),
+                    'items': [item.to_dict(only=(
+                        "title", "description", "completed", "completed_by_id", "completion_date"))
+                        for
+                        item in task.items]
+                } for task in filter(lambda x: x.condition != 2, g.current_user.performing_tasks)
+            ],
+        })
+
+    @token_auth.login_required
     def post(self):
         args = task_parser_for_adding.parse_args()
         session = db_session.create_session()
@@ -78,7 +95,8 @@ class TaskListResource(Resource):
         if project not in g.current_user.projects:
             abort(403, success=False)
         if args['title'] in map(lambda x: x.title, project.tasks):
-            abort(400, success=False, message=f"Task with title '{args['title']}' already exists")
+            abort(400, success=False,
+                  message=f"Task with title '{args['title']}' already exists")
         task = Task(
             project_id=args['project_id'],
             title=args['title'],

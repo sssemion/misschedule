@@ -2,6 +2,7 @@ from base64 import b64encode
 
 import requests
 from flask import render_template, make_response, session
+from werkzeug.http import HTTP_STATUS_CODES
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm
@@ -10,13 +11,22 @@ from misschedule.password_check import check_password, PasswordError
 
 @app.route("/")
 def index():
-    token = session['token']
+    token = session.get('token', None)
     if not token:
         return make_response(render_template('main-page.html'))
+
     headers = {"Authorization": f"Bearer {token}"}
-    data = requests.get('http://127.0.0.1:5000/api/projects', headers=headers).json()
-    print(data['projects'])
-    return render_template('project-page.html', projects=data['projects'])
+    projects = requests.get('http://127.0.0.1:5000/api/projects', headers=headers)
+    projects_data = projects.json()
+    tasks = requests.get('http://127.0.0.1:5000/api/tasks', headers=headers)
+    tasks_data = tasks.json()
+
+    if not (projects.status_code == tasks.status_code == 200):
+        if projects.status_code == 401 or tasks.status_code == 401:  # Unauthorized
+            return redirect("/login")
+            # TODO:  Оповещение о том, что время сессии истекло
+
+    return render_template('project-page.html', projects=projects_data['projects'], tasks=tasks_data['tasks'])
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -27,6 +37,14 @@ def register():
             form.password.render_kw["class"] = "input-str form-control is-invalid"
             form.password_again.render_kw["class"] = "input-str form-control is-invalid"
             return render_template('register.html', form=form, message="Пароли не совпадают")
+
+        try:
+            check_password(form.password.data)
+        except PasswordError as e:
+            form.password.render_kw["class"] = "input-str form-control is-invalid"
+            form.password.errors.append(e)
+            return render_template('register.html', form=form)
+
         response = requests.post('http://127.0.0.1:5000/api/users', {
             'username': form.username.data,
             'email': form.email.data,
@@ -36,7 +54,6 @@ def register():
         })
 
         data = response.json()
-        print(data)
         if data['success']:
             session['token'] = data['authToken']['token']
             return redirect('/')
@@ -47,11 +64,6 @@ def register():
             if f"email {form.email.data} " in data.get('message', ''):
                 form.email.render_kw["class"] = "input-str form-control is-invalid"
                 form.email.errors.append('Email уже занят')
-        try:
-            check_password(form.password.data)
-        except PasswordError as e:
-            form.password.render_kw["class"] = "input-str form-control is-invalid"
-            form.password.errors.append(e)
     return render_template('register.html', form=form)
 
 

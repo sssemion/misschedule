@@ -1,0 +1,131 @@
+@import "variables.scss";
+
+body {
+    background-color: #fff;
+}
+
+.container {
+    margin: 32px 10%;
+    display: flex;
+    justify-content: space-between;
+    .projects {
+        width: 62%;
+    }
+    .tasks {
+        width: 32%;
+    }
+}
+
+.sort-by {
+    margin: 16px 0;
+    &__select {
+        padding: 0 8px;
+
+        border: none;
+        display: inline-block;
+
+        font-family: "Open Sans", sans-serif;
+        font-size: 16px;
+        
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        -ms-appearance: none;
+        appearance: none;
+
+        color: darken($main_blue, 4);
+
+        transition: color 0.5s ease;
+
+        &:hover {
+            color: darken($main_blue, 8);
+        }
+
+        cursor: pointer;
+
+        option {
+            color: #000;
+        }
+    }
+}
+
+.projects__inner, .tasks__inner {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    margin: 0 -15px;
+
+    .project, .task {
+        width: calc((100% - 128px) / 2);
+        padding: 8px 16px;
+        margin: 15px;
+        border: 1px solid #acacac;
+        box-shadow: 6px 6px 8px 0 transparentize($color: #000, $amount: 0.75);
+        border-radius: 10px;;
+
+        text-decoration: none;
+        color: #000;
+
+        transition: transform 0.5s ease;
+
+        .no-description {
+            color: #818181;
+        }
+
+        &__name {
+            position: relative;
+            margin-bottom: 16px;
+
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                height: 1px;
+                width: 75%;
+                background-color: $main_blue;
+            }
+        }
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+}
+
+.tasks {
+    position: relative;
+    align-self: flex-start;
+    &::before {
+        content: "";
+        position: absolute;
+        left: -9%;
+        width: 1px;
+        height: 100%;
+        opacity: 0.75;
+        background-color: $main_blue;
+        border-radius: 50%;
+    }
+}
+
+.tasks__inner {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+
+    margin: 0;
+
+    .task {
+        width: calc(100% - 34px);
+        margin: 16px 0;
+    }
+}
+
+.heading {
+    display: flex;
+    align-items: center;
+
+    svg {
+        margin-right: 16px;
+    }
+}

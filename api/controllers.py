@@ -23,8 +23,8 @@ from api.data.user import User
 def get_token():
     token = g.current_user.get_token()
     g.db_session.commit()
-    return jsonify({'success': True, 'token': {'token': token,
-                                               'expires': str(g.current_user.token_expiration)}})
+    return jsonify({'success': True, 'authToken': {'token': token,
+                                                   'expires': str(g.current_user.token_expiration)}})
 
 
 @app.route('/api/logout', methods=['POST'])

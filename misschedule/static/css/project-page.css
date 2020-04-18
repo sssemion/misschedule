@@ -1,0 +1,90 @@
+body {
+  background-color: #fff; }
+
+.container {
+  margin: 32px 10%;
+  display: flex;
+  justify-content: space-between; }
+  .container .projects {
+    width: 62%; }
+  .container .tasks {
+    width: 32%; }
+
+.sort-by {
+  margin: 16px 0; }
+  .sort-by__select {
+    padding: 0 8px;
+    border: none;
+    display: inline-block;
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    color: #2facbc;
+    transition: color 0.5s ease;
+    cursor: pointer; }
+    .sort-by__select:hover {
+      color: #2b9dac; }
+    .sort-by__select option {
+      color: #000; }
+
+.projects__inner, .tasks__inner {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 0 -15px; }
+  .projects__inner .project, .projects__inner .task, .tasks__inner .project, .tasks__inner .task {
+    width: calc((100% - 128px) / 2);
+    padding: 8px 16px;
+    margin: 15px;
+    border: 1px solid #acacac;
+    box-shadow: 6px 6px 8px 0 rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    text-decoration: none;
+    color: #000;
+    transition: transform 0.5s ease; }
+    .projects__inner .project .no-description, .projects__inner .task .no-description, .tasks__inner .project .no-description, .tasks__inner .task .no-description {
+      color: #818181; }
+    .projects__inner .project__name, .projects__inner .task__name, .tasks__inner .project__name, .tasks__inner .task__name {
+      position: relative;
+      margin-bottom: 16px; }
+      .projects__inner .project__name::after, .projects__inner .task__name::after, .tasks__inner .project__name::after, .tasks__inner .task__name::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        height: 1px;
+        width: 75%;
+        background-color: #34bacc; }
+    .projects__inner .project:hover, .projects__inner .task:hover, .tasks__inner .project:hover, .tasks__inner .task:hover {
+      transform: scale(1.1); }
+
+.tasks {
+  position: relative;
+  align-self: flex-start; }
+  .tasks::before {
+    content: "";
+    position: absolute;
+    left: -9%;
+    width: 1px;
+    height: 100%;
+    opacity: 0.75;
+    background-color: #34bacc;
+    border-radius: 50%; }
+
+.tasks__inner {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin: 0; }
+  .tasks__inner .task {
+    width: calc(100% - 34px);
+    margin: 16px 0; }
+
+.heading {
+  display: flex;
+  align-items: center; }
+  .heading svg {
+    margin-right: 16px; }
