@@ -9,6 +9,17 @@ body {
     width: 62%; }
   .container .tasks {
     width: 32%; }
+  @media (max-width: 1366px) {
+    .container .projects, .container .tasks {
+      width: 46%; } }
+  @media (max-width: 768px) {
+    .container {
+      margin: 32px 5%; } }
+  @media (max-width: 540px) {
+    .container {
+      flex-direction: column; }
+      .container .projects, .container .tasks {
+        width: 100%; } }
 
 .sort-by {
   margin: 16px 0; }
@@ -47,6 +58,9 @@ body {
     transition: transform 0.5s ease; }
     .projects__inner .project .no-description, .projects__inner .task .no-description, .tasks__inner .project .no-description, .tasks__inner .task .no-description {
       color: #818181; }
+    .projects__inner .project__title, .projects__inner .task__title, .tasks__inner .project__title, .tasks__inner .task__title {
+      overflow: hidden;
+      text-overflow: ellipsis; }
     .projects__inner .project__name, .projects__inner .task__name, .tasks__inner .project__name, .tasks__inner .task__name {
       position: relative;
       margin-bottom: 16px; }
@@ -60,6 +74,9 @@ body {
         background-color: #34bacc; }
     .projects__inner .project:hover, .projects__inner .task:hover, .tasks__inner .project:hover, .tasks__inner .task:hover {
       transform: scale(1.1); }
+    @media (max-width: 1366px) {
+      .projects__inner .project, .projects__inner .task, .tasks__inner .project, .tasks__inner .task {
+        width: 100%; } }
 
 .tasks {
   position: relative;
@@ -73,6 +90,19 @@ body {
     opacity: 0.75;
     background-color: #34bacc;
     border-radius: 50%; }
+  @media (max-width: 540px) {
+    .tasks {
+      margin-top: 64px; }
+      .tasks::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: -32px;
+        width: 100%;
+        height: 2px;
+        opacity: 0.75;
+        background-color: #34bacc;
+        border-radius: 50%; } }
 
 .tasks__inner {
   flex-direction: column;
@@ -118,4 +148,5 @@ body {
   display: flex;
   align-items: center; }
   .heading svg {
-    margin-right: 16px; }
+    margin-right: 16px;
+    min-width: 48px; }
