@@ -10,7 +10,7 @@ from misschedule.password_check import check_password, PasswordError
 
 @app.route("/")
 def index():
-    token = session['token']
+    token = session.get('token', None)
     if not token:
         return make_response(render_template('main-page.html'))
     headers = {"Authorization": f"Bearer {token}"}
@@ -36,7 +36,6 @@ def register():
         })
 
         data = response.json()
-        print(data)
         if data['success']:
             session['token'] = data['authToken']['token']
             return redirect('/')
