@@ -1,3 +1,5 @@
+import datetime
+
 from flask import jsonify, g
 from flask_restful import abort, Resource
 
@@ -89,7 +91,8 @@ class ProjectListResource(Resource):
             team_leader_id=g.current_user.id,
             project_name=args['project_name'],
             title=args['title'],
-            description=args['description']
+            description=args['description'],
+            reg_date=datetime.datetime.now()
         )
         g.current_user.projects.append(project)
         g.db_session.commit()

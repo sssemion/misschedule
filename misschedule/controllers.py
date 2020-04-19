@@ -2,7 +2,6 @@ from base64 import b64encode
 
 import requests
 from flask import render_template, make_response, session
-from werkzeug.http import HTTP_STATUS_CODES
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm

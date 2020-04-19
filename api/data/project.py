@@ -1,5 +1,3 @@
-import datetime
-
 import sqlalchemy
 from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
@@ -26,7 +24,7 @@ class Project(SqlAlchemyBase, SerializerMixin):
     project_name = sqlalchemy.Column(sqlalchemy.String, nullable=False, index=True)
     title = sqlalchemy.Column(sqlalchemy.String)
     description = sqlalchemy.Column(sqlalchemy.String)
-    reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
+    reg_date = sqlalchemy.Column(sqlalchemy.DateTime)
 
     team_leader = orm.relation('User', foreign_keys=[team_leader_id])
 

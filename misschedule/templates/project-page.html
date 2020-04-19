@@ -82,7 +82,7 @@
             </div>
             <div class="sort-by">
                 <span>Сортировать по:</span>
-                <select class="sort-by__select" id="projects__select" name="projects__select">
+                <select class="sort-by__select" id="tasks__select" name="tasks__select">
                     <option value="date-older" selected="selected">дате (от старых к новым)</option>
                     <option value="date-newer">дате (от новых к старым)</option>
                     <option value="closer-to-deadline">времени до дедлайна</option>
@@ -95,13 +95,34 @@
                     {% set task = task_data["task"] %}
                     {% set items = task_data["items"] %}
                     <a class="task" href="/projects/{{ task['project_id'] }}"
-                       style="background-color: {{ task['color'] }}">
+                       style="background-color: {{ task['color'] | transparentize(0.25) }}">
                         <h2 class="task__title">{{ task["title"] }}</h5>
                         {% if task["description"] %}
                             <p class="task__description">{{ task["description"] }}</p>
                         {% else %}
                             <p class="task__description no-description">Нет описания</p>
                         {% endif %}
+                        <!-- Line -->
+
+                        {% if task["tag"] %}
+                            <p class="task__tag">{{ task["tag"] }}</p>
+                        {% endif %}
+
+                        <p class="task__project">Проект: {{ task["project_id"] | project_title_by_id }}</p>
+
+                        <p class="task__status">Статус: {{ ["запланировано", "в процессе", "готово"][task["condition"]] }}</p>
+
+                        {% if task["duration"] %}
+                            <div class="task__deadline">
+                                <span>До дедлайна: </span>
+                                <span class="time-to-deadline" 
+                                    data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
+                                    data-duration="{{ task['duration'] }}"></span>
+                            </div>
+                        {% else %}
+                            <p class="task__description no-description">Нет описания</p>
+                        {% endif %}
+
                     </a>
                 {% endfor %}
             </div>

@@ -1,5 +1,3 @@
-import datetime
-
 import sqlalchemy
 from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
@@ -21,7 +19,7 @@ class Chat(SqlAlchemyBase, SerializerMixin):
     title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     creator_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), nullable=False)
     project_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("projects.id"), nullable=False)
-    reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
+    reg_date = sqlalchemy.Column(sqlalchemy.DateTime)
 
     users = orm.relation("User", secondary="user_to_chat", backref="chat")
     messages = orm.relation("Message", back_populates="chat", cascade="all, delete, delete-orphan")

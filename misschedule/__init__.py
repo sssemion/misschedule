@@ -5,3 +5,4 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 # TODO: генерация нормального ключа
 
 from misschedule import controllers
+from misschedule import jinja_filters

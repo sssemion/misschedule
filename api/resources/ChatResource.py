@@ -1,3 +1,5 @@
+import datetime
+
 from flask import jsonify, g
 from flask_restful import abort, Resource
 
@@ -99,7 +101,8 @@ class ChatListResource(Resource):
         chat = Chat(
             project_id=args['project_id'],
             creator_id=g.current_user.id,
-            title=args['title']
+            title=args['title'],
+            reg_date=datetime.datetime.now()
         )
         session.add(chat)
         session.commit()

@@ -20,7 +20,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     username = sqlalchemy.Column(sqlalchemy.String, nullable=False, unique=True, index=True)
     first_name = sqlalchemy.Column(sqlalchemy.String)
     last_name = sqlalchemy.Column(sqlalchemy.String)
-    reg_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
+    reg_date = sqlalchemy.Column(sqlalchemy.DateTime)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
 
     projects = orm.relation("Project",

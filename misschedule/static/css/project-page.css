@@ -82,6 +82,37 @@ body {
   .tasks__inner .task {
     width: calc(100% - 34px);
     margin: 16px 0; }
+    .tasks__inner .task__description {
+      position: relative;
+      margin-bottom: 16px; }
+      .tasks__inner .task__description::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        height: 1px;
+        width: 75%;
+        background-color: #34bacc;
+        mix-blend-mode: multiply; }
+    .tasks__inner .task__tag {
+      position: relative;
+      display: inline-block;
+      border: 1px solid #acacac;
+      border-radius: 10px;
+      padding: 2px 8px 2px 32px;
+      margin: 4px 0;
+      background-color: rgba(255, 255, 255, 0.5); }
+      .tasks__inner .task__tag::before {
+        content: "";
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #aaaaaa;
+        left: 8px;
+        top: 6px; }
+    .tasks__inner .task__deadline .time-to-deadline.close-to-passing {
+      color: #d11f00; }
 
 .heading {
   display: flex;

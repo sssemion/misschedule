@@ -118,6 +118,51 @@ body {
     .task {
         width: calc(100% - 34px);
         margin: 16px 0;
+
+        &__description {
+            position: relative;
+            margin-bottom: 16px;
+
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                height: 1px;
+                width: 75%;
+                background-color: $main_blue;
+                mix-blend-mode: multiply;
+            }
+        }
+
+        &__tag {
+            position: relative;
+            display: inline-block;
+            border: 1px solid #acacac;
+            border-radius: 10px;
+            padding: 2px 8px 2px 32px;
+            margin: 4px 0;
+            background-color: transparentize($color: #fff, $amount: 0.5);
+
+            &::before {
+                content: "";
+                position: absolute;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background-color: #aaaaaa;
+                left: 8px;
+                top: 6px;
+            }
+        }
+
+        &__deadline {
+            .time-to-deadline {
+                &.close-to-passing {
+                    color: #d11f00;
+                }
+            }
+        }
     }
 }
 

@@ -1,5 +1,4 @@
 import sqlalchemy
-import datetime
 from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
 from api.data.db_session import SqlAlchemyBase
@@ -12,7 +11,7 @@ class Task(SqlAlchemyBase, SerializerMixin):
     project_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("projects.id"))
     title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     description = sqlalchemy.Column(sqlalchemy.String)
-    date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
+    date = sqlalchemy.Column(sqlalchemy.DateTime)
     duration = sqlalchemy.Column(sqlalchemy.Integer)
     creator_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     worker_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))

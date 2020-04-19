@@ -1,3 +1,5 @@
+import datetime
+
 from flask import jsonify, g
 from flask_restful import Resource, abort
 
@@ -108,6 +110,7 @@ class TaskListResource(Resource):
             color=args['color'],
             condition=args['condition'],
             image=args['image'],
+            date=datetime.datetime.now()
         )
         for title, description in args['items'].items():
             task.items.append(TaskItem(title=title, description=description))

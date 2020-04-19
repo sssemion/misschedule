@@ -1,3 +1,5 @@
+import datetime
+
 from flask import jsonify, g
 from flask_restful import abort, Resource
 
@@ -82,6 +84,7 @@ class UserListResource(Resource):
             username=args['username'],
             first_name=args['first_name'],
             last_name=args['last_name'],
+            reg_date=datetime.datetime.now()
         )
         user.set_password(args['password'])
         token = user.get_token()
