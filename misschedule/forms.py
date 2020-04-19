@@ -55,3 +55,14 @@ class LoginForm(FlaskForm):
     })
 
     submit = SubmitField('Войти')
+
+
+class ProjectForm(FlaskForm):
+    project_name = StringField('Название проекта', validators=[DataRequired()],
+                               render_kw={"class": "input-str form-control", "required": True})
+    title = StringField('Заголовок', validators=[DataRequired()],
+                        render_kw={"class": "input-str form-control", "required": True})
+    description = StringField('Описание', validators=[DataRequired()],
+                              render_kw={"class": "input-str form-control", "required": True})
+
+    submit = SubmitField('Создать')

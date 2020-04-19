@@ -66,3 +66,42 @@ def login():
         session['token'] = request['authToken']['token']
         return redirect('/')
     return render_template('login.html', form=form)
+
+
+@app.route('/project', methods=['GET', 'POST'])
+def create_project():
+    form = ProjectForm()
+    if form.validate_on_submit():
+        try:
+            token = session['token']
+            headers = {"Authorization": f"Bearer {token}"}
+            data = requests.post('http://127.0.0.1:5000/api/projects',
+                                 {'project_name': form.project_name.data, 'title': form.title.data,
+                                  'description': form.description.data},
+                                 headers=headers).json()
+            if data['success']:
+                return redirect('/')
+        except:
+            return render_template('create-project.html', form=form)
+    return render_template('create-project.html', form=form)
+
+
+@app.route('/project/<string:project_name>', methods=['GET', 'POST'])
+def project_page(project_name):
+    token = session['token']
+    headers = {"Authorization": f"Bearer {token}"}
+    project = requests.get(f'http://127.0.0.1:5000/api/users/get_project/{project_name}', headers=headers).json()
+    print(project)
+    if project.get('success', True):
+        users = [requests.get(f'http://127.0.0.1:5000/api/users/{id}').json() for id in project['users']]
+        tasks = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_tasks').json()
+        print(tasks)
+        for item in range(len(tasks['tasks'])):
+            user = requests.get(
+                f'http://127.0.0.1:5000/api/users/{tasks["tasks"][item]["task"]["worker_id"]}').json()
+            if user is not None:
+                tasks['tasks'][item]['task']['worker_id'] = user['username']
+        chats = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats').json()
+        return render_template('project-main-page.html', project=project["project"], users=users, tasks=tasks,
+                               chats=chats)
+    return redirect('/')
