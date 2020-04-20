@@ -163,3 +163,98 @@ def set_task_items(task_id, item_id):
     item.completion_date = datetime.datetime.now()
     session.commit()
     return jsonify({'success': True})
+
+
+@app.route('/api/users/get_project/<string:project_name>', methods=['GET'])
+@token_auth.login_required
+def get_project(project_name):
+    user = g.current_user
+    project = user.projects[
+        list(map(lambda p: p.project_name, user.projects)).index(project_name)]
+    return jsonify({
+        'project': project.to_dict(only=('id', 'team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
+        'users': [item.id for item in project.users]})
+
+
+@app.route('/api/users/get_user_by_name/<string:username>', methods=['GET'])
+def get_user_by_name(username):
+    session = db_session.create_session()
+    user = session.query(User).filter(User.username == username).first()
+    return jsonify({'user': user.to_dict(
+        only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))})
+
+
+@app.route('/api/users/get_myself')
+@token_auth.login_required
+def get_myself():
+    user = g.current_user
+    return jsonify({'user': user.to_dict(
+        only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))})
+
+
+@app.route('/api/projects/<int:project_id>/get_tasks')
+@token_auth.login_required
+def get_project_tasks(project_id):
+    session = db_session.create_session()
+    project = session.query(Project).get(project_id)
+    if not project:
+        abort(404, message=f"Project {project_id} not found")
+    if project not in g.current_user.projects:
+        abort(403)
+    tasks = project.tasks
+    return jsonify(
+        {'tasks': [
+            {
+                'task': task.to_dict(only=(
+                    "id", "project_id", "title", "description", "duration", "worker_id", "tag", "color",
+                    "condition", "image", "date")),
+                'items': [item.to_dict(
+                    only=("id", "title", "description", "completed", "completed_by_id", "completion_date")) for
+                    item in task.items]
+            } for task in tasks]})
+
+
+@app.route('/api/projects/<int:project_id>/get_chats')
+@token_auth.login_required
+def get_project_chats(project_id):
+    session = db_session.create_session()
+    project = session.query(Project).get(project_id)
+    if not project:
+        abort(404, message=f"Project {project_id} not found")
+    if project not in g.current_user.projects:
+        abort(403)
+    chats = project.chats
+    return jsonify(
+        {'chats': [
+            {
+                'chat': chat.to_dict(only=('id', 'title', 'project_id')),
+                'users': [item.id for item in chat.users]
+            } for chat in chats]})
+
+
+@app.route('/api/projects/<int:project_id>/get_users')
+@token_auth.login_required
+def get_project_users(project_id):
+    session = db_session.create_session()
+    project = session.query(Project).get(project_id)
+    if not project:
+        abort(404, message=f"Project {project_id} not found")
+    if project not in g.current_user.projects:
+        abort(403)
+    users = project.users
+    return jsonify(
+        {'users': [user.to_dict(only=('email', 'username', 'first_name', 'last_name', 'reg_date'))
+                   for user in users]})
+
+
+@app.route('/api/projects/<int:project_id>/get_team_leader')
+@token_auth.login_required
+def get_project_team_leader(project_id):
+    session = db_session.create_session()
+    project = session.query(Project).get(project_id)
+    if not project:
+        abort(404, message=f"Project {project_id} not found")
+    if project not in g.current_user.projects:
+        abort(403)
+    users = project.users
+    return jsonify(project.team_leader.to_dict(only=('email', 'username', 'first_name', 'last_name', 'reg_date')))

@@ -4,7 +4,7 @@ import requests
 from flask import render_template, make_response, session
 from werkzeug.utils import redirect
 from misschedule import app
-from misschedule.forms import RegisterForm, LoginForm
+from misschedule.forms import RegisterForm, LoginForm, ProjectForm
 from misschedule.password_check import check_password, PasswordError
 
 
@@ -78,3 +78,48 @@ def login():
         session['token'] = request['authToken']['token']
         return redirect('/')
     return render_template('login.html', form=form)
+
+
+@app.route('/project', methods=['GET', 'POST'])
+def create_project():
+    form = ProjectForm()
+    if form.validate_on_submit():
+        try:
+            token = session['token']
+            headers = {"Authorization": f"Bearer {token}"}
+            data = requests.post('http://127.0.0.1:5000/api/projects',
+                                 {'project_name': form.project_name.data, 'title': form.title.data,
+                                  'description': form.description.data},
+                                 headers=headers).json()
+            if data['success']:
+                return redirect('/')
+        except:
+            return render_template('create-project.html', form=form)
+    return render_template('create-project.html', form=form)
+
+
+@app.route('/project/<string:project_name>', methods=['GET', 'POST'])
+def project_page(project_name):
+    token = session['token']
+    headers = {"Authorization": f"Bearer {token}"}
+    project = requests.get(f'http://127.0.0.1:5000/api/users/get_project/{project_name}', headers=headers).json()
+    print(project)
+    if project.get('success', True):
+        users = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_users', headers=headers).json()
+        print(users)
+        team_leader = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_team_leader', headers=headers).json()
+        print(team_leader)
+        tasks = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_tasks', headers=headers).json()
+        print(tasks)
+        for item in range(len(tasks['tasks'])):
+            user = requests.get(
+                f'http://127.0.0.1:5000/api/users/{tasks["tasks"][item]["task"]["worker_id"]}')
+            user = user.json()['user']
+            print(user)
+            if user.get('success', True):
+                tasks['tasks'][item]['task']['worker_id'] = user['username']
+        chats = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats', headers=headers).json()
+        print(chats)
+        return render_template('project-main-page.html', project=project["project"], users=users["users"], tasks=tasks,
+                               chats=chats["chats"], team_leader=team_leader)
+    return redirect('/')

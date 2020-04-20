@@ -70,7 +70,9 @@
 
     <!-- js scripts -->
     <script src="{{ url_for('static', filename='js/base.js') }}"></script>
-    <script src="{{ script_file }}"></script>
+    {% if script_file %}
+        <script src="{{ script_file }}"></script>    
+    {% endif %}
     {% block script %}{% endblock script %}
 </body>
 </html>

@@ -1,0 +1,65 @@
+{% set style_file = url_for('static', filename='css/project-main-page.css') %}
+{% set jquery = true %}
+
+{% set title = team_leader['username'] + " | " + project['title'] %}
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container">
+    <div class="leftside-menu">
+        <div class="project">
+            <div class="project__heading">
+                <h1>Проект {{ project['project_name'] }}</h1>
+                <h2>{{ project['title'] }}</h2>
+            </div>
+            {% if project['description'] %}
+                <p class="project__description">{{  project['description']  }}</p>            
+            {% else %}
+                <p class="project__description no-description">Нет описания</p>
+            {% endif %}
+            <span class="project__reg-date">Дата создания: {{ project['reg_date'] }}</span>
+        </div>
+        
+        <div class="users-panel">
+            <h1>Пользователи</h1>
+            {% for item in users %}
+            <div class="user">
+                <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>
+                <a class="user__username" href="/users/{{  item['username']  }}">@{{ item['username'] }}</a>
+                <p class="user__email">Email: <a class="email-link" href="mailto:{{  item['email']  }}">{{ item['email'] }}</a></p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="task-board">
+        {% for task in tasks %}
+            <div class="task">
+                <p>Низвание: {{ task['title'] }}</p>
+                <p>Описание: {{ task['description'] }}</p>
+                <p>Ответсвенный: {{ task['worker_id'] }}</p>
+                <p>Начало: {{ task['date'] }}</p>
+                <p>Длительность: {{ task['duration'] }}</p>
+                <p>Состояние: {{ task['condition'] }}</p>
+            </div>
+            {% for item in task['items'] %}
+                <div class="item-card">
+                    <p>Подзадача {{ loop.index }}</p>
+                    <p>Название: {{ item['title'] }}</p>
+                    <p>Описание: {{ item['description'] }}</p>
+                    <p>Завершено: {{ item['completed'] }}</p>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    
+    <div class="rightside-menu">
+        <div class="chat-panel">
+            {% for chat in chats['chats'] %}
+                <button class="chat-button">{{  chat['title']  }}</button>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+{% endblock %}
