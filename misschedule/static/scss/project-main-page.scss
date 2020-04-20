@@ -1,0 +1,132 @@
+@import "variables.scss";
+
+.container {
+    margin: 0 $container-margin / 2;
+
+    display: flex;
+
+    .leftside-menu, .rightside-menu {
+        width: 25%;
+        background-color: transparentize($color: #0000ff, $amount: 0.95);
+    }
+
+    .task-board {
+        width: 50%;
+        background-color: transparentize($color: #ff0000, $amount: 0.95);
+    }
+}
+
+.leftside-menu {
+    padding: 16px;
+
+    .project {
+        margin-bottom: 32px;
+
+        &__heading {
+            position: relative;
+            margin-bottom: 16px;
+
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                height: 1px;
+                width: 75%;
+                background-color: $main_blue;
+            }
+        }
+    }
+
+    .users-panel {
+        margin: 0 -16px;
+
+        h1 {
+            margin-left: 16px;
+        }
+
+        .user {
+            margin: 16px;
+            padding: 8px 16px;
+            border: 1px solid #acacac;
+            border-radius: 10px;
+
+            &__name {
+                display: inline;
+                margin-right: 4px;
+            }
+
+            &__username {
+                text-decoration: none;
+                color: darken($color: $main_blue, $amount: 5);
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            &__email {
+                .email-link {
+                    text-decoration: none;
+                    color: darken($color: $main_blue, $amount: 5);
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.task-board {
+    .task {
+        width: calc(100% - 34px);
+        margin: 16px 0;
+
+        &__description {
+            position: relative;
+            margin-bottom: 16px;
+
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -8px;
+                left: 0;
+                height: 1px;
+                width: 75%;
+                background-color: $main_blue;
+                mix-blend-mode: multiply;
+            }
+        }
+
+        &__tag {
+            position: relative;
+            display: inline-block;
+            border: 1px solid #acacac;
+            border-radius: 10px;
+            padding: 2px 8px 2px 32px;
+            margin: 4px 0;
+            background-color: transparentize($color: #fff, $amount: 0.5);
+
+            &::before {
+                content: "";
+                position: absolute;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background-color: #aaaaaa;
+                left: 8px;
+                top: 6px;
+            }
+        }
+
+        &__deadline {
+            .time-to-deadline {
+                &.close-to-passing {
+                    color: #d11f00;
+                }
+            }
+        }
+    }
+}

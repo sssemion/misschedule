@@ -1,0 +1,82 @@
+.container {
+  margin: 0 3%;
+  display: flex; }
+  .container .leftside-menu, .container .rightside-menu {
+    width: 25%;
+    background-color: rgba(0, 0, 255, 0.05); }
+  .container .task-board {
+    width: 50%;
+    background-color: rgba(255, 0, 0, 0.05); }
+
+.leftside-menu {
+  padding: 16px; }
+  .leftside-menu .project {
+    margin-bottom: 32px; }
+    .leftside-menu .project__heading {
+      position: relative;
+      margin-bottom: 16px; }
+      .leftside-menu .project__heading::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        height: 1px;
+        width: 75%;
+        background-color: #34bacc; }
+  .leftside-menu .users-panel {
+    margin: 0 -16px; }
+    .leftside-menu .users-panel h1 {
+      margin-left: 16px; }
+    .leftside-menu .users-panel .user {
+      margin: 16px;
+      padding: 8px 16px;
+      border: 1px solid #acacac;
+      border-radius: 10px; }
+      .leftside-menu .users-panel .user__name {
+        display: inline;
+        margin-right: 4px; }
+      .leftside-menu .users-panel .user__username {
+        text-decoration: none;
+        color: #2ea8b8; }
+        .leftside-menu .users-panel .user__username:hover {
+          text-decoration: underline; }
+      .leftside-menu .users-panel .user__email .email-link {
+        text-decoration: none;
+        color: #2ea8b8; }
+        .leftside-menu .users-panel .user__email .email-link:hover {
+          text-decoration: underline; }
+
+.task-board .task {
+  width: calc(100% - 34px);
+  margin: 16px 0; }
+  .task-board .task__description {
+    position: relative;
+    margin-bottom: 16px; }
+    .task-board .task__description::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      height: 1px;
+      width: 75%;
+      background-color: #34bacc;
+      mix-blend-mode: multiply; }
+  .task-board .task__tag {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #acacac;
+    border-radius: 10px;
+    padding: 2px 8px 2px 32px;
+    margin: 4px 0;
+    background-color: rgba(255, 255, 255, 0.5); }
+    .task-board .task__tag::before {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #aaaaaa;
+      left: 8px;
+      top: 6px; }
+  .task-board .task__deadline .time-to-deadline.close-to-passing {
+    color: #d11f00; }
