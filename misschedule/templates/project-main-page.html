@@ -32,25 +32,41 @@
         </div>
     </div>
     
-    <div class="task-board">
-        {% for task in tasks %}
-            <div class="task">
-                <p>Низвание: {{ task['title'] }}</p>
-                <p>Описание: {{ task['description'] }}</p>
-                <p>Ответсвенный: {{ task['worker_id'] }}</p>
-                <p>Начало: {{ task['date'] }}</p>
-                <p>Длительность: {{ task['duration'] }}</p>
-                <p>Состояние: {{ task['condition'] }}</p>
-            </div>
-            {% for item in task['items'] %}
-                <div class="item-card">
-                    <p>Подзадача {{ loop.index }}</p>
-                    <p>Название: {{ item['title'] }}</p>
-                    <p>Описание: {{ item['description'] }}</p>
-                    <p>Завершено: {{ item['completed'] }}</p>
-                </div>
+    <div class="tasks">
+        <h1>Задачи</h1>
+        <div class="tasks__inner">
+            {% for task_data in tasks %}
+                {% set task = task_data["task"] %}
+                {% set items = task_data["items"] %}
+                <a class="task" style="background-color: {{ task['color'] | transparentize(0.25) }}">
+                    <h2 class="task__title">{{ task["title"] }}</h5>
+                    {% if task["description"] %}
+                        <p class="task__description">{{ task["description"] }}</p>
+                    {% else %}
+                        <p class="task__description no-description">Нет описания</p>
+                    {% endif %}
+                    <!-- Line -->
+
+                    {% if task["tag"] %}
+                        <p class="task__tag">{{ task["tag"] }}</p>
+                    {% endif %}
+
+                    <p class="task__status">Статус: {{ ["запланировано", "в процессе", "готово"][task["condition"]] }}</p>
+
+                    {% if task["duration"] %}
+                        <div class="task__deadline">
+                            <span>До дедлайна: </span>
+                            <span class="time-to-deadline" 
+                                data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
+                                data-duration="{{ task['duration'] }}"></span>
+                        </div>
+                    {% else %}
+                        <p class="task__description no-description">Нет описания</p>
+                    {% endif %}
+
+                </a>
             {% endfor %}
-        {% endfor %}
+        </div>
     </div>
     
     <div class="rightside-menu">
@@ -63,3 +79,7 @@
 </main>
 
 {% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='js/deadline-timer.js') }}"></script>
+{% endblock script %}

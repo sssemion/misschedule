@@ -120,6 +120,6 @@ def project_page(project_name):
                 tasks['tasks'][item]['task']['worker_id'] = user['username']
         chats = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats', headers=headers).json()
         print(chats)
-        return render_template('project-main-page.html', project=project["project"], users=users["users"], tasks=tasks,
+        return render_template('project-main-page.html', project=project["project"], users=users["users"], tasks=tasks["tasks"],
                                chats=chats["chats"], team_leader=team_leader)
     return redirect('/')
