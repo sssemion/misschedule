@@ -30,6 +30,14 @@ def transparentize(color, value):
     return f"rgba({', '.join(rgb)}, {1 - value})"
 
 
+def sort_tasks_by_status(tasks):
+    planned = list(filter(lambda x: x['task']['condition'] == 0, tasks))
+    in_progress = list(filter(lambda x: x['task']['condition'] == 1, tasks))
+    finished = list(filter(lambda x: x['task']['condition'] == 2, tasks))
+    return planned, in_progress, finished
+
+
 app.jinja_env.filters['time_to_deadline'] = time_to_deadline
 app.jinja_env.filters['project_title_by_id'] = project_title_by_id
 app.jinja_env.filters['transparentize'] = transparentize
+app.jinja_env.filters['sort_tasks_by_status'] = sort_tasks_by_status

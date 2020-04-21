@@ -57,57 +57,69 @@
       bottom: -8px;
       left: 0;
       height: 1px;
-      width: 75%;
+      width: 66%;
       background-color: #34bacc; }
   .tasks .tasks__inner {
     display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: center;
-    margin: 0; }
-    .tasks .tasks__inner .task {
-      width: calc(100% - 34px);
-      margin: 16px 0;
-      padding: 8px 16px;
-      border: 1px solid #acacac;
-      box-shadow: 6px 6px 8px 0 rgba(0, 0, 0, 0.25);
-      border-radius: 10px;
-      text-decoration: none;
-      color: #000;
-      transition: transform 0.5s ease;
-      cursor: pointer; }
-      .tasks .tasks__inner .task .no-description {
-        color: #818181; }
-      .tasks .tasks__inner .task__description {
-        position: relative;
-        margin-bottom: 16px; }
-        .tasks .tasks__inner .task__description::after {
-          content: "";
-          position: absolute;
-          bottom: -8px;
-          left: 0;
-          height: 1px;
-          width: 75%;
-          background-color: #34bacc;
-          mix-blend-mode: multiply; }
-      .tasks .tasks__inner .task__tag {
-        position: relative;
-        display: inline-block;
+    justify-content: space-between; }
+    .tasks .tasks__inner .tasks__column {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      margin: 0;
+      width: 32%; }
+      .tasks .tasks__inner .tasks__column .task {
+        width: calc(100% - 34px);
+        margin: 16px 0;
+        padding: 8px 16px;
         border: 1px solid #acacac;
+        box-shadow: 6px 6px 8px 0 rgba(0, 0, 0, 0.25);
         border-radius: 10px;
-        padding: 2px 8px 2px 32px;
-        margin: 4px 0;
-        background-color: rgba(255, 255, 255, 0.5); }
-        .tasks .tasks__inner .task__tag::before {
-          content: "";
-          position: absolute;
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background-color: #aaaaaa;
-          left: 8px;
-          top: 6px; }
-      .tasks .tasks__inner .task__deadline .time-to-deadline.close-to-passing {
-        color: #d11f00; }
-      .tasks .tasks__inner .task:hover {
-        transform: scale(1.1); }
+        text-decoration: none;
+        color: #000;
+        transition: transform 0.5s ease;
+        cursor: pointer; }
+        .tasks .tasks__inner .tasks__column .task .no-description {
+          color: #818181; }
+        .tasks .tasks__inner .tasks__column .task__title {
+          overflow: hidden;
+          text-overflow: ellipsis; }
+        .tasks .tasks__inner .tasks__column .task__description {
+          position: relative;
+          margin-bottom: 16px; }
+          .tasks .tasks__inner .tasks__column .task__description::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            height: 1px;
+            width: 75%;
+            background-color: #34bacc;
+            mix-blend-mode: multiply; }
+        .tasks .tasks__inner .tasks__column .task__tag {
+          position: relative;
+          display: inline-block;
+          border: 1px solid #acacac;
+          border-radius: 10px;
+          padding: 2px 8px 2px 32px;
+          margin: 4px 0;
+          background-color: rgba(255, 255, 255, 0.5); }
+          .tasks .tasks__inner .tasks__column .task__tag::before {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #aaaaaa;
+            left: 8px;
+            top: 6px; }
+        .tasks .tasks__inner .tasks__column .task__deadline .time-to-deadline.close-to-passing {
+          color: #d11f00; }
+        .tasks .tasks__inner .tasks__column .task:hover {
+          transform: scale(1.1); }
+        .tasks .tasks__inner .tasks__column .task.new-task {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center; }

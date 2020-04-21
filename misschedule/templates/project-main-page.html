@@ -35,37 +35,99 @@
     <div class="tasks">
         <h1>Задачи</h1>
         <div class="tasks__inner">
-            {% for task_data in tasks %}
-                {% set task = task_data["task"] %}
-                {% set items = task_data["items"] %}
-                <a class="task" style="background-color: {{ task['color'] | transparentize(0.25) }}">
-                    <h2 class="task__title">{{ task["title"] }}</h5>
-                    {% if task["description"] %}
-                        <p class="task__description">{{ task["description"] }}</p>
-                    {% else %}
-                        <p class="task__description no-description">Нет описания</p>
-                    {% endif %}
-                    <!-- Line -->
+            {% set planned, in_progress, finished = tasks | sort_tasks_by_status %}
+            <div class="tasks__column planned">
+                <h2 class="column-heading planned">Запланировано</h2>
+                {% for task_data in planned %}
+                    {% set task = task_data["task"] %}
+                    {% set items = task_data["items"] %}
+                    <a class="task planned" style="background-color: {{ task['color'] | transparentize(0.25) }}">
+                        <h2 class="task__title">{{ task["title"] }}</h2>
+                        {% if task["description"] %}
+                            <p class="task__description">{{ task["description"] }}</p>
+                        {% else %}
+                            <p class="task__description no-description">Нет описания</p>
+                        {% endif %}
+                        <!-- Line -->
 
-                    {% if task["tag"] %}
-                        <p class="task__tag">{{ task["tag"] }}</p>
-                    {% endif %}
+                        {% if task["tag"] %}
+                            <p class="task__tag">{{ task["tag"] }}</p>
+                        {% endif %}
 
-                    <p class="task__status">Статус: {{ ["запланировано", "в процессе", "готово"][task["condition"]] }}</p>
+                        {% if task["duration"] %}
+                            <div class="task__deadline">
+                                <span>До дедлайна: </span>
+                                <span class="time-to-deadline" 
+                                    data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
+                                    data-duration="{{ task['duration'] }}"></span>
+                            </div>
+                        {% endif %}
 
-                    {% if task["duration"] %}
-                        <div class="task__deadline">
-                            <span>До дедлайна: </span>
-                            <span class="time-to-deadline" 
-                                data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
-                                data-duration="{{ task['duration'] }}"></span>
-                        </div>
-                    {% else %}
-                        <p class="task__description no-description">Нет описания</p>
-                    {% endif %}
-
+                    </a>
+                {% endfor %}
+                <a class="task new-task">
+                    <h3>Добавить</h3>
+                    <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <title>Layer 1</title>
+                            <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
+                            <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
+                            <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
+                        </g>
+                    </svg>
                 </a>
-            {% endfor %}
+            </div>
+
+            <div class="tasks__column in-progress">
+                <h2 class="column-heading in-progress">В процессе</h2>
+                {% for task_data in in_progress %}
+                    {% set task = task_data["task"] %}
+                    {% set items = task_data["items"] %}
+                    <a class="task in-progress" style="background-color: {{ task['color'] | transparentize(0.25) }}">
+                        <h2 class="task__title">{{ task["title"] }}</h2>
+                        {% if task["description"] %}
+                            <p class="task__description">{{ task["description"] }}</p>
+                        {% else %}
+                            <p class="task__description no-description">Нет описания</p>
+                        {% endif %}
+                        <!-- Line -->
+
+                        {% if task["tag"] %}
+                            <p class="task__tag">{{ task["tag"] }}</p>
+                        {% endif %}
+
+                        {% if task["duration"] %}
+                            <div class="task__deadline">
+                                <span>До дедлайна: </span>
+                                <span class="time-to-deadline" 
+                                    data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
+                                    data-duration="{{ task['duration'] }}"></span>
+                            </div>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <div class="tasks__column finished">
+                <h2 class="column-heading finished">Завершено</h2>
+                {% for task_data in finished %}
+                    {% set task = task_data["task"] %}
+                    {% set items = task_data["items"] %}
+                    <a class="task finished" style="background-color: {{ task['color'] | transparentize(0.25) }}">
+                        <h2 class="task__title">{{ task["title"] }}</h2>
+                        {% if task["description"] %}
+                            <p class="task__description">{{ task["description"] }}</p>
+                        {% else %}
+                            <p class="task__description no-description">Нет описания</p>
+                        {% endif %}
+                        <!-- Line -->
+
+                        {% if task["tag"] %}
+                            <p class="task__tag">{{ task["tag"] }}</p>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
         </div>
     </div>
     

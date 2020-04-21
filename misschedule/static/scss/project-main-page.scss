@@ -92,85 +92,102 @@
             bottom: -8px;
             left: 0;
             height: 1px;
-            width: 75%;
+            width: 66%;
             background-color: $main_blue;
         }
     }
     
     .tasks__inner {
         display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        align-items: center;
+        justify-content: space-between;
 
-        margin: 0;
+        .tasks__column {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: center;
+            margin: 0;
+            width: 32%;
 
-        .task {
-            width: calc(100% - 34px);
-            margin: 16px 0;
-            padding: 8px 16px;
-            border: 1px solid #acacac;
-            box-shadow: 6px 6px 8px 0 transparentize($color: #000, $amount: 0.75);
-            border-radius: 10px;;
-
-            text-decoration: none;
-            color: #000;
-
-            transition: transform 0.5s ease;
-
-            cursor: pointer;
-
-            .no-description {
-                color: #818181;
-            }
-
-            &__description {
-                position: relative;
-                margin-bottom: 16px;
-
-                &::after {
-                    content: "";
-                    position: absolute;
-                    bottom: -8px;
-                    left: 0;
-                    height: 1px;
-                    width: 75%;
-                    background-color: $main_blue;
-                    mix-blend-mode: multiply;
-                }
-            }
-
-            &__tag {
-                position: relative;
-                display: inline-block;
+            .task {
+                width: calc(100% - 34px);
+                margin: 16px 0;
+                padding: 8px 16px;
                 border: 1px solid #acacac;
-                border-radius: 10px;
-                padding: 2px 8px 2px 32px;
-                margin: 4px 0;
-                background-color: transparentize($color: #fff, $amount: 0.5);
+                box-shadow: 6px 6px 8px 0 transparentize($color: #000, $amount: 0.75);
+                border-radius: 10px;;
 
-                &::before {
-                    content: "";
-                    position: absolute;
-                    width: 12px;
-                    height: 12px;
-                    border-radius: 50%;
-                    background-color: #aaaaaa;
-                    left: 8px;
-                    top: 6px;
+                text-decoration: none;
+                color: #000;
+
+                transition: transform 0.5s ease;
+
+                cursor: pointer;
+
+                .no-description {
+                    color: #818181;
                 }
-            }
 
-            &__deadline {
-                .time-to-deadline {
-                    &.close-to-passing {
-                        color: #d11f00;
+                &__title {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                &__description {
+                    position: relative;
+                    margin-bottom: 16px;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        bottom: -8px;
+                        left: 0;
+                        height: 1px;
+                        width: 75%;
+                        background-color: $main_blue;
+                        mix-blend-mode: multiply;
                     }
                 }
-            }
 
-            &:hover {
-                transform: scale(1.1);
+                &__tag {
+                    position: relative;
+                    display: inline-block;
+                    border: 1px solid #acacac;
+                    border-radius: 10px;
+                    padding: 2px 8px 2px 32px;
+                    margin: 4px 0;
+                    background-color: transparentize($color: #fff, $amount: 0.5);
+
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        width: 12px;
+                        height: 12px;
+                        border-radius: 50%;
+                        background-color: #aaaaaa;
+                        left: 8px;
+                        top: 6px;
+                    }
+                }
+
+                &__deadline {
+                    .time-to-deadline {
+                        &.close-to-passing {
+                            color: #d11f00;
+                        }
+                    }
+                }
+
+                &:hover {
+                    transform: scale(1.1);
+                }
+
+                &.new-task {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
             }
         }
     }
