@@ -37,7 +37,24 @@ def sort_tasks_by_status(tasks):
     return planned, in_progress, finished
 
 
+def format_date(date, offset=0):
+    print(date)
+    return str(datetime.datetime.fromisoformat(date) + datetime.timedelta(seconds=offset))
+
+
+def user_by_id(user_id):
+    token = session.get("token", None)
+    if token is None:
+        return ""
+
+    headers = {"Authorization": f"Bearer {token}"}
+    user = requests.get(f'http://127.0.0.1:5000/api/users/{user_id}', headers=headers).json()
+    return user["user"]
+
+
 app.jinja_env.filters['time_to_deadline'] = time_to_deadline
 app.jinja_env.filters['project_title_by_id'] = project_title_by_id
 app.jinja_env.filters['transparentize'] = transparentize
 app.jinja_env.filters['sort_tasks_by_status'] = sort_tasks_by_status
+app.jinja_env.filters['format_date'] = format_date
+app.jinja_env.filters['user_by_id'] = user_by_id

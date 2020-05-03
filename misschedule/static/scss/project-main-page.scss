@@ -50,6 +50,8 @@
             padding: 8px 16px;
             border: 1px solid #acacac;
             border-radius: 10px;
+            text-overflow: ellipsis;
+            overflow: hidden;
 
             &__name {
                 display: inline;
@@ -108,87 +110,154 @@
             align-items: center;
             margin: 0;
             width: 32%;
+        }
+    }
+}
 
-            .task {
-                width: calc(100% - 34px);
-                margin: 16px 0;
-                padding: 8px 16px;
-                border: 1px solid #acacac;
-                box-shadow: 6px 6px 8px 0 transparentize($color: #000, $amount: 0.75);
-                border-radius: 10px;;
+.task, .popup-task {
+    width: calc(100% - 34px);
+    margin: 16px 0;
+    padding: 8px 16px;
+    border: 1px solid #acacac;
+    box-shadow: 6px 6px 8px 0 transparentize($color: #000, $amount: 0.75);
+    border-radius: 10px;;
 
-                text-decoration: none;
-                color: #000;
+    text-decoration: none;
+    color: #000;
 
-                transition: transform 0.5s ease;
+    transition: transform 0.5s ease;
 
-                cursor: pointer;
+    cursor: pointer;
 
-                .no-description {
-                    color: #818181;
-                }
+    .no-description {
+        color: #818181;
+    }
 
-                &__title {
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
+    &__title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-                &__description {
-                    position: relative;
-                    margin-bottom: 16px;
+    &__description {
+        position: relative;
+        margin-bottom: 16px;
 
-                    &::after {
-                        content: "";
-                        position: absolute;
-                        bottom: -8px;
-                        left: 0;
-                        height: 1px;
-                        width: 75%;
-                        background-color: $main_blue;
-                        mix-blend-mode: multiply;
-                    }
-                }
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            height: 1px;
+            width: 75%;
+            background-color: $main_blue;
+            mix-blend-mode: multiply;
+        }
+    }
 
-                &__tag {
-                    position: relative;
-                    display: inline-block;
-                    border: 1px solid #acacac;
-                    border-radius: 10px;
-                    padding: 2px 8px 2px 32px;
-                    margin: 4px 0;
-                    background-color: transparentize($color: #fff, $amount: 0.5);
+    &__tag {
+        position: relative;
+        display: inline-block;
+        border: 1px solid #acacac;
+        border-radius: 10px;
+        padding: 2px 8px 2px 32px;
+        margin: 4px 0;
+        background-color: transparentize($color: #fff, $amount: 0.5);
 
-                    &::before {
-                        content: "";
-                        position: absolute;
-                        width: 12px;
-                        height: 12px;
-                        border-radius: 50%;
-                        background-color: #aaaaaa;
-                        left: 8px;
-                        top: 6px;
-                    }
-                }
+        &::before {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #aaaaaa;
+            left: 8px;
+            top: 6px;
+        }
+    }
 
-                &__deadline {
-                    .time-to-deadline {
-                        &.close-to-passing {
-                            color: #d11f00;
-                        }
-                    }
-                }
-
-                &:hover {
-                    transform: scale(1.1);
-                }
-
-                &.new-task {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                }
+    &__deadline {
+        .time-to-deadline {
+            &.close-to-passing {
+                color: #d11f00;
             }
+        }
+    }
+
+    &:hover {
+        transform: scale(1.1);
+    }
+
+    &.new-task {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+body {
+    overflow-y: scroll;
+    &.scroll-locked {
+        overflow-y: hidden;
+    }
+}
+
+.popup-task-wrapper {
+    display: none;
+    background-color: transparentize($color: #000, $amount: 0.75);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    width: 100vw;
+    height: 100vh;
+
+    &.active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup-task {
+        width: unset;
+        position: relative;
+        padding: 16px 48px 16px 16px;
+        box-shadow: 10px 10px 12px 0 transparentize($color: #000, $amount: 0.75);
+        
+        cursor: default;
+
+        &:hover {
+            transform: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 24px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+            &:hover {
+                transform: rotate(180deg);
+            }
+        }
+
+        &__creator, &__worker {
+            display: inline-block;
+            text-decoration: none;
+            color: darken($color: $main_blue, $amount: 10);
+            mix-blend-mode: darken;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        &__creation-date, &__deadline-date {
+            display: inline-block;
         }
     }
 }

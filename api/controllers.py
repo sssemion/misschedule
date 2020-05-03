@@ -206,8 +206,8 @@ def get_project_tasks(project_id):
         {'tasks': [
             {
                 'task': task.to_dict(only=(
-                    "id", "project_id", "title", "description", "duration", "worker_id", "tag", "color",
-                    "condition", "image", "date")),
+                    "id", "project_id", "title", "description", "duration", "worker_id", "creator_id",
+                    "tag", "color", "condition", "image", "date")),
                 'items': [item.to_dict(
                     only=("id", "title", "description", "completed", "completed_by_id", "completion_date")) for
                     item in task.items]

@@ -1,4 +1,5 @@
 {% set style_file = url_for('static', filename='css/project-main-page.css') %}
+{% set script_file = url_for('static', filename='js/project-main-page.js') %}
 {% set jquery = true %}
 
 {% set title = team_leader['username'] + " | " + project['title'] %}
@@ -41,7 +42,19 @@
                 {% for task_data in planned %}
                     {% set task = task_data["task"] %}
                     {% set items = task_data["items"] %}
-                    <a class="task planned" style="background-color: {{ task['color'] | transparentize(0.25) }}">
+                    {% set creator = task["creator_id"] | user_by_id %}
+                    {% if task["worker_id"] %}
+                        {% set worker = task["worker_id"] | user_by_id %}                    
+                    {% endif %}
+                    {% set bgcolor = task["color"] | transparentize(0.25) %}
+                    <a class="task planned" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
+                        data-creation-date-formatted="{{ task['date'] | format_date }}"
+                        data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
+                        data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
+                        {% if worker %}
+                            data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
+                        {% endif %}
+                        >
                         <h2 class="task__title">{{ task["title"] }}</h2>
                         {% if task["description"] %}
                             <p class="task__description">{{ task["description"] }}</p>
@@ -83,7 +96,19 @@
                 {% for task_data in in_progress %}
                     {% set task = task_data["task"] %}
                     {% set items = task_data["items"] %}
-                    <a class="task in-progress" style="background-color: {{ task['color'] | transparentize(0.25) }}">
+                    {% set creator = task["creator_id"] | user_by_id %}
+                    {% if task["worker_id"] %}
+                        {% set worker = task["worker_id"] | user_by_id %}                    
+                    {% endif %}
+                    {% set bgcolor = task["color"] | transparentize(0.25) %}
+                    <a class="task in-progress" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
+                        data-creation-date-formatted="{{ task['date'] | format_date }}"
+                        data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
+                        data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
+                        {% if worker %}
+                            data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
+                        {% endif %}
+                        >
                         <h2 class="task__title">{{ task["title"] }}</h2>
                         {% if task["description"] %}
                             <p class="task__description">{{ task["description"] }}</p>
@@ -113,7 +138,19 @@
                 {% for task_data in finished %}
                     {% set task = task_data["task"] %}
                     {% set items = task_data["items"] %}
-                    <a class="task finished" style="background-color: {{ task['color'] | transparentize(0.25) }}">
+                    {% set creator = task["creator_id"] | user_by_id %}
+                    {% if task["worker_id"] %}
+                        {% set worker = task["worker_id"] | user_by_id %}                    
+                    {% endif %}
+                    {% set bgcolor = task["color"] | transparentize(0.25) %}
+                    <a class="task finished" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
+                        data-creation-date-formatted="{{ task['date'] | format_date }}"
+                        data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
+                        data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
+                        {% if worker %}
+                            data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
+                        {% endif %}
+                        >
                         <h2 class="task__title">{{ task["title"] }}</h2>
                         {% if task["description"] %}
                             <p class="task__description">{{ task["description"] }}</p>
@@ -139,6 +176,23 @@
         </div>
     </div>
 </main>
+
+<div class="popup-task-wrapper">
+    <div class="popup-task">
+        <span class="close-btn">&#10006;</span>
+        <h2 class="popup-task__title"></h2>
+        <p class="popup-task__description"></p>
+        <!-- Line -->
+        <p class="popup-task__tag"></p><br>
+        <span>Создатель: </span><a class="popup-task__creator"></a><br>
+        <span>Ответственный: </span><a class="popup-task__worker"></a><br>
+        <span>Дата создания: </span><p class="popup-task__creation-date"></p><br>
+        <span>Дедлайн: </span><p class="popup-task__deadline-date"></p>
+        <div class="items">
+
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 

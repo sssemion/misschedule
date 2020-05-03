@@ -10,10 +10,12 @@ $(".time-to-deadline").each(function() {
         if (seconds < 0) {
             element.text("дедлайн прошел");
             element.attr("data-seconds", "-1");
-            sort_tasks_by_time();
-            if ($("#tasks__select")[0].value == "closer-to-deadline")
-                for (var i = 0; i < tasks.length; i++)
-                    $(tasks[tasks_time_order[i]]).css("order", i + 1);
+            try {
+                sort_tasks_by_time();
+                if ($("#tasks__select")[0].value == "closer-to-deadline")
+                    for (var i = 0; i < tasks.length; i++)
+                        $(tasks[tasks_time_order[i]]).css("order", i + 1);
+            } catch (e) {}
             clearInterval(intervalId);
         }
     }, 1000);

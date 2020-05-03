@@ -33,8 +33,8 @@ class TaskResource(Resource):
             abort(403, success=False)
         return jsonify({
             'task': task.to_dict(only=(
-                "project_id", "title", "description", "duration", "worker_id", "tag", "color",
-                "condition", "image", "date")),
+                "project_id", "title", "description", "duration", "worker_id", "creator_id", "tag",
+                "color", "condition", "image", "date")),
             'items': [item.to_dict(
                 only=("title", "description", "completed", "completed_by_id", "completion_date")) for
                 item in task.items]
@@ -76,8 +76,8 @@ class TaskListResource(Resource):
             'tasks': [
                 {
                     'task': task.to_dict(only=(
-                        "project_id", "title", "description", "duration", "worker_id", "tag",
-                        "color",
+                        "project_id", "title", "description", "duration", "worker_id", "creator_id",
+                        "tag", "color",
                         "condition", "image", "date")),
                     'items': [item.to_dict(only=(
                         "title", "description", "completed", "completed_by_id", "completion_date"))
