@@ -1,7 +1,7 @@
 from base64 import b64encode
 
 import requests
-from flask import render_template, make_response, session
+from flask import render_template, make_response, session, request, jsonify
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm, ProjectForm
@@ -107,13 +107,20 @@ def project_page(project_name):
         users = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_users', headers=headers).json()
         team_leader = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_team_leader', headers=headers).json()
         tasks = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_tasks', headers=headers).json()
-        # for item in range(len(tasks['tasks'])):
-        #     user = requests.get(
-        #         f'http://127.0.0.1:5000/api/users/{tasks["tasks"][item]["task"]["worker_id"]}')
-        #     user = user.json()['user']
-        #     if user.get('success', True):
-        #         tasks['tasks'][item]['task']['worker_id'] = user['username']
+        from pprint import pprint
+        pprint(tasks)
         chats = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats', headers=headers).json()
         return render_template('project-main-page.html', project=project["project"], users=users["users"], tasks=tasks["tasks"],
                                chats=chats["chats"], team_leader=team_leader)
     return redirect('/')
+
+
+@app.route('/ajax/complete_item', methods=['POST'])
+def complete_item():
+    token = session.get("token")
+    data = request.get_json()
+    headers = {"Authorization": f"Bearer {token}"}
+    r = {"success": True}
+    for item_id in data["item_ids"]:
+        r = requests.post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/complete_item/{item_id}', headers=headers).json()
+    return jsonify(r)

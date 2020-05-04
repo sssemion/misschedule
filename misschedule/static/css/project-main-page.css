@@ -142,14 +142,15 @@ body {
   width: 100vw;
   height: 100vh; }
   .popup-task-wrapper.active {
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center; }
   .popup-task-wrapper .popup-task {
     width: unset;
+    max-width: 75%;
     position: relative;
     padding: 16px 48px 16px 16px;
-    box-shadow: 10px 10px 12px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 12px 12px 10px 0 rgba(0, 0, 0, 0.25);
     cursor: default; }
     .popup-task-wrapper .popup-task:hover {
       transform: none; }
@@ -171,3 +172,31 @@ body {
         text-decoration: underline; }
     .popup-task-wrapper .popup-task__creation-date, .popup-task-wrapper .popup-task__deadline-date {
       display: inline-block; }
+    .popup-task-wrapper .popup-task__items-title {
+      margin-top: 8px; }
+    .popup-task-wrapper .popup-task__items .item {
+      position: relative;
+      display: flex;
+      align-items: center; }
+      .popup-task-wrapper .popup-task__items .item__completed {
+        margin-right: 16px;
+        width: 18px;
+        height: 18px; }
+    .popup-task-wrapper .popup-task__items .item:not(:last-child) {
+      margin-bottom: 8px; }
+    .popup-task-wrapper .popup-task__items .item:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 75%;
+      height: 1px;
+      background-color: #acacac;
+      mix-blend-mode: multiply; }
+    .popup-task-wrapper .popup-task__buttons {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end; }
+    .popup-task-wrapper .popup-task__send-button {
+      background-color: #34bacc;
+      color: #fff; }

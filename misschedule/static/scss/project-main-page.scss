@@ -214,16 +214,17 @@ body {
     height: 100vh;
 
     &.active {
-        display: flex;
+        display: flex !important;
         justify-content: center;
         align-items: center;
     }
 
     .popup-task {
         width: unset;
+        max-width: 75%;
         position: relative;
         padding: 16px 48px 16px 16px;
-        box-shadow: 10px 10px 12px 0 transparentize($color: #000, $amount: 0.75);
+        box-shadow: 12px 12px 10px 0 transparentize($color: #000, $amount: 0.75);
         
         cursor: default;
 
@@ -258,6 +259,51 @@ body {
 
         &__creation-date, &__deadline-date {
             display: inline-block;
+        }
+
+        &__items-title {
+            margin-top: 8px;
+        }
+
+        &__items {
+            .item {
+                position: relative;
+                display: flex;
+                align-items: center;
+
+                &__completed {
+                    margin-right: 16px;
+                    width: 18px;
+                    height: 18px;
+                    
+                }
+            }
+            
+            .item:not(:last-child) {
+                margin-bottom: 8px;
+            }
+
+            .item:not(:last-child)::after {
+                content: "";
+                position: absolute;
+                bottom: -4px;
+                left: 0;
+                width: 75%;
+                height: 1px;
+                background-color: #acacac;
+                mix-blend-mode: multiply;
+            }
+        }
+
+        &__buttons {
+            margin-top: 8px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        &__send-button {
+            background-color: $main_blue;
+            color: #fff;
         }
     }
 }

@@ -162,7 +162,8 @@ def set_task_items(task_id, item_id):
     item.completed_by_id = g.current_user.id
     item.completion_date = datetime.datetime.now()
     session.commit()
-    return jsonify({'success': True})
+    return jsonify({'success': True, "completed_by_id": item.completed_by_id,
+                    "completion_date": session.query(TaskItem).get(item_id).completion_date})
 
 
 @app.route('/api/users/get_project/<string:project_name>', methods=['GET'])
@@ -210,7 +211,8 @@ def get_project_tasks(project_id):
                     "tag", "color", "condition", "image", "date")),
                 'items': [item.to_dict(
                     only=("id", "title", "description", "completed", "completed_by_id", "completion_date")) for
-                    item in task.items]
+                    item in task.items],
+                'canYouEdit': g.current_user in (task.worker, task.creator),
             } for task in tasks]})
 
 

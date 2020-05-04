@@ -38,7 +38,6 @@ def sort_tasks_by_status(tasks):
 
 
 def format_date(date, offset=0):
-    print(date)
     return str(datetime.datetime.fromisoformat(date) + datetime.timedelta(seconds=offset))
 
 
