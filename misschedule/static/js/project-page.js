@@ -4,7 +4,7 @@ $(document).ready(function() {
 });
 
 // PROJECTS
-var projects = $(".project");
+var projects = $(".project:not(.new-project)");
 var projects_order = [];
 for (var i = 0; i < projects.length; i++)
     projects_order.push(i);

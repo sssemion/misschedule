@@ -56,6 +56,9 @@ body {
     text-decoration: none;
     color: #000;
     transition: transform 0.5s ease; }
+    .projects__inner .project *, .projects__inner .task *, .tasks__inner .project *, .tasks__inner .task * {
+      text-overflow: ellipsis;
+      overflow: hidden; }
     .projects__inner .project .no-description, .projects__inner .task .no-description, .tasks__inner .project .no-description, .tasks__inner .task .no-description {
       color: #818181; }
     .projects__inner .project__title, .projects__inner .task__title, .tasks__inner .project__title, .tasks__inner .task__title {
@@ -74,6 +77,11 @@ body {
         background-color: #34bacc; }
     .projects__inner .project:hover, .projects__inner .task:hover, .tasks__inner .project:hover, .tasks__inner .task:hover {
       transform: scale(1.1); }
+    .projects__inner .project.new-project, .projects__inner .task.new-project, .tasks__inner .project.new-project, .tasks__inner .task.new-project {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; }
     @media (max-width: 1366px) {
       .projects__inner .project, .projects__inner .task, .tasks__inner .project, .tasks__inner .task {
         width: 100%; } }

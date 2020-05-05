@@ -85,6 +85,11 @@ body {
 
         transition: transform 0.5s ease;
 
+        * {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
         .no-description {
             color: #818181;
         }
@@ -111,6 +116,13 @@ body {
 
         &:hover {
             transform: scale(1.1);
+        }
+
+        &.new-project {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         @media (max-width: 1366px) {

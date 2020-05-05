@@ -37,6 +37,17 @@
                 </select>
             </div>
             <div class="projects__inner">
+                <a href="/project" class="project new-project">
+                    <h3>Добавить</h3>
+                    <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <title>Layer 1</title>
+                            <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
+                            <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
+                            <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
+                        </g>
+                    </svg>
+                </a>
                 {% for project_data in projects %}
                     {% set project = project_data["project"] %}
                     {% set users = project_data["users"] %}
