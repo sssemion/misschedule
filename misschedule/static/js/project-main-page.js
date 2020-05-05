@@ -1,10 +1,11 @@
-var popup = $($(".popup-task-wrapper")[0]);
+// Всплывающее окно с детальной информацией
+var popup = $($(".popup-task-wrapper.detail-info")[0]);
 var clickedTask = null;
 
 $(".task:not(.task.new-task)").on("click", function() {
     // При клике на какую-либо из задач, появляется всплывающее окно
 
-    clickedTask = $(this)
+    clickedTask = $(this);
 
     // Данные в всплывающем окне формируются на основе тех, что лежат в элементе самой задачи
     // и из атрибутов "data-"
@@ -95,5 +96,22 @@ $(".popup-task__send-button").on("click", function() {
                 }
             });
         }
+    });
+});
+
+
+// Форма для создания задачи
+var newTask = $(".popup-task-wrapper.new-task");
+
+$(".task.new-task").on("click", function() {
+    newTask.fadeIn(500);
+    newTask.addClass("active");
+    $("body").addClass("scroll-locked");
+});
+
+$(".task-form .close-btn").on("click", function() {
+    newTask.fadeOut(500, function() {    
+        newTask.removeClass("active");
+        $("body").removeClass("scroll-locked");
     });
 });

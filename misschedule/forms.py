@@ -1,5 +1,6 @@
-from wtforms import PasswordField, StringField, SubmitField
-from wtforms.fields.html5 import EmailField
+from wtforms import PasswordField, StringField, SubmitField, SelectField
+from wtforms.fields.html5 import EmailField, DateTimeLocalField
+from wtforms.widgets.html5 import ColorInput
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
 
@@ -29,13 +30,13 @@ class RegisterForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
-        defualt = "input-str form-control"
-        self.email.render_kw["class"] = defualt
-        self.username.render_kw["class"] = defualt
-        self.first_name.render_kw["class"] = defualt
-        self.last_name.render_kw["class"] = defualt
-        self.password.render_kw["class"] = defualt
-        self.password_again.render_kw["class"] = defualt
+        default = "input-str form-control"
+        self.email.render_kw["class"] = default
+        self.username.render_kw["class"] = default
+        self.first_name.render_kw["class"] = default
+        self.last_name.render_kw["class"] = default
+        self.password.render_kw["class"] = default
+        self.password_again.render_kw["class"] = default
 
 
 class LoginForm(FlaskForm):
@@ -66,3 +67,18 @@ class ProjectForm(FlaskForm):
                               render_kw={"class": "input-str form-control", "required": True})
 
     submit = SubmitField('Создать')
+
+
+class TaskForm(FlaskForm):
+    title = StringField('Название', validators=[DataRequired()],
+                        render_kw={"class": "input-str", "required": True})
+    description = StringField('Описание', render_kw={"class": "input-str"})
+    deadline = DateTimeLocalField('Дата дедлайна', format='%Y-%m-%dT%H:%M', validators=[DataRequired()],
+                                  render_kw={"class": "input-str", "required": True})
+    worker = SelectField('Ответственный за работу', choices=[('1', 'aba'), ('2', 'abacaba'), ('3', 'abacabadabacaba')],
+                         render_kw={"class": "input-str"})
+    tag = StringField('Тег', render_kw={"class": "input-str"})
+    color_field = StringField('Цвет', render_kw={"class": "input-str"})
+    color_input = ColorInput()
+
+    submit = SubmitField("Отправить")

@@ -1,6 +1,7 @@
 {% set style_file = url_for('static', filename='css/project-main-page.css') %}
 {% set script_file = url_for('static', filename='js/project-main-page.js') %}
 {% set jquery = true %}
+{% set bootstrap = false %}
 
 {% set title = team_leader['username'] + " | " + project['title'] %}
 {% extends "base.html" %}
@@ -254,7 +255,7 @@
     </div>
 </main>
 
-<div class="popup-task-wrapper">
+<div class="popup-task-wrapper detail-info">
     <div class="popup-task">
         <span class="close-btn">&#10006;</span>
         <h2 class="popup-task__title"></h2>
@@ -271,6 +272,47 @@
             <button class="button popup-task__send-button">Изменить</button>
         </div>
     </div>
+</div>
+
+<div class="popup-task-wrapper new-task{% if start_with_form %} active{% endif %}">
+    <form action="" class="task-form" method="POST">
+        <span class="close-btn">&#10006;</span>
+        {{ form.hidden_tag() }}
+        <div class="form-item">
+            {{ form.title.label }}
+            {{ form.title() }}
+            {% if task_already_exists %}
+                <p class="error-message">Задача с таким названием уже существует</p>
+            {% endif %}
+        </div>
+
+        <div class="form-item">
+            {{ form.description.label }}
+            {{ form.description() }}
+        </div>
+
+        <div class="form-item">
+            {{ form.deadline.label }}
+            {{ form.deadline() }}
+        </div>
+
+        <div class="form-item">
+            {{ form.worker.label }}
+            {{ form.worker() }}
+        </div>
+
+        <div class="form-item">
+            {{ form.tag.label }}
+            {{ form.tag() }}
+        </div>
+
+        <div class="form-item">
+            {{ form.color_field.label }}
+            {{ form.color_input(form.color_field, class="input-str color-input") }}
+        </div>
+
+        {{ form.submit(class="button") }}
+    </form>
 </div>
 
 {% endblock %}

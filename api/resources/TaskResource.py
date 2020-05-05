@@ -112,8 +112,9 @@ class TaskListResource(Resource):
             image=args['image'],
             date=datetime.datetime.now()
         )
-        for title, description in args['items'].items():
-            task.items.append(TaskItem(title=title, description=description))
+        if args['items']:
+            for title, description in args['items'].items():
+                task.items.append(TaskItem(title=title, description=description))
         session.add(task)
         session.commit()
         return jsonify({'success': True})

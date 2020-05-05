@@ -41,7 +41,7 @@
         {% endif %}
     </title>
 </head>
-<body>
+<body {% if start_with_form %} classs="scroll-locked"{% endif %}>
     <header class="header">
         <a class="logo" href="/">
             <img src="/static/img/logo64.png">
