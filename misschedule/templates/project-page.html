@@ -97,7 +97,7 @@
                     {% set items = task_data["items"] %}
                     <a class="task" href="/projects/{{ task['project_id'] }}"
                        style="background-color: {{ task['color'] | transparentize(0.25) }}">
-                        <h2 class="task__title">{{ task["title"] }}</h5>
+                        <h2 class="task__title">{{ task["title"] }}</h2>
                         {% if task["description"] %}
                             <p class="task__description">{{ task["description"] }}</p>
                         {% else %}
