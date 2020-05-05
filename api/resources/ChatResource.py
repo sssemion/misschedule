@@ -23,7 +23,6 @@ def abort_if_chat_not_found(func):
 
 def check_if_user_is_a_member(func):
     def new_func(self, chat_id):
-        print(list(map(lambda x: x.id, g.current_user.chats)))
         if chat_id not in map(lambda x: x.id, g.current_user.chats):
             abort(403, success=False)
         return func(self, chat_id)

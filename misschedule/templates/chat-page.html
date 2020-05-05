@@ -7,6 +7,7 @@
 
     </div>
     <div class="messages">
+
         {%if messages['messages']%}
         {%for message in messages['messages']%}
         <div class="message">
@@ -26,7 +27,7 @@
     </div>
 </div>
 <div class="chat-users">
-    <a class="user-add-button" href="/chat/{{chat['chat']['id']}}/add_user">Добавить нового пользователя</a>
+    <a class="user-add-button" href="/chat/{{chat['id']}}/add_user">Добавить нового пользователя</a>
     {%for item in chat['users']%}
     <div class="user">
         <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>

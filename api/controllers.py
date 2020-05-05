@@ -215,7 +215,7 @@ def get_chat_messages(chat_id):
     session = db_session.create_session()
     chat = session.query(Chat).get(chat_id)
     messages = chat.messages
-    messages = sorted(messages, key=lambda x: datetime.datetime.strptime(x.date, '%Y-%m-%j %H:%M:%S.%f'))
+    messages = sorted(messages, key=lambda x: x.date)
     return jsonify({
         'messages': [
             {'message': message.to_dict(only=('chat_id', 'user_id', 'message', 'date')),
