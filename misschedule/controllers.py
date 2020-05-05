@@ -130,8 +130,6 @@ def chat_page(chat_id):
     headers = {"Authorization": f"Bearer {token}"}
     chat = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}', headers=headers).json()
     messages = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}/get_messages', headers=headers).json()
-    print(chat)
-    print(messages)
     return render_template('chat-page.html', messages=messages, chat=chat)
 
 

@@ -1,4 +1,4 @@
-{%extends base.html%}
+{%extends "base.html"%}
 
 {%block content%}
 <div class="user-card">
@@ -11,7 +11,7 @@
         {%for project in projects%}
         {%set project_data = project['project']%}
         {%set team_leader = project['team_leader']%}
-        <a class="project" href="/{{team_leader['username']}}/{{ project['project_name'] }}">
+        <a class="project" href="/{{team_leader['username']}}/{{ project_data['project_name'] }}">
             <h5 class="project__title">{{ project_data["title"] }}</h5>
             <p class="project__name">{{ project_data["project_name"] }}</p>
             {% if project["description"] %}
