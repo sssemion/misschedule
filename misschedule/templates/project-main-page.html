@@ -14,13 +14,13 @@
                 <h2>{{ project['title'] }}</h2>
             </div>
             {% if project['description'] %}
-                <p class="project__description">{{  project['description']  }}</p>            
+                <p class="project__description">{{  project['description']  }}</p>
             {% else %}
                 <p class="project__description no-description">Нет описания</p>
             {% endif %}
             <span class="project__reg-date">Дата создания: {{ project['reg_date'] }}</span>
         </div>
-        
+
         <div class="users-panel">
             <h1>Пользователи</h1>
             {% for item in users %}
@@ -32,7 +32,7 @@
             {% endfor %}
         </div>
     </div>
-    
+
     <div class="tasks">
         <h1>Задачи</h1>
         <div class="tasks__inner">
@@ -44,7 +44,7 @@
                     {% set items = task_data["items"] %}
                     {% set creator = task["creator_id"] | user_by_id %}
                     {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}                    
+                        {% set worker = task["worker_id"] | user_by_id %}
                     {% endif %}
                     {% set bgcolor = task["color"] | transparentize(0.25) %}
                     <a class="task planned" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
@@ -70,7 +70,7 @@
                         {% if task["duration"] %}
                             <div class="task__deadline">
                                 <span>До дедлайна: </span>
-                                <span class="time-to-deadline" 
+                                <span class="time-to-deadline"
                                     data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
                                     data-duration="{{ task['duration'] }}"></span>
                             </div>
@@ -98,7 +98,7 @@
                     {% set items = task_data["items"] %}
                     {% set creator = task["creator_id"] | user_by_id %}
                     {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}                    
+                        {% set worker = task["worker_id"] | user_by_id %}
                     {% endif %}
                     {% set bgcolor = task["color"] | transparentize(0.25) %}
                     <a class="task in-progress" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
@@ -124,7 +124,7 @@
                         {% if task["duration"] %}
                             <div class="task__deadline">
                                 <span>До дедлайна: </span>
-                                <span class="time-to-deadline" 
+                                <span class="time-to-deadline"
                                     data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
                                     data-duration="{{ task['duration'] }}"></span>
                             </div>
@@ -140,7 +140,7 @@
                     {% set items = task_data["items"] %}
                     {% set creator = task["creator_id"] | user_by_id %}
                     {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}                    
+                        {% set worker = task["worker_id"] | user_by_id %}
                     {% endif %}
                     {% set bgcolor = task["color"] | transparentize(0.25) %}
                     <a class="task finished" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
@@ -167,11 +167,12 @@
             </div>
         </div>
     </div>
-    
+
     <div class="rightside-menu">
         <div class="chat-panel">
-            {% for chat in chats['chats'] %}
-                <button class="chat-button">{{  chat['title']  }}</button>
+            <a class="chat-creator" href="/chat/new">Создать новый чат</a>
+            {% for chat in chats %}
+                <a class="chat-button" href="/chat/{{chat['chat']['id']}}">{{  chat['chat']['title']  }}</a>
             {% endfor %}
         </div>
     </div>

@@ -169,8 +169,7 @@ def set_task_items(task_id, item_id):
 @token_auth.login_required
 def get_project(project_name):
     user = g.current_user
-    project = user.projects[
-        list(map(lambda p: p.project_name, user.projects)).index(project_name)]
+    project = user.projects[list(map(lambda p: p.project_name, user.projects)).index(project_name)]
     return jsonify({
         'project': project.to_dict(only=('id', 'team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
         'users': [item.id for item in project.users]})
@@ -190,6 +189,31 @@ def get_myself():
     user = g.current_user
     return jsonify({'user': user.to_dict(
         only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))})
+
+
+@app.route('/api/users/<username>/<project_name>')
+def get_username_project(username, project_name):
+    session = db_session.create_session()
+    user = session.query(User).filter(User.username == username).first()
+    project = user.projects[list(map(lambda p: p.project_name, user.projects)).index(project_name)]
+    return jsonify({
+        'project': project.to_dict(only=('id', 'team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
+        'users': [item.id for item in project.users]})
+
+
+@app.route('/api/chats/<int:chat_id>/get_messages')
+@token_auth.login_required
+def get_chat_messages(chat_id):
+    session = db_session.create_session()
+    chat = session.query(Chat).get(chat_id)
+    messages = chat.messages
+    messages = sorted(messages, key=lambda x: datetime.datetime.strptime(x.date, '%Y-%m-%j %H:%M:%S.%f'))
+    return jsonify({
+        'messages': [
+            {'message': message.to_dict(only=('chat_id', 'user_id', 'message', 'date')),
+             'user': message.user.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name'))}
+            for message in messages],
+    })
 
 
 @app.route('/api/projects/<int:project_id>/get_tasks')
@@ -256,5 +280,4 @@ def get_project_team_leader(project_id):
         abort(404, message=f"Project {project_id} not found")
     if project not in g.current_user.projects:
         abort(403)
-    users = project.users
     return jsonify(project.team_leader.to_dict(only=('email', 'username', 'first_name', 'last_name', 'reg_date')))

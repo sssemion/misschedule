@@ -98,22 +98,38 @@ def create_project():
     return render_template('create-project.html', form=form)
 
 
-@app.route('/project/<string:project_name>', methods=['GET', 'POST'])
-def project_page(project_name):
-    token = session['token']
+@app.route('/<string:username>/<string:project_name>', methods=['GET', 'POST'])
+def project_page(username, project_name):
+    token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
-    project = requests.get(f'http://127.0.0.1:5000/api/users/get_project/{project_name}', headers=headers).json()
+    project = requests.get(f'http://127.0.0.1:5000/api/users/{username}/{project_name}', headers=headers).json()
     if project.get('success', True):
-        users = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_users', headers=headers).json()
-        team_leader = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_team_leader', headers=headers).json()
-        tasks = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_tasks', headers=headers).json()
+        users = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_users',
+                             headers=headers).json()
+        team_leader = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_team_leader',
+                                   headers=headers).json()
+        tasks = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_tasks',
+                             headers=headers).json()
         # for item in range(len(tasks['tasks'])):
         #     user = requests.get(
         #         f'http://127.0.0.1:5000/api/users/{tasks["tasks"][item]["task"]["worker_id"]}')
         #     user = user.json()['user']
         #     if user.get('success', True):
         #         tasks['tasks'][item]['task']['worker_id'] = user['username']
-        chats = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats', headers=headers).json()
-        return render_template('project-main-page.html', project=project["project"], users=users["users"], tasks=tasks["tasks"],
+        chats = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats',
+                             headers=headers).json()
+        return render_template('project-main-page.html', project=project["project"], users=users["users"],
+                               tasks=tasks["tasks"],
                                chats=chats["chats"], team_leader=team_leader)
     return redirect('/')
+
+
+@app.route('/chat/<int:chat_id>')
+def chat_page(chat_id):
+    token = session.get('token', None)
+    headers = {"Authorization": f"Bearer {token}"}
+    chat = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}', headers=headers).json()
+    messages = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}/get_messages', headers=headers).json()
+    print(chat)
+    print(messages)
+    return render_template('chat-page.html', messages=messages, chat=chat)

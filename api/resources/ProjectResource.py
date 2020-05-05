@@ -79,6 +79,7 @@ class ProjectListResource(Resource):
                 {
                     'project': project.to_dict(
                         only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
+                    'team_leader': project.team_leader.to_dict(only=('email', 'username', 'first_name', 'last_name')),
                     'users': [item.id for item in project.users]} for project in g.current_user.projects],
         })
 

@@ -23,6 +23,7 @@ def abort_if_chat_not_found(func):
 
 def check_if_user_is_a_member(func):
     def new_func(self, chat_id):
+        print(list(map(lambda x: x.id, g.current_user.chats)))
         if chat_id not in map(lambda x: x.id, g.current_user.chats):
             abort(403, success=False)
         return func(self, chat_id)
@@ -38,8 +39,8 @@ class ChatResource(Resource):
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
         return jsonify({
-            'chat': chat.to_dict(only=('title', 'project_id')),
-            'users': [item.id for item in chat.users]})
+            'chat': chat.to_dict(only=('id','title', 'project_id')),
+            'users': [item.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for item in chat.users]})
 
     @abort_if_chat_not_found
     @token_auth.login_required
@@ -79,7 +80,7 @@ class ChatListResource(Resource):
             'chats': [
                 {
                     'chat': chat.to_dict(only=('id', 'title', 'project_id')),
-                    'users': [user.id for user in chat.users]
+                    'users': [user.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for user in chat.users]
                 }
                 for chat in g.current_user.chats],
         })
@@ -98,6 +99,7 @@ class ChatListResource(Resource):
             abort(403, success=False)
         if 'title' in args and args['title'] in map(lambda x: x.title, g.current_user.chats):
             abort(400, success=False, message=f"Chat '{args['title']}' already exists")
+        # noinspection PyArgumentList
         chat = Chat(
             project_id=args['project_id'],
             creator_id=g.current_user.id,

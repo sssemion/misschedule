@@ -23,7 +23,7 @@
                         <path style="fill-rule:nonzero;fill:rgb(20.392157%,72.941176%,80%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(20.392157%,72.941176%,80%);stroke-opacity:1;stroke-miterlimit:4;" d="M 321.583333 188.083333 L 290.541667 188.083333 C 286.791667 188.083333 283.75 191.125 283.75 194.875 C 283.75 198.625 286.791667 201.666667 290.541667 201.666667 L 321.583333 201.666667 C 325.333333 201.666667 328.375 198.625 328.375 194.875 C 328.375 191.125 325.333333 188.083333 321.583333 188.083333 Z M 321.583333 188.083333 " transform="matrix(0.09375,0,0,0.09375,0,0)"/>
                         <path style="fill-rule:nonzero;fill:rgb(20.392157%,72.941176%,80%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(20.392157%,72.941176%,80%);stroke-opacity:1;stroke-miterlimit:4;" d="M 362.333333 154.583333 C 363.666667 155.916667 365.375 156.583333 367.125 156.583333 C 368.875 156.583333 370.583333 155.916667 371.916667 154.583333 L 391.083333 135.416667 C 393.75 132.75 393.75 128.458333 391.083333 125.833333 C 388.458333 123.166667 384.166667 123.166667 381.541667 125.833333 L 367.125 140.208333 L 361.416667 134.5 C 358.75 131.875 354.458333 131.875 351.833333 134.5 C 349.208333 137.166667 349.208333 141.458333 351.833333 144.083333 Z M 362.333333 154.583333 " transform="matrix(0.09375,0,0,0.09375,0,0)"/>
                         <path style="fill-rule:nonzero;fill:rgb(20.392157%,72.941176%,80%);fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(20.392157%,72.941176%,80%);stroke-opacity:1;stroke-miterlimit:4;" d="M 362.333333 209.25 C 363.666667 210.583333 365.375 211.25 367.125 211.25 C 368.875 211.25 370.583333 210.583333 371.916667 209.25 L 391.083333 190.083333 C 393.75 187.416667 393.75 183.125 391.083333 180.5 C 388.458333 177.833333 384.166667 177.833333 381.541667 180.5 L 367.125 194.875 L 361.416667 189.166667 C 358.75 186.541667 354.458333 186.541667 351.833333 189.166667 C 349.208333 191.833333 349.208333 196.125 351.833333 198.75 Z M 362.333333 209.25 " transform="matrix(0.09375,0,0,0.09375,0,0)"/>
-                    </g>    
+                    </g>
                     </svg>
                 <h1>Ваши проекты</h1>
             </div>
@@ -40,8 +40,9 @@
                 {% for project_data in projects %}
                     {% set project = project_data["project"] %}
                     {% set users = project_data["users"] %}
-                    <a class="project" href="/projects/{{ project['project_name'] }}">
-                        <h2 class="project__title">{{ project["title"] }}</h5>
+                    {% set team_leader = project_data["team_leader"]%}
+                    <a class="project" href="/{{team_leader['username']}}/{{ project['project_name'] }}">
+                        <h5 class="project__title">{{ project["title"] }}</h5>
                         <p  class="project__name">{{ project["project_name"] }}</p>
                         {% if project["description"] %}
                             <p class="project__description">{{ project["description"] }}</p>
@@ -115,7 +116,7 @@
                         {% if task["duration"] %}
                             <div class="task__deadline">
                                 <span>До дедлайна: </span>
-                                <span class="time-to-deadline" 
+                                <span class="time-to-deadline"
                                     data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
                                     data-duration="{{ task['duration'] }}"></span>
                             </div>

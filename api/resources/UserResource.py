@@ -34,8 +34,7 @@ class UserResource(Resource):
     def get(self, user_id):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
-        return jsonify({'user': user.to_dict(
-            only=('email', 'username', 'first_name', 'last_name', 'reg_date'))})
+        return jsonify({'user': user.to_dict(only=('id','email', 'username', 'first_name', 'last_name', 'reg_date'))})
 
     @abort_if_user_not_found
     @token_auth.login_required

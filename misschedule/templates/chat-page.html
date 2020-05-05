@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="info-bar">
+        <p class="chat-name">Название: {{chat['chat']['title']}}</p>
+
+    </div>
+    <div class="messages">
+        {%if messages['messages']%}
+        {%for message in messages['messages']%}
+        <div class="message">
+            <p class="message-text">{{message['message']['message']}}</p>
+            <p class="message-date">{{message['message']['date']}}</p>
+            <p class="message-addresser">{{message['user']['username']}}</p>
+        </div>
+        {%endfor%}
+        {%else%}
+        <p class="notification-no-messages">Нет сообщений</p>
+        {%endif%}
+    </div>
+    <!--Я не знаю как ты любишь делать кнопки, но сделаю а, потому что большего я и не знаю))-->
+    <div class="enter-container">
+        <input class="send-input">
+        <button class="send-button">Отпраить</button>
+    </div>
+</div>
+<div class="chat-users">
+    <a class="user-add-button" href="/chat/{{chat['chat']['id']}}/add_user">Добавить нового пользователя</a>
+    {%for item in chat['users']%}
+    <div class="user">
+        <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>
+        <a class="user__username" href="/users/{{  item['username']  }}">@{{ item['username'] }}</a>
+        <p class="user__email">Email: <a class="email-link" href="mailto:{{  item['email']  }}">{{ item['email'] }}</a>
+        </p>
+    </div>
+    {%endfor%}
+</div>
+{% endblock %}
