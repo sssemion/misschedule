@@ -5,6 +5,7 @@ from flask import render_template, make_response, session, request, jsonify
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm, ProjectForm
+from misschedule.jinja_filters import user_by_id
 from misschedule.password_check import check_password, PasswordError
 
 
@@ -123,4 +124,8 @@ def complete_item():
     r = {"success": True}
     for item_id in data["item_ids"]:
         r = requests.post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/complete_item/{item_id}', headers=headers).json()
+    try:
+        r["completed_by"] = user_by_id(r["completed_by_id"])
+    except KeyError:
+        pass
     return jsonify(r)

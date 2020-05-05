@@ -163,7 +163,7 @@ def set_task_items(task_id, item_id):
     item.completion_date = datetime.datetime.now()
     session.commit()
     return jsonify({'success': True, "completed_by_id": item.completed_by_id,
-                    "completion_date": session.query(TaskItem).get(item_id).completion_date})
+                    "completion_date": ':'.join(str(item.completion_date.replace(microsecond=0)).split(':')[:-1])})
 
 
 @app.route('/api/users/get_project/<string:project_name>', methods=['GET'])

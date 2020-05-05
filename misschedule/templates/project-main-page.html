@@ -133,6 +133,7 @@
                         {% if worker %}
                             data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
                         {% endif %}
+                        data-id="{{ task['id'] }}"
                         >
                         <h2 class="task__title">{{ task["title"] }}</h2>
                         {% if task["description"] %}
@@ -154,6 +155,31 @@
                                     data-duration="{{ task['duration'] }}"></span>
                             </div>
                         {% endif %}
+
+                        <div class="task__items" style="display: none;">
+                            {% for item in items %}
+                                <div class="item" data-id="{{ item['id'] }}">
+                                    <input class="item__completed" type="checkbox"
+                                    {% if item['completed'] %}checked disabled title="Выполнено"{% else %}title="Не выполнено"{% endif %}
+                                    {% if not task_data['canYouEdit'] %}disabled{% endif %}
+                                    >
+                                    <div class="item__info">
+                                        <h4 class="item__title">{{ item["title"] }}</h4>
+                                        {% if item["description"] %}
+                                            <p class="item__description">{{ item["description"] }}</p>
+                                        {% else %}
+                                            <p class="item-descriprion no-descrption">Нет описания</p>
+                                        {% endif %}
+
+                                        {% if item["completed"] %}
+                                            {% set user = item["completed_by_id"] | user_by_id %}
+                                            <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
+                                            <span>Когда выполнено: </span><span>{{ item["completion_date"] }}</span><br>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>
@@ -175,6 +201,7 @@
                         {% if worker %}
                             data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
                         {% endif %}
+                        data-id="{{ task['id'] }}"
                         >
                         <h2 class="task__title">{{ task["title"] }}</h2>
                         {% if task["description"] %}
@@ -187,6 +214,31 @@
                         {% if task["tag"] %}
                             <p class="task__tag">{{ task["tag"] }}</p>
                         {% endif %}
+
+                        <div class="task__items" style="display: none;">
+                            {% for item in items %}
+                                <div class="item" data-id="{{ item['id'] }}">
+                                    <input class="item__completed" type="checkbox"
+                                    {% if item['completed'] %}checked disabled title="Выполнено"{% else %}title="Не выполнено"{% endif %}
+                                    {% if not task_data['canYouEdit'] %}disabled{% endif %}
+                                    >
+                                    <div class="item__info">
+                                        <h4 class="item__title">{{ item["title"] }}</h4>
+                                        {% if item["description"] %}
+                                            <p class="item__description">{{ item["description"] }}</p>
+                                        {% else %}
+                                            <p class="item-descriprion no-descrption">Нет описания</p>
+                                        {% endif %}
+
+                                        {% if item["completed"] %}
+                                            {% set user = item["completed_by_id"] | user_by_id %}
+                                            <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
+                                            <span>Когда выполнено: </span><span>{{ item["completion_date"] }}</span><br>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>
