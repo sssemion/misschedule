@@ -40,6 +40,7 @@ class ProjectResource(Resource):
             abort(403, success=False)
         return jsonify({
             'project': project.to_dict(only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
+            'team_leader': project.team_leader.to_dict(only=('email', 'username', 'first_name', 'last_name')),
             'users': [item.id for item in project.users]})
 
     @abort_if_project_not_found
