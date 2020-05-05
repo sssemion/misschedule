@@ -39,8 +39,9 @@ class ChatResource(Resource):
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
         return jsonify({
-            'chat': chat.to_dict(only=('id','title', 'project_id')),
-            'users': [item.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for item in chat.users]})
+            'chat': chat.to_dict(only=('id', 'title', 'project_id')),
+            'users': [item.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for item in
+                      chat.users]})
 
     @abort_if_chat_not_found
     @token_auth.login_required
@@ -80,7 +81,8 @@ class ChatListResource(Resource):
             'chats': [
                 {
                     'chat': chat.to_dict(only=('id', 'title', 'project_id')),
-                    'users': [user.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for user in chat.users]
+                    'users': [user.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for user in
+                              chat.users]
                 }
                 for chat in g.current_user.chats],
         })
@@ -106,6 +108,10 @@ class ChatListResource(Resource):
             title=args['title'],
             reg_date=datetime.datetime.now()
         )
+        chat.creator = g.current_user.id
+        chat.users.append(g.current_user)
+        chat.project = project
+        project.chats = chat
         session.add(chat)
         session.commit()
         return jsonify({'success': True})

@@ -66,14 +66,3 @@ class ProjectForm(FlaskForm):
                               render_kw={"class": "input-str form-control", "required": True})
 
     submit = SubmitField('Создать')
-
-
-class ChatForm(FlaskForm):
-    project_name = StringField('Название чата', validators=[DataRequired()],
-                               render_kw={"class": "input-str form-control", "required": True})
-    title = StringField('Заголовок', validators=[DataRequired()],
-                        render_kw={"class": "input-str form-control", "required": True})
-    description = StringField('Описание', validators=[DataRequired()],
-                              render_kw={"class": "input-str form-control", "required": True})
-
-    submit = SubmitField('Создать')
