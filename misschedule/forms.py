@@ -78,7 +78,12 @@ class TaskForm(FlaskForm):
     worker = SelectField('Ответственный за работу', choices=[('1', 'aba'), ('2', 'abacaba'), ('3', 'abacabadabacaba')],
                          render_kw={"class": "input-str"})
     tag = StringField('Тег', render_kw={"class": "input-str"})
-    color_field = StringField('Цвет', render_kw={"class": "input-str"})
+    color_field = StringField('Цвет', render_kw={"class": "input-str"}, default="#ffffff")
     color_input = ColorInput()
 
     submit = SubmitField("Отправить")
+
+    def __init__(self, users, *args, **kwargs):
+        super(TaskForm, self).__init__(*args, **kwargs)
+        self.worker.choices = [(str(user["id"]), f"{user['first_name']} {user['last_name']}")
+                               for user in users]

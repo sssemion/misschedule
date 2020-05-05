@@ -195,10 +195,12 @@ body {
     .popup-task-wrapper .popup-task__buttons, .popup-task-wrapper form__buttons {
       margin-top: 8px;
       display: flex;
-      justify-content: flex-end; }
-    .popup-task-wrapper .popup-task__send-button, .popup-task-wrapper form__send-button {
-      background-color: #34bacc;
-      color: #fff; }
+      justify-content: flex-end;
+      margin: 8px -8px; }
+      .popup-task-wrapper .popup-task__buttons .button, .popup-task-wrapper form__buttons .button {
+        background-color: #34bacc;
+        color: #fff;
+        margin: 0 8px; }
 
 .popup-task-wrapper .task-form {
   width: 420px;

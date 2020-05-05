@@ -298,11 +298,13 @@ body {
             margin-top: 8px;
             display: flex;
             justify-content: flex-end;
-        }
+            margin: 8px -8px;
 
-        &__send-button {
-            background-color: $main_blue;
-            color: #fff;
+            .button {
+                background-color: $main_blue;
+                color: #fff;
+                margin: 0 8px;
+            }
         }
     }
 }

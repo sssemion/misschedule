@@ -166,6 +166,23 @@ def set_task_items(task_id, item_id):
                     "completion_date": ':'.join(str(item.completion_date.replace(microsecond=0)).split(':')[:-1])})
 
 
+@app.route('/api/tasks/<int:task_id>/set_condition/<int:condition>', methods=['POST'])
+@token_auth.login_required
+def set_task_condition(task_id, condition):
+    session = db_session.create_session()
+
+    task = session.query(Task).get(task_id)
+    if not task:
+        abort(404, message=f"Task {task_id} not found")
+    if not (g.current_user == task.worker or g.current_user == task.creator):
+        abort(403)
+    if condition not in (0, 1, 2):
+        abort(400, message=f"Condition must be one of (0, 1, 2)")
+    task.condition = condition
+    session.commit()
+    return jsonify({'success': True, 'condition': condition})
+
+
 @app.route('/api/users/get_project/<string:project_name>', methods=['GET'])
 @token_auth.login_required
 def get_project(project_name):
@@ -245,7 +262,7 @@ def get_project_users(project_id):
         abort(403)
     users = project.users
     return jsonify(
-        {'users': [user.to_dict(only=('email', 'username', 'first_name', 'last_name', 'reg_date'))
+        {'users': [user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))
                    for user in users]})
 
 

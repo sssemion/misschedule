@@ -102,11 +102,13 @@ def create_project():
 
 @app.route('/project/<string:project_name>', methods=['GET', 'POST'])
 def project_page(project_name):
-    form = TaskForm()
     token = session['token']
     headers = {"Authorization": f"Bearer {token}"}
     project = requests.get(f'http://127.0.0.1:5000/api/users/get_project/{project_name}', headers=headers).json()
     if project.get('success', True):
+        users = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_users', headers=headers).json()
+
+        form = TaskForm(users=users["users"])
         task_already_exists = False
         start_with_form = False
         if form.validate_on_submit():
@@ -115,7 +117,7 @@ def project_page(project_name):
                 "title": form.title.data,
                 "description": form.description.data,
                 "duration": (form.deadline.data - datetime.datetime.now()).total_seconds(),
-                "worker_id": form.worker.data,
+                "worker_id": int(form.worker.data),
                 "tag": form.tag.data,
                 "color": form.color_field.data,
                 "condition": 0,
@@ -125,10 +127,11 @@ def project_page(project_name):
             if response.status_code == 400 and response_data.get("message", '').startswith("Task with title '"):
                 task_already_exists = True
                 start_with_form = True
-        users = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_users', headers=headers).json()
+
         team_leader = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_team_leader', headers=headers).json()
         tasks = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_tasks', headers=headers).json()
         chats = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats', headers=headers).json()
+
         return render_template('project-main-page.html', project=project["project"], users=users["users"], tasks=tasks["tasks"],
                                chats=chats["chats"], team_leader=team_leader, form=form,
                                task_already_exists=task_already_exists, start_with_form=start_with_form)
@@ -152,4 +155,13 @@ def complete_item():
         r["completed_by"] = user_by_id(r["completed_by_id"])
     except KeyError:
         pass
+    return jsonify(r)
+
+
+@app.route("/ajax/set_task_condition", methods=['POST'])
+def set_task_condition():
+    token = session.get("token")
+    data = request.get_json()
+    headers = {"Authorization": f"Bearer {token}"}
+    r = requests.post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/set_condition/{data.get("condition", -1)}', headers=headers).json()
     return jsonify(r)
