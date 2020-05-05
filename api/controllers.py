@@ -179,8 +179,16 @@ def get_project(project_name):
 def get_user_by_name(username):
     session = db_session.create_session()
     user = session.query(User).filter(User.username == username).first()
-    return jsonify({'user': user.to_dict(
-        only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))})
+    return jsonify({
+        'user': user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date')),
+        'projects': {
+            [{
+            'project':
+                project.to_dict(only=('project_name', 'title', 'description', 'team_leader_id')),
+            'team_leader': project.team_leader.to_dict(only=('id', 'username', 'first_name', 'last_name'))
+            }
+                for project in user.projects]}
+    })
 
 
 @app.route('/api/users/get_myself')

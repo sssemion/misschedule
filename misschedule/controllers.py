@@ -133,3 +133,12 @@ def chat_page(chat_id):
     print(chat)
     print(messages)
     return render_template('chat-page.html', messages=messages, chat=chat)
+
+
+@app.route('/users/<string:username>')
+def user_page(username):
+    token = session.get('token', None)
+    headers = {"Authorization": f"Bearer {token}"}
+    request = requests.get(f'http://127.0.0.1:5000/api/users/get_user_by_name/{username}', headers=headers).json()
+    user, projects = request['user'], request['projects']
+    return render_template('user-page.html', user=user, projects=projects)

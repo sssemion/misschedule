@@ -1,0 +1,28 @@
+{%extends base.html%}
+
+{%block content%}
+<div class="user-card">
+    <div class="user-info">
+        <p class="user-email">{{user['email']}}</p>
+        <p class="user-username">{{user['username']}}</p>
+        <p class="user-name">{{user['first_name']}} {{user['last_name']}}</p>
+    </div>
+    <div class="user-projects">
+        {%for project in projects%}
+        {%set project_data = project['project']%}
+        {%set team_leader = project['team_leader']%}
+        <a class="project" href="/{{team_leader['username']}}/{{ project['project_name'] }}">
+            <h5 class="project__title">{{ project_data["title"] }}</h5>
+            <p class="project__name">{{ project_data["project_name"] }}</p>
+            {% if project["description"] %}
+            <p class="project__description">{{ project_data["description"] }}</p>
+            {% else %}
+            <p class="project__description no-description">Нет описания</p>
+            {% endif %}
+        </a>
+
+        {%endfor%}
+    </div>
+</div>
+
+{%endblock%}
