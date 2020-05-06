@@ -2,7 +2,6 @@
 {% set script_file = url_for('static', filename='js/chat-page.js') %}
 {% set jquery = true %}
 
-{% set project = chat["chat"]["project_id"] | project_by_id %}
 {% set title = project["project"]["project_name"]
     + " | " + chat["chat"]["title"] %}
 
@@ -13,7 +12,7 @@
     <div class="info-bar">
         <h1 class="chat-name" data-id="{{ chat['chat']['id'] }}">{{chat['chat']['title']}}</h1>
         <p>Дата создания: {{ chat['chat']['reg_date'] }}</p>
-        <p class="proect-info" data-id="{{ project['project']['project_id'] }}">Проект: <a href="/{{ project['team_leader']['username'] }}/{{ project['project']['project_name'] }}">{{ project["project"]["project_name"] }}</a></p>
+        <p class="project-info" data-id="{{ project['project']['project_id'] }}">Проект: <a href="/{{ project['team_leader']['username'] }}/{{ project['project']['project_name'] }}">{{ project["project"]["project_name"] }}</a></p>
     </div>
 
     <div class="messages-column">
@@ -50,6 +49,14 @@
                 </g>
             </svg>
         </a>
+        <form action="" method="POST" class="user add-user-form" style="display: none;">
+            {{ form.hidden_tag() }}
+
+            {{ form.users.label }}
+            {{ form.users() }}
+
+            {{ form.submit(class="button") }}
+        </form>
         {% for item in chat['users'] %}
             <div class="user">
                 <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>

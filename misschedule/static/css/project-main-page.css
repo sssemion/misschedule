@@ -8,14 +8,14 @@
     width: 50%;
     background-color: rgba(255, 0, 0, 0.05); }
 
-.leftside-menu {
+.leftside-menu, .rightside-menu {
   padding: 16px; }
-  .leftside-menu .project {
+  .leftside-menu .project, .rightside-menu .project {
     margin-bottom: 32px; }
-    .leftside-menu .project__heading {
+    .leftside-menu .project__heading, .rightside-menu .project__heading {
       position: relative;
       margin-bottom: 16px; }
-      .leftside-menu .project__heading::after {
+      .leftside-menu .project__heading::after, .rightside-menu .project__heading::after {
         content: "";
         position: absolute;
         bottom: -8px;
@@ -23,29 +23,67 @@
         height: 1px;
         width: 75%;
         background-color: #34bacc; }
-  .leftside-menu .users-panel {
+  .leftside-menu .users-panel, .leftside-menu .chat-panel, .rightside-menu .users-panel, .rightside-menu .chat-panel {
     margin: 0 -16px; }
-    .leftside-menu .users-panel h1 {
+    .leftside-menu .users-panel h1, .leftside-menu .chat-panel h1, .rightside-menu .users-panel h1, .rightside-menu .chat-panel h1 {
       margin-left: 16px; }
-    .leftside-menu .users-panel .user {
+    .leftside-menu .users-panel .chat, .leftside-menu .chat-panel .chat, .rightside-menu .users-panel .chat, .rightside-menu .chat-panel .chat {
+      display: flex;
+      justify-content: center;
+      align-items: center; }
+      .leftside-menu .users-panel .chat.new-chat, .leftside-menu .chat-panel .chat.new-chat, .rightside-menu .users-panel .chat.new-chat, .rightside-menu .chat-panel .chat.new-chat {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.5s ease; }
+        .leftside-menu .users-panel .chat.new-chat:hover, .leftside-menu .chat-panel .chat.new-chat:hover, .rightside-menu .users-panel .chat.new-chat:hover, .rightside-menu .chat-panel .chat.new-chat:hover {
+          transform: scale(1.1); }
+    .leftside-menu .users-panel .chat.new-chat-form, .leftside-menu .chat-panel .chat.new-chat-form, .rightside-menu .users-panel .chat.new-chat-form, .rightside-menu .chat-panel .chat.new-chat-form {
+      display: none; }
+      .leftside-menu .users-panel .chat.new-chat-form.active, .leftside-menu .chat-panel .chat.new-chat-form.active, .rightside-menu .users-panel .chat.new-chat-form.active, .rightside-menu .chat-panel .chat.new-chat-form.active {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center; }
+      .leftside-menu .users-panel .chat.new-chat-form label, .leftside-menu .chat-panel .chat.new-chat-form label, .rightside-menu .users-panel .chat.new-chat-form label, .rightside-menu .chat-panel .chat.new-chat-form label {
+        text-align: center; }
+      .leftside-menu .users-panel .chat.new-chat-form .input-chat-title, .leftside-menu .chat-panel .chat.new-chat-form .input-chat-title, .rightside-menu .users-panel .chat.new-chat-form .input-chat-title, .rightside-menu .chat-panel .chat.new-chat-form .input-chat-title {
+        width: 80%;
+        margin: 16px 0;
+        border-radius: 8px;
+        border: 1px solid #34bacc;
+        padding: 8px; }
+      .leftside-menu .users-panel .chat.new-chat-form .new-chat-error-message, .leftside-menu .chat-panel .chat.new-chat-form .new-chat-error-message, .rightside-menu .users-panel .chat.new-chat-form .new-chat-error-message, .rightside-menu .chat-panel .chat.new-chat-form .new-chat-error-message {
+        color: #dc3545; }
+    .leftside-menu .users-panel .user.new-user, .leftside-menu .chat-panel .user.new-user, .rightside-menu .users-panel .user.new-user, .rightside-menu .chat-panel .user.new-user {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.5s ease; }
+      .leftside-menu .users-panel .user.new-user:hover, .leftside-menu .chat-panel .user.new-user:hover, .rightside-menu .users-panel .user.new-user:hover, .rightside-menu .chat-panel .user.new-user:hover {
+        transform: scale(1.1); }
+    .leftside-menu .users-panel .user, .leftside-menu .users-panel .chat, .leftside-menu .chat-panel .user, .leftside-menu .chat-panel .chat, .rightside-menu .users-panel .user, .rightside-menu .users-panel .chat, .rightside-menu .chat-panel .user, .rightside-menu .chat-panel .chat {
       margin: 16px;
       padding: 8px 16px;
       border: 1px solid #acacac;
       border-radius: 10px;
       text-overflow: ellipsis;
       overflow: hidden; }
-      .leftside-menu .users-panel .user__name {
+      .leftside-menu .users-panel .user__name, .leftside-menu .users-panel .chat__name, .leftside-menu .chat-panel .user__name, .leftside-menu .chat-panel .chat__name, .rightside-menu .users-panel .user__name, .rightside-menu .users-panel .chat__name, .rightside-menu .chat-panel .user__name, .rightside-menu .chat-panel .chat__name {
         display: inline;
         margin-right: 4px; }
-      .leftside-menu .users-panel .user__username {
+      .leftside-menu .users-panel .user__username, .leftside-menu .users-panel .user .chat-link, .leftside-menu .users-panel .chat__username, .leftside-menu .users-panel .chat .chat-link, .leftside-menu .chat-panel .user__username, .leftside-menu .chat-panel .user .chat-link, .leftside-menu .chat-panel .chat__username, .leftside-menu .chat-panel .chat .chat-link, .rightside-menu .users-panel .user__username, .rightside-menu .users-panel .user .chat-link, .rightside-menu .users-panel .chat__username, .rightside-menu .users-panel .chat .chat-link, .rightside-menu .chat-panel .user__username, .rightside-menu .chat-panel .user .chat-link, .rightside-menu .chat-panel .chat__username, .rightside-menu .chat-panel .chat .chat-link {
         text-decoration: none;
         color: #2ea8b8; }
-        .leftside-menu .users-panel .user__username:hover {
+        .leftside-menu .users-panel .user__username:hover, .leftside-menu .users-panel .user .chat-link:hover, .leftside-menu .users-panel .chat__username:hover, .leftside-menu .users-panel .chat .chat-link:hover, .leftside-menu .chat-panel .user__username:hover, .leftside-menu .chat-panel .user .chat-link:hover, .leftside-menu .chat-panel .chat__username:hover, .leftside-menu .chat-panel .chat .chat-link:hover, .rightside-menu .users-panel .user__username:hover, .rightside-menu .users-panel .user .chat-link:hover, .rightside-menu .users-panel .chat__username:hover, .rightside-menu .users-panel .chat .chat-link:hover, .rightside-menu .chat-panel .user__username:hover, .rightside-menu .chat-panel .user .chat-link:hover, .rightside-menu .chat-panel .chat__username:hover, .rightside-menu .chat-panel .chat .chat-link:hover {
           text-decoration: underline; }
-      .leftside-menu .users-panel .user__email .email-link {
+      .leftside-menu .users-panel .user__email .email-link, .leftside-menu .users-panel .chat__email .email-link, .leftside-menu .chat-panel .user__email .email-link, .leftside-menu .chat-panel .chat__email .email-link, .rightside-menu .users-panel .user__email .email-link, .rightside-menu .users-panel .chat__email .email-link, .rightside-menu .chat-panel .user__email .email-link, .rightside-menu .chat-panel .chat__email .email-link {
         text-decoration: none;
         color: #2ea8b8; }
-        .leftside-menu .users-panel .user__email .email-link:hover {
+        .leftside-menu .users-panel .user__email .email-link:hover, .leftside-menu .users-panel .chat__email .email-link:hover, .leftside-menu .chat-panel .user__email .email-link:hover, .leftside-menu .chat-panel .chat__email .email-link:hover, .rightside-menu .users-panel .user__email .email-link:hover, .rightside-menu .users-panel .chat__email .email-link:hover, .rightside-menu .chat-panel .user__email .email-link:hover, .rightside-menu .chat-panel .chat__email .email-link:hover {
           text-decoration: underline; }
 
 .tasks {

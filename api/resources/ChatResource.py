@@ -89,7 +89,7 @@ class ChatListResource(Resource):
     @token_auth.login_required
     def post(self):
         args = chat_parser_for_adding.parse_args(strict=True)
-        session = db_session.create_session()
+        session = g.db_session
         # noinspection PyArgumentList
         project = session.query(Project).get(args['project_id'])
         if project is None:
@@ -98,7 +98,7 @@ class ChatListResource(Resource):
             abort(403, success=False)
         if project.team_leader != g.current_user:
             abort(403, success=False)
-        if 'title' in args and args['title'] in map(lambda x: x.title, g.current_user.chats):
+        if 'title' in args and args['title'] in map(lambda x: x.title, project.chats):
             abort(400, success=False, message=f"Chat '{args['title']}' already exists")
         # noinspection PyArgumentList
         chat = Chat(
@@ -107,10 +107,7 @@ class ChatListResource(Resource):
             title=args['title'],
             reg_date=datetime.datetime.now()
         )
-        chat.creator = g.current_user.id
         chat.users.append(g.current_user)
-        chat.project = project
-        project.chats = chat
         session.add(chat)
         session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'chat': chat.to_dict(only=("id", "title", "reg_date"))})

@@ -1,4 +1,4 @@
-from wtforms import PasswordField, StringField, SubmitField
+from wtforms import PasswordField, StringField, SubmitField, SelectMultipleField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
@@ -66,3 +66,13 @@ class ProjectForm(FlaskForm):
                               render_kw={"class": "input-str form-control", "required": True})
 
     submit = SubmitField('Создать')
+
+
+class AddUserForm(FlaskForm):
+    users = SelectMultipleField('Выберите пользователей для добавления', render_kw={"class": "select-users"})
+    submit = SubmitField('Добавить')
+
+    def __init__(self, users, *args, **kwargs):
+        super(AddUserForm, self).__init__(*args, **kwargs)
+        self.users.choices = [(str(user["id"]), f"{user['first_name']} {user['last_name']}")
+                              for user in users]

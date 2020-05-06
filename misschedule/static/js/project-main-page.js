@@ -31,3 +31,47 @@ $(".popup-task .close-btn").on("click", function() {
     popup.removeClass("active");
     $("body").removeClass("scroll-locked");
 });
+
+
+$(".chat.new-chat").on("click", function() {
+    $(this).slideUp(500);
+    $(".chat.new-chat-form").slideDown(500);
+    $(".chat.new-chat-form").addClass("active");
+})
+
+
+$(".create-task-button").on("click", function() {
+    var title = $(".input-chat-title").val();
+    if (title === '') {
+        return;
+    }
+    $(".input-chat-title").val("");
+
+    params = {
+        project_id: parseInt($(".project").attr("data-id")),
+        title: title
+    };
+    
+    $.ajax("/ajax/create_chat", {
+        method: 'post',
+        dataType: 'json',
+        data: JSON.stringify(params),
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+            if (data["success"]) {
+                var html = '<div class="chat">\
+    <a class="chat-link" href="/chat/' + data["chat"]["id"] + '">' + data["chat"]["title"] + '</a>\
+</div>';
+                $(".chat-panel").append(html);
+                $(".chat.new-chat-form").slideUp(500);
+                $(".chat.new-chat-form").removeClass("active");
+                $(".chat.new-chat").slideDown(500);
+                $(".new-chat-error-message").css("display", "none");
+                $(".new-chat-error-message").text("");
+            } else {
+                $(".new-chat-error-message").text("Такой чат уже существует");
+                $(".new-chat-error-message").css("display", "block");
+            }
+        }
+    })
+});

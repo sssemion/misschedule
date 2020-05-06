@@ -275,7 +275,7 @@ def get_project_users(project_id):
         abort(403)
     users = project.users
     return jsonify(
-        {'users': [user.to_dict(only=('email', 'username', 'first_name', 'last_name', 'reg_date'))
+        {'users': [user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))
                    for user in users]})
 
 

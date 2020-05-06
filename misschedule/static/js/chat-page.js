@@ -36,4 +36,11 @@ $(".send-button").on("click", function() {
             }
         }
     })
+});
+
+
+$(".user.add-user").on("click", function() {
+    $(this).slideUp(500);
+    $(".user.add-user-form").slideDown(500);
+    $(".user.add-user-form").addClass("active");
 })

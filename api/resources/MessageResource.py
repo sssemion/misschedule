@@ -91,5 +91,5 @@ class MessageListResource(Resource):
         return jsonify({'success': True,
                         'user': message.user.to_dict(only=('id', 'username',
                                                            'email', 'first_name', 'last_name')),
-                        'date': ":".join(str(message.date).split(":")[:-2])
+                        'date': ":".join(str(message.date).split(":")[:-1])
                         })

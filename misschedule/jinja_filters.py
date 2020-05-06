@@ -26,7 +26,6 @@ def project_title_by_id(project_id):
 
 
 def project_by_id(project_id):
-    print(project_id)
     token = session.get('token', None)
     if token is None:
         return ""

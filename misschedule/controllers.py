@@ -4,7 +4,8 @@ import requests
 from flask import render_template, make_response, session, request, jsonify
 from werkzeug.utils import redirect
 from misschedule import app
-from misschedule.forms import RegisterForm, LoginForm, ProjectForm
+from misschedule.forms import RegisterForm, LoginForm, ProjectForm, AddUserForm
+from misschedule.jinja_filters import project_by_id
 from misschedule.password_check import check_password, PasswordError
 
 
@@ -124,23 +125,28 @@ def project_page(username, project_name):
     return redirect('/')
 
 
-@app.route('/chat/<int:chat_id>')
+@app.route('/chat/<int:chat_id>', methods=["GET", "POST"])
 def chat_page(chat_id):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
     chat = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}', headers=headers).json()
+    project = project_by_id(chat["chat"]["project_id"])
+    user_ids = list(map(lambda x: x["id"], chat["users"]))
+    form = AddUserForm(filter(lambda x: x["id"] not in user_ids, project["users"]))
+    if form.validate_on_submit():
+        params = {"id": list(map(int, form.users.data))}
+        response = requests.post(f'http://127.0.0.1:5000/api/chats/{chat_id}/add_user', headers=headers, data=params)
+        return redirect(f"/chat/{chat_id}")
     messages = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}/get_messages', headers=headers).json()
-    from pprint import pprint
-    pprint(chat)
-    return render_template('chat-page.html', messages=messages, chat=chat)
+    return render_template('chat-page.html', messages=messages, chat=chat, project=project, form=form)
 
 
 @app.route('/users/<string:username>')
 def user_page(username):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
-    request = requests.get(f'http://127.0.0.1:5000/api/users/get_user_by_name/{username}', headers=headers).json()
-    user, projects = request['user'], request['projects']
+    response = requests.get(f'http://127.0.0.1:5000/api/users/get_user_by_name/{username}', headers=headers).json()
+    user, projects = response['user'], response['projects']
     return render_template('user-page.html', user=user, projects=projects)
 
 
@@ -155,4 +161,13 @@ def send_message():
     data = request.get_json()
     headers = {"Authorization": f"Bearer {token}"}
     r = requests.post(f'http://127.0.0.1:5000/api/messages', headers=headers, json=data).json()
+    return jsonify(r)
+
+
+@app.route('/ajax/create_chat', methods=["POST"])
+def create_chat():
+    token = session.get("token")
+    data = request.get_json()
+    headers = {"Authorization": f"Bearer {token}"}
+    r = requests.post(f'http://127.0.0.1:5000/api/chats', headers=headers, json=data).json()
     return jsonify(r)
