@@ -14,7 +14,7 @@
     }
 }
 
-.leftside-menu {
+.leftside-menu, .rightside-menu {
     padding: 16px;
 
     .project {
@@ -36,14 +36,76 @@
         }
     }
 
-    .users-panel {
+    .users-panel, .chat-panel {
         margin: 0 -16px;
 
         h1 {
             margin-left: 16px;
         }
 
-        .user {
+        .chat {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &.new-chat {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+    
+                cursor: pointer;
+    
+                transition: transform 0.5s ease;
+    
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+        }
+
+        .chat.new-chat-form {
+            display: none;
+    
+            &.active {
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+            }
+    
+            label {
+                text-align: center;
+            }
+    
+            .input-chat-title {
+                width: 80%;
+                margin: 16px 0;
+                border-radius: 8px;
+                border: 1px solid $main_blue;
+                padding: 8px;
+            }
+
+            .new-chat-error-message {
+                color: #dc3545;
+            }
+        }
+
+        .user.new-user {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            cursor: pointer;
+
+            transition: transform 0.5s ease;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        .user, .chat {
             margin: 16px;
             padding: 8px 16px;
             border: 1px solid #acacac;
@@ -56,7 +118,7 @@
                 margin-right: 4px;
             }
 
-            &__username {
+            &__username, .chat-link {
                 text-decoration: none;
                 color: darken($color: $main_blue, $amount: 5);
 

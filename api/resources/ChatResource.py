@@ -38,8 +38,9 @@ class ChatResource(Resource):
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
         return jsonify({
-            'chat': chat.to_dict(only=('title', 'project_id')),
-            'users': [item.id for item in chat.users]})
+            'chat': chat.to_dict(only=('id', 'title', 'project_id', 'reg_date')),
+            'users': [item.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for item in
+                      chat.users]})
 
     @abort_if_chat_not_found
     @token_auth.login_required
@@ -78,8 +79,9 @@ class ChatListResource(Resource):
         return jsonify({
             'chats': [
                 {
-                    'chat': chat.to_dict(only=('id', 'title', 'project_id')),
-                    'users': [user.id for user in chat.users]
+                    'chat': chat.to_dict(only=('id', 'title', 'project_id', 'reg_date')),
+                    'users': [user.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for user in
+                              chat.users]
                 }
                 for chat in g.current_user.chats],
         })
@@ -87,7 +89,7 @@ class ChatListResource(Resource):
     @token_auth.login_required
     def post(self):
         args = chat_parser_for_adding.parse_args(strict=True)
-        session = db_session.create_session()
+        session = g.db_session
         # noinspection PyArgumentList
         project = session.query(Project).get(args['project_id'])
         if project is None:
@@ -96,14 +98,16 @@ class ChatListResource(Resource):
             abort(403, success=False)
         if project.team_leader != g.current_user:
             abort(403, success=False)
-        if 'title' in args and args['title'] in map(lambda x: x.title, g.current_user.chats):
+        if 'title' in args and args['title'] in map(lambda x: x.title, project.chats):
             abort(400, success=False, message=f"Chat '{args['title']}' already exists")
+        # noinspection PyArgumentList
         chat = Chat(
             project_id=args['project_id'],
             creator_id=g.current_user.id,
             title=args['title'],
             reg_date=datetime.datetime.now()
         )
+        chat.users.append(g.current_user)
         session.add(chat)
         session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'chat': chat.to_dict(only=("id", "title", "reg_date"))})

@@ -1,0 +1,51 @@
+<!--{% set style_file = url_for('static', filename='css/project.css') %}-->
+<!--{% set script_file = url_for('static', filename='js/project.js') %}-->
+{% set bootstrap = true %}
+<!--{% set jquery = true %}-->
+{% set title = 'Создание проекта' %}
+
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container">
+    <h1>Создание проекта</h1>
+    <form class="needs-validation" novalidate action="" method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-item">
+            {{ form.project_name.label }}
+            {{ form.project_name() }}
+            <div class="invalid-feedback">
+                {% for error in form.project_name.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-item">
+            {{ form.title.label }}
+            {{ form.title() }}
+            <div class="invalid-feedback">
+                {% for error in form.title.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-item">
+            {{ form.description.label }}
+            {{ form.description() }}
+            <div class="invalid-feedback">
+                {% for error in form.description.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% if message %}
+        <p class="alert alert-danger" role="alert">
+            {{message}}
+        </p>
+        {% endif %}
+        <div class="form-item">
+            {{ form.submit(type="submit", class="button") }}
+        </div>
+    </form>
+</main>
+{% endblock %}

@@ -40,7 +40,9 @@ class ProjectResource(Resource):
             abort(403, success=False)
         return jsonify({
             'project': project.to_dict(only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
-            'users': [item.id for item in project.users]})
+            'team_leader': project.team_leader.to_dict(only=('email', 'username', 'first_name', 'last_name')),
+            'users': [user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))
+                   for user in project.users]})
 
     @abort_if_project_not_found
     @token_auth.login_required
@@ -79,7 +81,11 @@ class ProjectListResource(Resource):
                 {
                     'project': project.to_dict(
                         only=('team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
-                    'users': [item.id for item in project.users]} for project in g.current_user.projects],
+                    'team_leader': project.team_leader.to_dict(only=('email', 'username', 'first_name', 'last_name')),
+                    'users': [user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name',
+                                                 'reg_date')) for user in project.users]
+                }
+                for project in g.current_user.projects],
         })
 
     @token_auth.login_required

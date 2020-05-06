@@ -78,6 +78,8 @@ class MessageListResource(Resource):
             abort(404, success=False, message=f"Chat {args['chat_id']} not found")
         if chat not in g.current_user.chats:
             abort(403, success=False)
+        if not args["message"]:
+            abort(400, success=False, message="Message can not be empty")
         message = Message(
             chat_id=args['chat_id'],
             user_id=g.current_user.id,
@@ -86,4 +88,8 @@ class MessageListResource(Resource):
         )
         session.add(message)
         session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True,
+                        'user': message.user.to_dict(only=('id', 'username',
+                                                           'email', 'first_name', 'last_name')),
+                        'date': ":".join(str(message.date).split(":")[:-1])
+                        })

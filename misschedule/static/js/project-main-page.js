@@ -64,7 +64,7 @@ function click_on_task() {
 }
 
 $(".popup-task .close-btn").on("click", function() {
-    popup.fadeOut(500, function() {    
+    popup.fadeOut(500, function() {
         popup.removeClass("active");
         clickedTask = null;
         $("body").removeClass("scroll-locked");
@@ -77,7 +77,7 @@ $(".popup-task__send-button").on("click", function() {
         item_ids: []
     };
     $(".popup-task__items .item").each(function() {
-        // Если пользователь отметил чекбокс, значит он выполнил задачу, 
+        // Если пользователь отметил чекбокс, значит он выполнил задачу,
         // и мы добавляем id подзадачи в список
         if (!$(this).children(".item__completed").prop("disabled") &&
             $(this).children(".item__completed").is(':checked')) {
@@ -99,7 +99,7 @@ $(".popup-task__send-button").on("click", function() {
                     // и "Когда выполнено" с информацией, полученной в ответе сервера. А также отключаем чекбокс,
                     // т.к. выполненную задачу нельзя развыполнить
                     $(this).children(".item__completed").prop("disabled", true);
-                    $(this).children(".item__info").append('<span>Кем выполнено: </span><a class="popup-task__worker" href="/' + data.completed_by.username + '">' + 
+                    $(this).children(".item__info").append('<span>Кем выполнено: </span><a class="popup-task__worker" href="/' + data.completed_by.username + '">' +
                                    data.completed_by.first_name + ' ' + data.completed_by.last_name + '</a><br>');
                     $(this).children(".item__info").append('<span>Когда выполнено: </span><span>' + data.completion_date + '</span><br>');
 
@@ -107,7 +107,7 @@ $(".popup-task__send-button").on("click", function() {
                     var item = clickedTask.children(".task__items").children(".item[data-id=" + $(this).attr("data-id") + "]");
                     item.children(".item__completed").prop("disabled", true);
                     item.children(".item__completed").attr("checked", true);
-                    item.children(".item__info").append('<span>Кем выполнено: </span><a class="popup-task__worker" href="/' + data.completed_by.username + '">' + 
+                    item.children(".item__info").append('<span>Кем выполнено: </span><a class="popup-task__worker" href="/' + data.completed_by.username + '">' +
                                                         data.completed_by.first_name + ' ' + data.completed_by.last_name + '</a><br>');
                     item.children(".item__info").append('<span>Когда выполнено: </span><span>' + data.completion_date + '</span><br>');
                 }
@@ -166,8 +166,52 @@ $(".task.new-task").on("click", function() {
 });
 
 $(".task-form .close-btn").on("click", function() {
-    newTask.fadeOut(500, function() {    
+    newTask.fadeOut(500, function() {
         newTask.removeClass("active");
         $("body").removeClass("scroll-locked");
     });
+});
+
+
+$(".chat.new-chat").on("click", function() {
+    $(this).slideUp(500);
+    $(".chat.new-chat-form").slideDown(500);
+    $(".chat.new-chat-form").addClass("active");
+})
+
+
+$(".create-task-button").on("click", function() {
+    var title = $(".input-chat-title").val();
+    if (title === '') {
+        return;
+    }
+    $(".input-chat-title").val("");
+
+    params = {
+        project_id: parseInt($(".project").attr("data-id")),
+        title: title
+    };
+
+    $.ajax("/ajax/create_chat", {
+        method: 'post',
+        dataType: 'json',
+        data: JSON.stringify(params),
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+            if (data["success"]) {
+                var html = '<div class="chat">\
+    <a class="chat-link" href="/chat/' + data["chat"]["id"] + '">' + data["chat"]["title"] + '</a>\
+</div>';
+                $(".chat-panel").append(html);
+                $(".chat.new-chat-form").slideUp(500);
+                $(".chat.new-chat-form").removeClass("active");
+                $(".chat.new-chat").slideDown(500);
+                $(".new-chat-error-message").css("display", "none");
+                $(".new-chat-error-message").text("");
+            } else {
+                $(".new-chat-error-message").text("Такой чат уже существует");
+                $(".new-chat-error-message").css("display", "block");
+            }
+        }
+    })
 });

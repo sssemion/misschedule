@@ -9,21 +9,32 @@
 {% block content %}
 <main class="container">
     <div class="leftside-menu">
-        <div class="project">
+        <div class="project" data-id="{{ project['id'] }}">
             <div class="project__heading">
                 <h1>Проект {{ project['project_name'] }}</h1>
                 <h2>{{ project['title'] }}</h2>
             </div>
             {% if project['description'] %}
-                <p class="project__description">{{  project['description']  }}</p>            
+                <p class="project__description">{{  project['description']  }}</p>
             {% else %}
                 <p class="project__description no-description">Нет описания</p>
             {% endif %}
             <span class="project__reg-date">Дата создания: {{ project['reg_date'] }}</span>
         </div>
-        
+
         <div class="users-panel">
             <h1>Пользователи</h1>
+            <a class="user new-user">
+                <h3>Добавить пользователя</h3>
+                <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <title>Layer 1</title>
+                        <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
+                        <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
+                        <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
+                    </g>
+                </svg>
+            </a>
             {% for item in users %}
             <div class="user">
                 <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>
@@ -33,7 +44,7 @@
             {% endfor %}
         </div>
     </div>
-    
+
     <div class="tasks">
         <h1>Задачи</h1>
         <div class="tasks__inner">
@@ -45,7 +56,7 @@
                     {% set items = task_data["items"] %}
                     {% set creator = task["creator_id"] | user_by_id %}
                     {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}                    
+                        {% set worker = task["worker_id"] | user_by_id %}
                     {% endif %}
                     {% set bgcolor = task["color"] | transparentize(0.25) %}
                     <div class="task planned" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
@@ -72,7 +83,7 @@
                         {% if task["duration"] %}
                             <div class="task__deadline">
                                 <span>До дедлайна: </span>
-                                <span class="time-to-deadline" 
+                                <span class="time-to-deadline"
                                     data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
                                     data-duration="{{ task['duration'] }}"></span>
                             </div>
@@ -124,7 +135,7 @@
                     {% set items = task_data["items"] %}
                     {% set creator = task["creator_id"] | user_by_id %}
                     {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}                    
+                        {% set worker = task["worker_id"] | user_by_id %}
                     {% endif %}
                     {% set bgcolor = task["color"] | transparentize(0.25) %}
                     <div class="task in-progress" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
@@ -151,7 +162,7 @@
                         {% if task["duration"] %}
                             <div class="task__deadline">
                                 <span>До дедлайна: </span>
-                                <span class="time-to-deadline" 
+                                <span class="time-to-deadline"
                                     data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
                                     data-duration="{{ task['duration'] }}"></span>
                             </div>
@@ -192,7 +203,7 @@
                     {% set items = task_data["items"] %}
                     {% set creator = task["creator_id"] | user_by_id %}
                     {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}                    
+                        {% set worker = task["worker_id"] | user_by_id %}
                     {% endif %}
                     {% set bgcolor = task["color"] | transparentize(0.25) %}
                     <div class="task finished" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
@@ -245,11 +256,30 @@
             </div>
         </div>
     </div>
-    
+
     <div class="rightside-menu">
         <div class="chat-panel">
-            {% for chat in chats['chats'] %}
-                <button class="chat-button">{{  chat['title']  }}</button>
+            <div class="chat new-chat">
+                <h3>Создать чат</h3>
+                <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <title>Layer 1</title>
+                        <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
+                        <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
+                        <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
+                    </g>
+                </svg>
+            </div>
+            <div class="chat new-chat-form">
+                <label for="input-chat-title">Название чата</label>
+                <input type="text" class="input-chat-title" id="input-chat-title">
+                <p class="new-chat-error-message" style="display: none;"></p>
+                <button class="button create-task-button">Создать</button>
+            </div>
+            {% for chat in chats %}
+                <div class="chat">
+                    <a class="chat-link" href="/chat/{{chat['chat']['id']}}">{{  chat['chat']['title']  }}</a>
+                </div>
             {% endfor %}
         </div>
     </div>

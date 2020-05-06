@@ -1,4 +1,4 @@
-from wtforms import PasswordField, StringField, SubmitField, SelectField
+from wtforms import PasswordField, StringField, SubmitField, SelectField, SelectMultupleField
 from wtforms.fields.html5 import EmailField, DateTimeLocalField
 from wtforms.widgets.html5 import ColorInput
 from wtforms.validators import DataRequired
@@ -87,3 +87,13 @@ class TaskForm(FlaskForm):
         super(TaskForm, self).__init__(*args, **kwargs)
         self.worker.choices = [(str(user["id"]), f"{user['first_name']} {user['last_name']}")
                                for user in users]
+
+
+class AddUserForm(FlaskForm):
+    users = SelectMultipleField('Выберите пользователей для добавления', render_kw={"class": "select-users"})
+    submit = SubmitField('Добавить')
+
+    def __init__(self, users, *args, **kwargs):
+        super(AddUserForm, self).__init__(*args, **kwargs)
+        self.users.choices = [(str(user["id"]), f"{user['first_name']} {user['last_name']}")
+                              for user in users]

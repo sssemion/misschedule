@@ -25,8 +25,18 @@ def project_title_by_id(project_id):
     return project["project"]["title"]
 
 
+def project_by_id(project_id):
+    token = session.get('token', None)
+    if token is None:
+        return ""
+
+    headers = {"Authorization": f"Bearer {token}"}
+    project = requests.get(f'http://127.0.0.1:5000/api/projects/{project_id}', headers=headers).json()
+    return project
+
+
 def transparentize(color, value):
-    rgb = [str(int(color[i:i+2], 16)) for i in (1, 3, 5)]
+    rgb = [str(int(color[i:i + 2], 16)) for i in (1, 3, 5)]
     return f"rgba({', '.join(rgb)}, {1 - value})"
 
 
@@ -57,3 +67,4 @@ app.jinja_env.filters['transparentize'] = transparentize
 app.jinja_env.filters['sort_tasks_by_status'] = sort_tasks_by_status
 app.jinja_env.filters['format_date'] = format_date
 app.jinja_env.filters['user_by_id'] = user_by_id
+app.jinja_env.filters['project_by_id'] = project_by_id
