@@ -1,7 +1,7 @@
 from base64 import b64encode
 
 import requests
-from flask import render_template, make_response, session
+from flask import render_template, make_response, session, request, jsonify
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm, ProjectForm
@@ -130,6 +130,8 @@ def chat_page(chat_id):
     headers = {"Authorization": f"Bearer {token}"}
     chat = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}', headers=headers).json()
     messages = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}/get_messages', headers=headers).json()
+    from pprint import pprint
+    pprint(chat)
     return render_template('chat-page.html', messages=messages, chat=chat)
 
 
@@ -140,3 +142,17 @@ def user_page(username):
     request = requests.get(f'http://127.0.0.1:5000/api/users/get_user_by_name/{username}', headers=headers).json()
     user, projects = request['user'], request['projects']
     return render_template('user-page.html', user=user, projects=projects)
+
+
+#
+# AJAX-запросы
+#
+
+
+@app.route('/ajax/send_message', methods=["POST"])
+def send_message():
+    token = session.get("token")
+    data = request.get_json()
+    headers = {"Authorization": f"Bearer {token}"}
+    r = requests.post(f'http://127.0.0.1:5000/api/messages', headers=headers, json=data).json()
+    return jsonify(r)

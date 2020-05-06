@@ -1,0 +1,156 @@
+@import "variables.scss";
+
+.container {
+    margin: 0 $container-margin / 2;
+
+    display: flex;
+
+    .info-bar, .users-column {
+        width: 25%;
+    }
+
+    .messages-column {
+        width: 50%;
+    }
+}
+
+.info-bar {
+    padding: 16px;
+}
+
+.messages-column {
+    padding: 16px 48px;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - #{$header_height} - 2 * #{$header_padding} - 32px);
+
+    .messages {
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        overflow-y: scroll;
+        ;
+        flex-shrink: 1;
+        padding: 16px 16px 16px 0;
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            &__addresser {
+                display: inline-block;
+            }
+
+            &__date {
+                display: inline-block;
+                color: #acacac;
+            }
+
+            &__text {
+                text-overflow: ellipsis;
+            }
+
+            &:not(.no-message):not(:last-child) {
+                position: relative;
+                margin-bottom: 16px;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    width: 75%;
+                    height: 1px;
+                    background-color: #acacac;
+                    bottom: -8px;
+                }
+            }
+
+            &.no-messages {
+                color: #acacac;
+            }
+        }
+    }
+
+    .input-outer {
+        justify-self: flex-end;
+        display: flex;
+        align-items: center;
+        width: 75%;
+        margin: 0 auto;
+
+        .text-message {
+            flex-grow: 1;
+            margin-right: 16px;
+
+            min-height: 30px;
+            max-height: 100px;
+            resize: vertical;
+            
+            padding: 8px 16px 8px 8px;
+
+            line-height: 1.5;
+            color: #495057;
+            background-clip: padding-box;
+            border: 1px solid $main_blue;
+            border-radius: .25rem;
+
+            &:focus {
+                box-shadow: 0 0 0 0.2rem transparentize($color: $main_blue, $amount: 0.75);
+            }
+        }
+    }
+}
+
+.users-column {
+    h1 {
+        margin-left: 16px;
+    }
+
+    .user {
+        margin: 16px;
+        padding: 8px 16px;
+        border: 1px solid #acacac;
+        border-radius: 10px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+
+        &__name {
+            display: inline;
+            margin-right: 4px;
+        }
+
+        &__username {
+            text-decoration: none;
+            color: darken($color: $main_blue, $amount: 5);
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        &__email {
+            .email-link {
+                text-decoration: none;
+                color: darken($color: $main_blue, $amount: 5);
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        &.add-user {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            cursor: pointer;
+
+            transition: transform 0.5s ease;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+}

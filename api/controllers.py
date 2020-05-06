@@ -259,7 +259,7 @@ def get_project_chats(project_id):
     return jsonify(
         {'chats': [
             {
-                'chat': chat.to_dict(only=('id', 'title', 'project_id')),
+                'chat': chat.to_dict(only=('id', 'title', 'project_id', 'reg_date')),
                 'users': [item.id for item in chat.users]
             } for chat in chats]})
 

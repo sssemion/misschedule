@@ -38,7 +38,7 @@ class ChatResource(Resource):
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
         return jsonify({
-            'chat': chat.to_dict(only=('id', 'title', 'project_id')),
+            'chat': chat.to_dict(only=('id', 'title', 'project_id', 'reg_date')),
             'users': [item.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for item in
                       chat.users]})
 
@@ -79,7 +79,7 @@ class ChatListResource(Resource):
         return jsonify({
             'chats': [
                 {
-                    'chat': chat.to_dict(only=('id', 'title', 'project_id')),
+                    'chat': chat.to_dict(only=('id', 'title', 'project_id', 'reg_date')),
                     'users': [user.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for user in
                               chat.users]
                 }
