@@ -100,7 +100,7 @@ def create_project():
     return render_template('create-project.html', form=form)
 
 
-@app.route('/project/<string:project_name>', methods=['GET', 'POST'])
+@app.route('/projects/<string:project_name>', methods=['GET', 'POST'])
 def project_page(project_name):
     token = session['token']
     headers = {"Authorization": f"Bearer {token}"}

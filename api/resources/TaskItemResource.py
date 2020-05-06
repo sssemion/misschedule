@@ -4,6 +4,7 @@ from flask_restful import Resource, abort
 from api.auth import token_auth
 from api.data import db_session
 from api.data.project import Project
+from api.data.task import Task
 from api.data.task_item import TaskItem
 from api.resources.parsers import task_item_parser_for_adding, task_item_parser_for_updating
 
@@ -63,7 +64,7 @@ class TaskItemListResource(Resource):
     def post(self):
         args = task_item_parser_for_adding.parse_args()
         session = db_session.create_session()
-        task = session.query(Project).get(args['task_id'])
+        task = session.query(Task).get(args['task_id'])
         if task is None:
             abort(404, success=False, message=f"Task {args['task_id']} not found")
         if not (g.current_user == task.creator or g.current_user == task.worker):
@@ -73,7 +74,7 @@ class TaskItemListResource(Resource):
         task_item = TaskItem(
             task_id=args['task_id'],
             title=args['title'],
-            description=args['title'],
+            description=args['description'],
         )
         session.add(task_item)
         session.commit()
