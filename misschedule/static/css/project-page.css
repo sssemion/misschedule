@@ -56,7 +56,7 @@ body {
     text-decoration: none;
     color: #000;
     transition: transform 0.5s ease; }
-    .projects__inner .project *, .projects__inner .task *, .tasks__inner .project *, .tasks__inner .task * {
+    .projects__inner .project__description, .projects__inner .task__description, .tasks__inner .project__description, .tasks__inner .task__description {
       text-overflow: ellipsis;
       overflow: hidden; }
     .projects__inner .project .no-description, .projects__inner .task .no-description, .tasks__inner .project .no-description, .tasks__inner .task .no-description {

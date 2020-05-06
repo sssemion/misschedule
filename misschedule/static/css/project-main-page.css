@@ -36,8 +36,11 @@
         align-items: center;
         cursor: pointer;
         transition: transform 0.5s ease; }
-        .leftside-menu .users-panel .chat.new-chat:hover, .leftside-menu .chat-panel .chat.new-chat:hover, .rightside-menu .users-panel .chat.new-chat:hover, .rightside-menu .chat-panel .chat.new-chat:hover {
+        .leftside-menu .users-panel .chat.new-chat:hover:not(.disabled), .leftside-menu .chat-panel .chat.new-chat:hover:not(.disabled), .rightside-menu .users-panel .chat.new-chat:hover:not(.disabled), .rightside-menu .chat-panel .chat.new-chat:hover:not(.disabled) {
           transform: scale(1.1); }
+        .leftside-menu .users-panel .chat.new-chat.disabled, .leftside-menu .chat-panel .chat.new-chat.disabled, .rightside-menu .users-panel .chat.new-chat.disabled, .rightside-menu .chat-panel .chat.new-chat.disabled {
+          cursor: default;
+          opacity: 0.5; }
     .leftside-menu .users-panel .chat.new-chat-form, .leftside-menu .chat-panel .chat.new-chat-form, .rightside-menu .users-panel .chat.new-chat-form, .rightside-menu .chat-panel .chat.new-chat-form {
       display: none; }
       .leftside-menu .users-panel .chat.new-chat-form.active, .leftside-menu .chat-panel .chat.new-chat-form.active, .rightside-menu .users-panel .chat.new-chat-form.active, .rightside-menu .chat-panel .chat.new-chat-form.active {

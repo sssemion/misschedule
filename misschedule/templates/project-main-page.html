@@ -259,7 +259,7 @@
 
     <div class="rightside-menu">
         <div class="chat-panel">
-            <div class="chat new-chat">
+            <div class="chat new-chat{% if myself['id'] != team_leader['id'] %} disabled{% endif %}">
                 <h3>Создать чат</h3>
                 <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
                     <g>
@@ -270,12 +270,14 @@
                     </g>
                 </svg>
             </div>
-            <div class="chat new-chat-form">
-                <label for="input-chat-title">Название чата</label>
-                <input type="text" class="input-chat-title" id="input-chat-title">
-                <p class="new-chat-error-message" style="display: none;"></p>
-                <button class="button create-task-button">Создать</button>
-            </div>
+            {% if myself["id"] == team_leader["id"] %}
+                <div class="chat new-chat-form">
+                    <label for="input-chat-title">Название чата</label>
+                    <input type="text" class="input-chat-title" id="input-chat-title">
+                    <p class="new-chat-error-message" style="display: none;"></p>
+                    <button class="button create-task-button">Создать</button>
+                </div>
+            {% endif %}
             {% for chat in chats %}
                 <div class="chat">
                     <a class="chat-link" href="/chat/{{chat['chat']['id']}}">{{  chat['chat']['title']  }}</a>

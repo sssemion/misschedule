@@ -173,7 +173,7 @@ $(".task-form .close-btn").on("click", function() {
 });
 
 
-$(".chat.new-chat").on("click", function() {
+$(".chat.new-chat:not(.disabled)").on("click", function() {
     $(this).slideUp(500);
     $(".chat.new-chat-form").slideDown(500);
     $(".chat.new-chat-form").addClass("active");

@@ -3,11 +3,34 @@ from base64 import b64encode
 
 import requests
 from flask import render_template, make_response, session, request, jsonify
+from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm, ProjectForm, TaskForm, AddUserForm
 from misschedule.jinja_filters import user_by_id, project_by_id
 from misschedule.password_check import check_password, PasswordError
+
+
+# Функция-обертка над функцией request_get(), которая вызывает исключение, если пользователь не авторизован
+def request_get(*args, **kwargs):
+    r = requests.get(*args, **kwargs)
+    if r.status_code == 401:
+        abort(401)
+    return r
+
+
+# Функция-обертка над функцией request_post(), которая вызывает исключение, если пользователь не авторизован
+def request_post(*args, **kwargs):
+    r = requests.post(*args, **kwargs)
+    if r.status_code == 401:
+        abort(401)
+    return r
+
+
+@app.errorhandler(401)
+def unauthorized(*args, **kwargs):
+    session.pop("token", None)
+    return redirect("/")
 
 
 @app.route("/")
@@ -17,21 +40,24 @@ def index():
         return make_response(render_template('main-page.html'))
 
     headers = {"Authorization": f"Bearer {token}"}
-    projects = requests.get('http://127.0.0.1:5000/api/projects', headers=headers)
+    projects = request_get('http://127.0.0.1:5000/api/projects', headers=headers)
     projects_data = projects.json()
-    tasks = requests.get('http://127.0.0.1:5000/api/tasks', headers=headers)
+    tasks = request_get('http://127.0.0.1:5000/api/tasks', headers=headers)
     tasks_data = tasks.json()
+    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
 
     if not (projects.status_code == tasks.status_code == 200):
         if projects.status_code == 401 or tasks.status_code == 401:  # Unauthorized
-            return redirect("/login")
-            # TODO:  Оповещение о том, что время сессии истекло
+            return make_response(render_template('main-page.html'))
 
-    return render_template('project-page.html', projects=projects_data['projects'], tasks=tasks_data['tasks'])
+    return render_template('project-page.html', projects=projects_data['projects'], tasks=tasks_data['tasks'], myself=myself)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def register():
+    token = session.get('token', None)
+    if token:
+        return redirect('/')
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -46,7 +72,7 @@ def register():
             form.password.errors.append(e)
             return render_template('register.html', form=form)
 
-        response = requests.post('http://127.0.0.1:5000/api/users', {
+        response = request_post('http://127.0.0.1:5000/api/users', {
             'username': form.username.data,
             'email': form.email.data,
             'first_name': form.first_name.data,
@@ -70,16 +96,27 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    token = session.get('token', None)
+    if token:
+        return redirect('/')
     form = LoginForm()
     if form.validate_on_submit():
         user_and_pass = b64encode(bytes(f"{form.email.data}:{form.password.data}".encode('utf-8'))).decode("ascii")
         headers = {'Authorization': f'Basic {user_and_pass}'}
-        request = requests.post('http://127.0.0.1:5000/api/login', headers=headers).json()
+        request = request_post('http://127.0.0.1:5000/api/login', headers=headers).json()
         if not request['success']:
             return render_template('login.html', form=form, login_failed=True)
         session['token'] = request['authToken']['token']
         return redirect('/')
     return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    headers = {'Authorization': f'Bearer {session.get("token", "")}'}
+    request = request_post('http://127.0.0.1:5000/api/logout', headers=headers).json()
+    session.pop("token", None)
+    return redirect('/')
 
 
 @app.route('/project', methods=['GET', 'POST'])
@@ -89,7 +126,7 @@ def create_project():
         try:
             token = session['token']
             headers = {"Authorization": f"Bearer {token}"}
-            data = requests.post('http://127.0.0.1:5000/api/projects',
+            data = request_post('http://127.0.0.1:5000/api/projects',
                                  {'project_name': form.project_name.data, 'title': form.title.data,
                                   'description': form.description.data},
                                  headers=headers).json()
@@ -97,16 +134,18 @@ def create_project():
                 return redirect('/')
         except:
             return render_template('create-project.html', form=form)
-    return render_template('create-project.html', form=form)
+    headers = {"Authorization": f"Bearer {session.get('token', '')}"}
+    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    return render_template('create-project.html', form=form, myself=myself)
 
 
 @app.route('/<string:username>/<string:project_name>', methods=['GET', 'POST'])
 def project_page(username, project_name):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
-    project = requests.get(f'http://127.0.0.1:5000/api/users/{username}/{project_name}', headers=headers).json()
+    project = request_get(f'http://127.0.0.1:5000/api/users/{username}/{project_name}', headers=headers).json()
     if project.get('success', True):
-        users = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_users', headers=headers).json()
+        users = request_get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_users', headers=headers).json()
 
         form = TaskForm(users=users["users"])
         task_already_exists = False
@@ -122,18 +161,19 @@ def project_page(username, project_name):
                 "color": form.color_field.data,
                 "condition": 0,
             }
-            response = requests.post("http://127.0.0.1:5000/api/tasks", headers=headers, json=params)
+            response = request_post("http://127.0.0.1:5000/api/tasks", headers=headers, json=params)
             response_data = response.json()
             if response.status_code == 400 and response_data.get("message", '').startswith("Task with title '"):
                 task_already_exists = True
                 start_with_form = True
 
-        team_leader = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_team_leader', headers=headers).json()
-        tasks = requests.get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_tasks', headers=headers).json()
-        chats = requests.get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats', headers=headers).json()
+        team_leader = request_get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_team_leader', headers=headers).json()
+        tasks = request_get(f'http://127.0.0.1:5000/api/projects/{project["project"]["id"]}/get_tasks', headers=headers).json()
+        chats = request_get(f'http://127.0.0.1:5000/api/projects/{int(project["project"]["id"])}/get_chats', headers=headers).json()
+        myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
 
         return render_template('project-main-page.html', project=project["project"], users=users["users"], tasks=tasks["tasks"],
-                               chats=chats["chats"], team_leader=team_leader, form=form,
+                               chats=chats["chats"], team_leader=team_leader, form=form, myself=myself,
                                task_already_exists=task_already_exists, start_with_form=start_with_form)
     return redirect('/')
 
@@ -142,25 +182,28 @@ def project_page(username, project_name):
 def chat_page(chat_id):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
-    chat = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}', headers=headers).json()
+    chat = request_get(f'http://127.0.0.1:5000/api/chats/{chat_id}', headers=headers).json()
     project = project_by_id(chat["chat"]["project_id"])
     user_ids = list(map(lambda x: x["id"], chat["users"]))
     form = AddUserForm(filter(lambda x: x["id"] not in user_ids, project["users"]))
     if form.validate_on_submit():
         params = {"id": list(map(int, form.users.data))}
-        response = requests.post(f'http://127.0.0.1:5000/api/chats/{chat_id}/add_user', headers=headers, data=params)
+        response = request_post(f'http://127.0.0.1:5000/api/chats/{chat_id}/add_user', headers=headers, data=params)
         return redirect(f"/chat/{chat_id}")
-    messages = requests.get(f'http://127.0.0.1:5000/api/chats/{chat_id}/get_messages', headers=headers).json()
-    return render_template('chat-page.html', messages=messages, chat=chat, project=project, form=form)
+    messages = request_get(f'http://127.0.0.1:5000/api/chats/{chat_id}/get_messages', headers=headers).json()
+    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    return render_template('chat-page.html', messages=messages, chat=chat, project=project, form=form,
+                           myself=myself)
 
 
 @app.route('/users/<string:username>')
 def user_page(username):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get(f'http://127.0.0.1:5000/api/users/get_user_by_name/{username}', headers=headers).json()
+    response = request_get(f'http://127.0.0.1:5000/api/users/get_user_by_name/{username}', headers=headers).json()
     user, projects = response['user'], response['projects']
-    return render_template('user-page.html', user=user, projects=projects)
+    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    return render_template('user-page.html', user=user, projects=projects, myself=myself)
 
 
 #
@@ -175,7 +218,7 @@ def complete_item():
     headers = {"Authorization": f"Bearer {token}"}
     r = {"success": True}
     for item_id in data["item_ids"]:
-        r = requests.post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/complete_item/{item_id}', headers=headers).json()
+        r = request_post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/complete_item/{item_id}', headers=headers).json()
     try:
         r["completed_by"] = user_by_id(r["completed_by_id"])
     except KeyError:
@@ -188,7 +231,7 @@ def set_task_condition():
     token = session.get("token")
     data = request.get_json()
     headers = {"Authorization": f"Bearer {token}"}
-    r = requests.post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/set_condition/{data.get("condition", -1)}', headers=headers).json()
+    r = request_post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/set_condition/{data.get("condition", -1)}', headers=headers).json()
     return jsonify(r)
 
 
@@ -197,7 +240,7 @@ def send_message():
     token = session.get("token")
     data = request.get_json()
     headers = {"Authorization": f"Bearer {token}"}
-    r = requests.post(f'http://127.0.0.1:5000/api/messages', headers=headers, json=data).json()
+    r = request_post(f'http://127.0.0.1:5000/api/messages', headers=headers, json=data).json()
     return jsonify(r)
 
 
@@ -206,5 +249,5 @@ def create_chat():
     token = session.get("token")
     data = request.get_json()
     headers = {"Authorization": f"Bearer {token}"}
-    r = requests.post(f'http://127.0.0.1:5000/api/chats', headers=headers, json=data).json()
+    r = request_post(f'http://127.0.0.1:5000/api/chats', headers=headers, json=data).json()
     return jsonify(r)

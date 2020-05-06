@@ -53,7 +53,7 @@
                     {% set users = project_data["users"] %}
                     {% set team_leader = project_data["team_leader"]%}
                     <a class="project" href="/{{team_leader['username']}}/{{ project['project_name'] }}">
-                        <h5 class="project__title">{{ project["title"] }}</h5>
+                        <h2 class="project__title">{{ project["title"] }}</h2>
                         <p  class="project__name">{{ project["project_name"] }}</p>
                         {% if project["description"] %}
                             <p class="project__description">{{ project["description"] }}</p>

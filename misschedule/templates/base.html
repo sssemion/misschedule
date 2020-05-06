@@ -52,8 +52,13 @@
         </nav>
 
         <div class="login-buttons">
-            <a class="button login" href="/login">Войти</a>
-            <a class="button create-account" href="/signup">Создать аккаунт</a>
+            {% if myself and myself.get("success", True) %}
+                <a class="username" href="/users/{{ myself['username'] }}">{{ myself["username"] }}</a>
+                <a class="button logout" href="/logout">Выйти</a>
+            {% else %}
+                <a class="button login" href="/login">Войти</a>
+                <a class="button create-account" href="/signup">Создать аккаунт</a>
+            {% endif %}
         </div>
         <div class="burger">
             <span class="toggle-btn"></span>

@@ -47,12 +47,12 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     token = sqlalchemy.Column(sqlalchemy.String, unique=True, index=True)
     token_expiration = sqlalchemy.Column(sqlalchemy.DateTime)
 
-    def get_token(self, expires_in=3600):
+    def get_token(self, expires_in=3600 * 3):
         now = datetime.datetime.now()
         if self.token and self.token_expiration > now + datetime.timedelta(seconds=60):
             # Если токен действительный, возвращаем его
             return self.token
-        # Иначе, генерируем новый и устанавливаем срок истечения через час
+        # Иначе, генерируем новый и устанавливаем срок истечения через 3 часа
         self.token = base64.b64encode(os.urandom(24)).decode("utf-8")
         self.token_expiration = now + datetime.timedelta(seconds=expires_in)
         return self.token

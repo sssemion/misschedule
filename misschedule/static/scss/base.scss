@@ -159,13 +159,28 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     .login-buttons {
+        display: flex;
+        align-items: center;
         .button {
             border-color: #fff;
             color: #fff;
         }
         
-        .login {
+        .login{
             margin-right: 16px;
+        }
+
+        .username {
+            color: #fff;
+            margin-right: 16px;
+            font-family: $title_font;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .logout {
+            border-color: #dc3545;
+            color: #dc3545;
         }
     }
 

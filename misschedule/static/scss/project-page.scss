@@ -85,7 +85,7 @@ body {
 
         transition: transform 0.5s ease;
 
-        * {
+        &__description {
             text-overflow: ellipsis;
             overflow: hidden;
         }

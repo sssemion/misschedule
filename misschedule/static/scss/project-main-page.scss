@@ -58,8 +58,13 @@
     
                 transition: transform 0.5s ease;
     
-                &:hover {
+                &:hover:not(.disabled) {
                     transform: scale(1.1);
+                }
+
+                &.disabled {
+                    cursor: default;
+                    opacity: 0.5;
                 }
             }
         }

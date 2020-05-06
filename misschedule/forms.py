@@ -1,4 +1,4 @@
-from wtforms import PasswordField, StringField, SubmitField, SelectField, SelectMultupleField
+from wtforms import PasswordField, StringField, SubmitField, SelectField, SelectMultipleField
 from wtforms.fields.html5 import EmailField, DateTimeLocalField
 from wtforms.widgets.html5 import ColorInput
 from wtforms.validators import DataRequired

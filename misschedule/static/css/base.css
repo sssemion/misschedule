@@ -112,11 +112,23 @@ h1, h2, h3, h4, h5, h6 {
         @media (max-width: 1024px) {
           .header__nav .nav__link.active:after {
             top: 28px; } }
-  .header .login-buttons .button {
-    border-color: #fff;
-    color: #fff; }
-  .header .login-buttons .login {
-    margin-right: 16px; }
+  .header .login-buttons {
+    display: flex;
+    align-items: center; }
+    .header .login-buttons .button {
+      border-color: #fff;
+      color: #fff; }
+    .header .login-buttons .login {
+      margin-right: 16px; }
+    .header .login-buttons .username {
+      color: #fff;
+      margin-right: 16px;
+      font-family: "Poiret One", cursive;
+      font-size: 24px;
+      font-weight: 700; }
+    .header .login-buttons .logout {
+      border-color: #dc3545;
+      color: #dc3545; }
   .header .burger {
     display: none;
     position: relative;

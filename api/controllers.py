@@ -307,4 +307,4 @@ def get_project_team_leader(project_id):
         abort(404, message=f"Project {project_id} not found")
     if project not in g.current_user.projects:
         abort(403)
-    return jsonify(project.team_leader.to_dict(only=('email', 'username', 'first_name', 'last_name', 'reg_date')))
+    return jsonify(project.team_leader.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date')))
