@@ -67,6 +67,7 @@
                         {% if worker %}
                             data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
                         {% endif %}
+                        data-can-you-edit="{% if task_data['canYouEdit'] %}1{% else %}0{% endif %}"
                         >
                         <h2 class="task__title">{{ task["title"] }}</h2>
                         {% if task["description"] %}
@@ -300,7 +301,9 @@
         <span>Дедлайн: </span><p class="popup-task__deadline-date"></p>
         <h3 class="popup-task__items-title">Подзадачи: </h3>
         <div class="popup-task__items"></div>
+        <div class="popup-task__add-item-form-container"></div>
         <div class="popup-task__buttons">
+            <button class="button popup-task__add-item-button">Добавить подзадачу</button>
             <button class="button popup-task__move-button"></button>
             <button class="button popup-task__send-button">Изменить</button>
         </div>

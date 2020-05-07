@@ -56,6 +56,14 @@ function click_on_task() {
         $(".popup-task__move-button").css("display", "none");
     }
 
+    if ($(this).attr("data-can-you-edit") === '0') {
+        $(".popup-task__add-item-button").css("display", "none");
+    } else {
+        $(".popup-task__add-item-button").css("display", "block");
+    }
+
+    checkTaskHeight();
+
     popup.children(".popup-task").attr("style", $(this).attr("style")); // Цвет фона
     popup.children(".popup-task").attr("data-id", $(this).attr("data-id")); // id
     popup.fadeIn(500);
@@ -72,8 +80,9 @@ $(".popup-task .close-btn").on("click", function() {
 });
 
 $(".popup-task__send-button").on("click", function() {
+    var taskId = popup.children(".popup-task").attr("data-id");
     var params = {
-        task_id: popup.children(".popup-task").attr("data-id"),
+        task_id: taskId,
         item_ids: []
     };
     $(".popup-task__items .item").each(function() {
@@ -114,6 +123,67 @@ $(".popup-task__send-button").on("click", function() {
             });
         }
     });
+
+    // Собираем данные о новых TaskItem-ах
+    var params = {
+        items: []
+    };
+
+    $(".popup-task__add-item-form").each(function() {
+        var titleObj = $(this).children(".input-outer").children(".add-item-title");
+        var descriptionObj = $(this).children(".input-outer").children(".add-item-description");
+        if (titleObj.val() === '') {
+            titleObj.addClass("is-invalid");
+            $(this).children(".error-msg").text("Заголовок не может быть пустым");
+            $(this).children(".error-msg").addClass("active");
+        } else {
+            titleObj.removeClass("is-invalid");
+            $(this).children(".error-msg").removeClass("active");
+        }
+        params["items"].push({
+            task_id: taskId,
+            title: titleObj.val(),
+            description: descriptionObj.val()
+        });
+    });
+    
+    $.ajax("/ajax/create_task_items", {
+        method: 'post',
+        dataType: 'json',
+        data: JSON.stringify(params),
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+            var offset = 0;
+            for (var i = 0; i < data["items"].length; i++) {
+                if (data["items"][i]["success"]) {
+                    $(".popup-task__add-item-form:nth-child(" + (i + 1 - offset) + ")").remove();
+                    offset++;
+                    var itemHtml = '<div class="item" data-id="' + data["items"][i]["taskItem"]["id"] + '">\
+    <input class="item__completed" type="checkbox" title="Не выполнено">\
+    <div class="item__info">\
+        <h4 class="item__title">' + data["items"][i]["taskItem"]["title"] + '</h4>\
+        ';
+                    if (data["items"][i]["taskItem"]["description"] !== "") {
+                        itemHtml += '<p class="item__description">' + data["items"][i]["taskItem"]["description"] + '</p>'
+                    } else {
+                        itemHtml += '<p class="item__description">Нет описания</p>'
+                    }
+                    itemHtml += '\
+    </div>\
+</div>'
+                    $(".popup-task__items").append(itemHtml);
+                    $(".task[data-id=" + taskId + "] .task__items").append(itemHtml);
+                    $(".popup-task__items .item[data-id=" + data["items"][i]["taskItem"]["id"] + "]");
+                } else {
+                    if (data["items"][i]["message"].indexOf("Task item with title ") == 0) {
+                        $(".popup-task__add-item-form:nth-child(" + (i + 1 - offset) + ") > .add-item-title").addClass("is-invalid");
+                        $(".popup-task__add-item-form:nth-child(" + (i + 1 - offset) + ") > .error-msg").text("Заголовок не может быть пустым");
+                        $(".popup-task__add-item-form:nth-child(" + (i + 1 - offset) + ") > .error-msg").addClass("active");
+                    }
+                }
+            }
+        }
+    })
 });
 
 $(".popup-task__move-button").on("click", function() {
@@ -215,3 +285,38 @@ $(".create-task-button").on("click", function() {
         }
     })
 });
+
+
+// Создание TaskItem-ов
+const addItemForm = '<div class="popup-task__add-item-form">\
+    <div class="input-outer">\
+        <label for="add-item-title">Заголовок</label>\
+        <input type="text" class="input-str add-item-title" id="add-item-title">\
+    </div>\
+    <p class="error-msg"></p>\
+    <div class="input-outer">\
+        <label for="add-item-description">Описание</label>\
+        <input type="text" class="input-str add-item-description" id="add-item-description">\
+    </div>\
+    <span class="remove-form">&#10060;</span>\
+</div>'
+
+$(".popup-task__add-item-button").on("click", function() {
+    $(".popup-task__add-item-form-container").append(addItemForm);
+    $(".popup-task__add-item-form .remove-form").on("click", removeItemOnClick);
+    checkTaskHeight();
+});
+
+function removeItemOnClick() {
+    $(this).parent(".popup-task__add-item-form").remove();
+    checkTaskHeight();
+};
+
+// Чтобы всплывающая задача не вылезала за границы экрана
+function checkTaskHeight() {
+    if ($(".popup-task").height() > $(".popup-task-wrapper.detail-info").height() * 0.8) {
+        $(".popup-task-wrapper").css("justify-content", "flex-start");
+    } else {
+        $(".popup-task-wrapper").css("justify-content", "center");
+    }
+}

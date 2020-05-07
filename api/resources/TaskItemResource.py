@@ -71,6 +71,8 @@ class TaskItemListResource(Resource):
             abort(403, success=False)
         if args['title'] in map(lambda x: x.title, task.items):
             abort(400, success=False, message=f"Task item with title '{args['title']}' already exists")
+        if args['title'] == '':
+            abort(400, success=False, message="Title cannot be empty")
         task_item = TaskItem(
             task_id=args['task_id'],
             title=args['title'],
@@ -78,4 +80,8 @@ class TaskItemListResource(Resource):
         )
         session.add(task_item)
         session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'taskItem': {
+            'id': task_item.id,
+            'title': task_item.title,
+            'description': task_item.description
+        }})

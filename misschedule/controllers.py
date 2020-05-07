@@ -218,7 +218,7 @@ def complete_item():
     headers = {"Authorization": f"Bearer {token}"}
     r = {"success": True}
     for item_id in data["item_ids"]:
-        r = request_post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/complete_item/{item_id}', headers=headers).json()
+        r = requests.post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/complete_item/{item_id}', headers=headers).json()
     try:
         r["completed_by"] = user_by_id(r["completed_by_id"])
     except KeyError:
@@ -231,7 +231,7 @@ def set_task_condition():
     token = session.get("token")
     data = request.get_json()
     headers = {"Authorization": f"Bearer {token}"}
-    r = request_post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/set_condition/{data.get("condition", -1)}', headers=headers).json()
+    r = requests.post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/set_condition/{data.get("condition", -1)}', headers=headers).json()
     return jsonify(r)
 
 
@@ -240,7 +240,7 @@ def send_message():
     token = session.get("token")
     data = request.get_json()
     headers = {"Authorization": f"Bearer {token}"}
-    r = request_post(f'http://127.0.0.1:5000/api/messages', headers=headers, json=data).json()
+    r = requests.post(f'http://127.0.0.1:5000/api/messages', headers=headers, json=data).json()
     return jsonify(r)
 
 
@@ -249,5 +249,17 @@ def create_chat():
     token = session.get("token")
     data = request.get_json()
     headers = {"Authorization": f"Bearer {token}"}
-    r = request_post(f'http://127.0.0.1:5000/api/chats', headers=headers, json=data).json()
+    r = requests.post(f'http://127.0.0.1:5000/api/chats', headers=headers, json=data).json()
     return jsonify(r)
+
+
+@app.route('/ajax/create_task_items', methods=["POST"])
+def create_task_items():
+    token = session.get("token")
+    data = request.get_json()
+    headers = {"Authorization": f"Bearer {token}"}
+    response = {'items': []}
+    for item in data["items"]:
+        r = requests.post(f'http://127.0.0.1:5000/api/task_items', headers=headers, json=item)
+        response["items"].append(r.json())
+    return jsonify(response)

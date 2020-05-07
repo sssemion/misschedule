@@ -37,7 +37,8 @@ class TaskResource(Resource):
                 "color", "condition", "image", "date")),
             'items': [item.to_dict(
                 only=("title", "description", "completed", "completed_by_id", "completion_date")) for
-                item in task.items]
+                item in task.items],
+            'canYouEdit': g.current_user == task.worker or g.current_user == task.creator,
         })
 
     @abort_if_task_not_found
@@ -82,7 +83,8 @@ class TaskListResource(Resource):
                     'items': [item.to_dict(only=(
                         "title", "description", "completed", "completed_by_id", "completion_date"))
                         for
-                        item in task.items]
+                        item in task.items],
+                    'canYouEdit': g.current_user == task.worker or g.current_user == task.creator,
                 } for task in filter(lambda x: x.condition != 2, g.current_user.performing_tasks)
             ],
         })

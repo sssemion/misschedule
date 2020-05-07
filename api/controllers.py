@@ -261,7 +261,7 @@ def get_project_tasks(project_id):
                 'items': [item.to_dict(
                     only=("id", "title", "description", "completed", "completed_by_id", "completion_date")) for
                     item in task.items],
-                'canYouEdit': g.current_user in (task.worker, task.creator),
+                'canYouEdit': g.current_user == task.worker or g.current_user == task.creator,
             } for task in tasks]})
 
 
