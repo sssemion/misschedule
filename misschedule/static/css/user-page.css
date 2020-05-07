@@ -1,0 +1,62 @@
+.user-card{
+    display: flex;
+}
+
+
+
+.user{
+  width: 0% auto;
+  margin: 16px;
+  padding: 8px 16px;
+  border: 1px solid #acacac;
+  border-radius: 10px;
+  text-overflow: ellipsis;
+}
+.line{
+  border-right:1px solid #3aebca ;
+}
+.projects__inner, .tasks__inner {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: grid;
+  margin: 0 30px; }
+  .projects__inner .project, .projects__inner .task, .tasks__inner .project, .tasks__inner .task {
+    width: calc((100% - 128px) / 2);
+    padding: 8px 16px;
+    margin: 15px;
+    border: 1px solid #acacac;
+    box-shadow: 6px 6px 8px 0 rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    text-decoration: none;
+    color: #000;
+    width: 100%;
+    transition: transform 0.5s ease; }
+    .projects__inner .project__description, .projects__inner .task__description, .tasks__inner .project__description, .tasks__inner .task__description {
+      text-overflow: ellipsis;
+      overflow: hidden; }
+    .projects__inner .project .no-description, .projects__inner .task .no-description, .tasks__inner .project .no-description, .tasks__inner .task .no-description {
+      color: #818181; }
+    .projects__inner .project__title, .projects__inner .task__title, .tasks__inner .project__title, .tasks__inner .task__title {
+      overflow: hidden;
+      text-overflow: ellipsis; }
+    .projects__inner .project__name, .projects__inner .task__name, .tasks__inner .project__name, .tasks__inner .task__name {
+      position: relative;
+      margin-bottom: 16px; }
+      .projects__inner .project__name::after, .projects__inner .task__name::after, .tasks__inner .project__name::after, .tasks__inner .task__name::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        height: 1px;
+        width: 75%;
+        background-color: #34bacc; }
+    .projects__inner .project:hover, .projects__inner .task:hover, .tasks__inner .project:hover, .tasks__inner .task:hover {
+      transform: scale(1.1); }
+    .projects__inner .project.new-project, .projects__inner .task.new-project, .tasks__inner .project.new-project, .tasks__inner .task.new-project {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; }
+    @media (max-width: 1366px) {
+      .projects__inner .project, .projects__inner .task, .tasks__inner .project, .tasks__inner .task {
+        width: 100%; } }
