@@ -1,0 +1,129 @@
+@import "variables.scss";
+
+.container {
+    margin: 32px 10%;
+    display: flex;
+    justify-content: space-between;
+    
+    .projects {
+        width: 60%;
+    }
+
+    .user {
+        width: 30%;
+    }
+}
+
+
+.user {
+    &__name {
+        position: relative;
+        margin-bottom: 16px;
+        
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            height: 1px;
+            width: 75%;
+            background-color: $main_blue;
+        }
+    }
+
+    &__username {
+        font-size: 18px;
+        text-decoration: none;
+        color: darken($color: $main_blue, $amount: 5);
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &__email {
+        font-size: 18px;
+        .email-link {
+            text-decoration: none;
+            color: darken($color: $main_blue, $amount: 5);
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &__reg-date {
+        font-size: 18px;
+    }
+}
+
+
+.projects {
+    &__inner {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        margin: 0 -15px;
+
+        .project {
+            width: calc((100% - 128px) / 2);
+            padding: 8px 16px;
+            margin: 15px;
+            border: 1px solid #acacac;
+            box-shadow: 6px 6px 8px 0 transparentize($color: #000, $amount: 0.75);
+            border-radius: 10px;;
+
+            text-decoration: none;
+            color: #000;
+
+            transition: transform 0.5s ease;
+
+            &__description {
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            .no-description {
+                color: #818181;
+            }
+
+            &__title {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            &__name {
+                position: relative;
+                margin-bottom: 16px;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -8px;
+                    left: 0;
+                    height: 1px;
+                    width: 75%;
+                    background-color: $main_blue;
+                }
+            }
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    position: relative;
+    
+    &:before {
+        content: "";
+        position: absolute;
+        width: 1px;
+        height: 100%;
+        top: 0;
+        left: -8.33%;
+        background-color: $main_blue;
+    }
+}

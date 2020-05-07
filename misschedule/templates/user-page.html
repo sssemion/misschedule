@@ -1,31 +1,32 @@
 {% extends "base.html" %}
 {% set style_file = url_for('static',filename='css/user-page.css') %}
 
-{%block content%}
-<div class="user-card">
+{% block content %}
+<main class="container">
     <div class="user">
-        <h3 class="user__name">{{ user['first_name'] }} {{ user['last_name'] }}</h3>
+        <h1 class="user__name">{{ user['first_name'] }} {{ user['last_name'] }}</h1>
         <a class="user__username" href="/users/{{  user['username']  }}">@{{ user['username'] }}</a>
-        <p class="user__email">Email: <a class="email-link" href="mailto:{{  user['email']  }}">{{ user['email'] }}</a>
-        </p>
+        <p class="user__email">Email: <a class="email-link" href="mailto:{{  user['email']  }}">{{ user['email'] }}</a></p>
+        <p class="user__reg-date">Дата регистрации: <span>{{ user['reg_date'] }}</span></p>
     </div>
-    <div class="line"></div>
-    <div class="projects__inner">
-        {% for project in projects %}
-        {% set project_data = project['project'] %}
-        {% set team_leader = project['team_leader'] %}
-        <a class="project" href="/{{team_leader['username']}}/{{ project_data['project_name'] }}">
-            <h5 class="project__title">{{ project_data["title"] }}</h5>
-            <p class="project__name">{{ project_data["project_name"] }}</p>
-            {% if project_data["description"] %}
-            <p class="project__description">{{ project_data["description"] }}</p>
-            {% else %}
-            <p class="project__description no-description">Нет описания</p>
-            {% endif %}
-        </a>
-
-        {% endfor %}
+    <div class="projects">
+        <h1>Проекты</h1>
+        <div class="projects__inner">
+            {% for project in projects %}
+                {% set project_data = project['project'] %}
+                {% set team_leader = project['team_leader'] %}
+                <a class="project" href="/{{team_leader['username']}}/{{ project_data['project_name'] }}">
+                    <h2 class="project__title">{{ project_data["title"] }}</h2>
+                    <p class="project__name">{{ project_data["project_name"] }}</p>
+                    {% if project_data["description"] %}
+                    <p class="project__description">{{ project_data["description"] }}</p>
+                    {% else %}
+                    <p class="project__description no-description">Нет описания</p>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
     </div>
-</div>
+</main>
 
 {% endblock %}
