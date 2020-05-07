@@ -74,7 +74,7 @@ def add_user_to_project(project_id, user_id):
     return jsonify({'success': True})
 
 
-@app.route('/api/projects/<int:project_id>/add_user/', methods=['POST'])
+@app.route('/api/projects/<int:project_id>/add_user', methods=['POST'])
 @token_auth.login_required
 def add_users_to_project(project_id):
     session = db_session.create_session()
@@ -83,15 +83,20 @@ def add_users_to_project(project_id):
         abort(404, message=f"Project {project_id} not found")
     if project.team_leader != g.current_user:
         abort(403)
+
+    added_users = []
     for user_id in request.form.getlist('id'):
         user = session.query(User).get(user_id)
         if not user:
             abort(404, message=f"User {user_id} not found")
-        if user_id not in list(map(lambda x: x.id, project.users)):
+        if int(user_id) not in list(map(lambda x: x.id, project.users)):
             project.users.append(user)
+            added_users.append(user)
 
     session.commit()
-    return jsonify({'success': True})
+    return jsonify({'success': True, "users": [
+        user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name'))
+                    for user in added_users]})
 
 
 @app.route('/api/chats/<int:chat_id>/add_user/<int:user_id>', methods=['POST'])
@@ -308,3 +313,18 @@ def get_project_team_leader(project_id):
     if project not in g.current_user.projects:
         abort(403)
     return jsonify(project.team_leader.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date')))
+
+
+@app.route('/api/users/search/<username>')
+def search_user_by_username(username):
+    session = db_session.create_session()
+    users = session.query(User).filter(User.username.ilike(f"%{username}%"))
+    if request.args.get("project_id", False):
+        project = session.query(Project).get(request.args.get("project_id"))
+        users = users.filter(User.id.notin_(list(map(lambda x: x.id, project.users))))
+    users = users.all()
+
+    return jsonify({"success": True, "users": [
+        user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name')) for user in users],
+                    'found': len(users)
+                })

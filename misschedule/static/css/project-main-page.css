@@ -41,31 +41,58 @@
         .leftside-menu .users-panel .chat.new-chat.disabled, .leftside-menu .chat-panel .chat.new-chat.disabled, .rightside-menu .users-panel .chat.new-chat.disabled, .rightside-menu .chat-panel .chat.new-chat.disabled {
           cursor: default;
           opacity: 0.5; }
-    .leftside-menu .users-panel .chat.new-chat-form, .leftside-menu .chat-panel .chat.new-chat-form, .rightside-menu .users-panel .chat.new-chat-form, .rightside-menu .chat-panel .chat.new-chat-form {
+    .leftside-menu .users-panel .chat.new-chat-form, .leftside-menu .users-panel .user.add-user-form, .leftside-menu .chat-panel .chat.new-chat-form, .leftside-menu .chat-panel .user.add-user-form, .rightside-menu .users-panel .chat.new-chat-form, .rightside-menu .users-panel .user.add-user-form, .rightside-menu .chat-panel .chat.new-chat-form, .rightside-menu .chat-panel .user.add-user-form {
       display: none; }
-      .leftside-menu .users-panel .chat.new-chat-form.active, .leftside-menu .chat-panel .chat.new-chat-form.active, .rightside-menu .users-panel .chat.new-chat-form.active, .rightside-menu .chat-panel .chat.new-chat-form.active {
+      .leftside-menu .users-panel .chat.new-chat-form.active, .leftside-menu .users-panel .user.add-user-form.active, .leftside-menu .chat-panel .chat.new-chat-form.active, .leftside-menu .chat-panel .user.add-user-form.active, .rightside-menu .users-panel .chat.new-chat-form.active, .rightside-menu .users-panel .user.add-user-form.active, .rightside-menu .chat-panel .chat.new-chat-form.active, .rightside-menu .chat-panel .user.add-user-form.active {
         display: flex !important;
         flex-direction: column;
         align-items: center; }
-      .leftside-menu .users-panel .chat.new-chat-form label, .leftside-menu .chat-panel .chat.new-chat-form label, .rightside-menu .users-panel .chat.new-chat-form label, .rightside-menu .chat-panel .chat.new-chat-form label {
+      .leftside-menu .users-panel .chat.new-chat-form label, .leftside-menu .users-panel .user.add-user-form label, .leftside-menu .chat-panel .chat.new-chat-form label, .leftside-menu .chat-panel .user.add-user-form label, .rightside-menu .users-panel .chat.new-chat-form label, .rightside-menu .users-panel .user.add-user-form label, .rightside-menu .chat-panel .chat.new-chat-form label, .rightside-menu .chat-panel .user.add-user-form label {
         text-align: center; }
-      .leftside-menu .users-panel .chat.new-chat-form .input-chat-title, .leftside-menu .chat-panel .chat.new-chat-form .input-chat-title, .rightside-menu .users-panel .chat.new-chat-form .input-chat-title, .rightside-menu .chat-panel .chat.new-chat-form .input-chat-title {
+      .leftside-menu .users-panel .chat.new-chat-form .input-chat-title, .leftside-menu .users-panel .chat.new-chat-form .input-username, .leftside-menu .users-panel .user.add-user-form .input-chat-title, .leftside-menu .users-panel .user.add-user-form .input-username, .leftside-menu .chat-panel .chat.new-chat-form .input-chat-title, .leftside-menu .chat-panel .chat.new-chat-form .input-username, .leftside-menu .chat-panel .user.add-user-form .input-chat-title, .leftside-menu .chat-panel .user.add-user-form .input-username, .rightside-menu .users-panel .chat.new-chat-form .input-chat-title, .rightside-menu .users-panel .chat.new-chat-form .input-username, .rightside-menu .users-panel .user.add-user-form .input-chat-title, .rightside-menu .users-panel .user.add-user-form .input-username, .rightside-menu .chat-panel .chat.new-chat-form .input-chat-title, .rightside-menu .chat-panel .chat.new-chat-form .input-username, .rightside-menu .chat-panel .user.add-user-form .input-chat-title, .rightside-menu .chat-panel .user.add-user-form .input-username {
         width: 80%;
         margin: 16px 0;
         border-radius: 8px;
         border: 1px solid #34bacc;
         padding: 8px; }
-      .leftside-menu .users-panel .chat.new-chat-form .new-chat-error-message, .leftside-menu .chat-panel .chat.new-chat-form .new-chat-error-message, .rightside-menu .users-panel .chat.new-chat-form .new-chat-error-message, .rightside-menu .chat-panel .chat.new-chat-form .new-chat-error-message {
-        color: #dc3545; }
-    .leftside-menu .users-panel .user.new-user, .leftside-menu .chat-panel .user.new-user, .rightside-menu .users-panel .user.new-user, .rightside-menu .chat-panel .user.new-user {
+      .leftside-menu .users-panel .chat.new-chat-form .new-chat-error-message, .leftside-menu .users-panel .chat.new-chat-form .add-user-error-message, .leftside-menu .users-panel .user.add-user-form .new-chat-error-message, .leftside-menu .users-panel .user.add-user-form .add-user-error-message, .leftside-menu .chat-panel .chat.new-chat-form .new-chat-error-message, .leftside-menu .chat-panel .chat.new-chat-form .add-user-error-message, .leftside-menu .chat-panel .user.add-user-form .new-chat-error-message, .leftside-menu .chat-panel .user.add-user-form .add-user-error-message, .rightside-menu .users-panel .chat.new-chat-form .new-chat-error-message, .rightside-menu .users-panel .chat.new-chat-form .add-user-error-message, .rightside-menu .users-panel .user.add-user-form .new-chat-error-message, .rightside-menu .users-panel .user.add-user-form .add-user-error-message, .rightside-menu .chat-panel .chat.new-chat-form .new-chat-error-message, .rightside-menu .chat-panel .chat.new-chat-form .add-user-error-message, .rightside-menu .chat-panel .user.add-user-form .new-chat-error-message, .rightside-menu .chat-panel .user.add-user-form .add-user-error-message {
+        color: #dc3545;
+        margin-bottom: 8px; }
+    .leftside-menu .users-panel .user.add-user, .leftside-menu .chat-panel .user.add-user, .rightside-menu .users-panel .user.add-user, .rightside-menu .chat-panel .user.add-user {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       cursor: pointer;
       transition: transform 0.5s ease; }
-      .leftside-menu .users-panel .user.new-user:hover, .leftside-menu .chat-panel .user.new-user:hover, .rightside-menu .users-panel .user.new-user:hover, .rightside-menu .chat-panel .user.new-user:hover {
+      .leftside-menu .users-panel .user.add-user h3, .leftside-menu .chat-panel .user.add-user h3, .rightside-menu .users-panel .user.add-user h3, .rightside-menu .chat-panel .user.add-user h3 {
+        text-align: center; }
+      .leftside-menu .users-panel .user.add-user:hover:not(.disabled), .leftside-menu .chat-panel .user.add-user:hover:not(.disabled), .rightside-menu .users-panel .user.add-user:hover:not(.disabled), .rightside-menu .chat-panel .user.add-user:hover:not(.disabled) {
         transform: scale(1.1); }
+      .leftside-menu .users-panel .user.add-user.disabled, .leftside-menu .chat-panel .user.add-user.disabled, .rightside-menu .users-panel .user.add-user.disabled, .rightside-menu .chat-panel .user.add-user.disabled {
+        cursor: default;
+        opacity: 0.5; }
+    .leftside-menu .users-panel .found-users, .leftside-menu .chat-panel .found-users, .rightside-menu .users-panel .found-users, .rightside-menu .chat-panel .found-users {
+      display: none;
+      margin-top: 16px; }
+      .leftside-menu .users-panel .found-users.active, .leftside-menu .chat-panel .found-users.active, .rightside-menu .users-panel .found-users.active, .rightside-menu .chat-panel .found-users.active {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center; }
+      .leftside-menu .users-panel .found-users label, .leftside-menu .chat-panel .found-users label, .rightside-menu .users-panel .found-users label, .rightside-menu .chat-panel .found-users label {
+        text-align: center; }
+      .leftside-menu .users-panel .found-users .select-outer, .leftside-menu .chat-panel .found-users .select-outer, .rightside-menu .users-panel .found-users .select-outer, .rightside-menu .chat-panel .found-users .select-outer {
+        display: none; }
+        .leftside-menu .users-panel .found-users .select-outer.active, .leftside-menu .chat-panel .found-users .select-outer.active, .rightside-menu .users-panel .found-users .select-outer.active, .rightside-menu .chat-panel .found-users .select-outer.active {
+          display: flex !important;
+          flex-direction: column;
+          align-items: center; }
+        .leftside-menu .users-panel .found-users .select-outer .users-select, .leftside-menu .chat-panel .found-users .select-outer .users-select, .rightside-menu .users-panel .found-users .select-outer .users-select, .rightside-menu .chat-panel .found-users .select-outer .users-select {
+          width: calc(100% - 3px);
+          margin: 16px 0;
+          border-radius: 8px 0 0 8px;
+          border: 1px solid #34bacc;
+          padding: 8px; }
     .leftside-menu .users-panel .user, .leftside-menu .users-panel .chat, .leftside-menu .chat-panel .user, .leftside-menu .chat-panel .chat, .rightside-menu .users-panel .user, .rightside-menu .users-panel .chat, .rightside-menu .chat-panel .user, .rightside-menu .chat-panel .chat {
       margin: 16px;
       padding: 8px 16px;
@@ -147,7 +174,7 @@
     padding: 2px 8px 2px 32px;
     margin: 4px 0;
     background-color: rgba(255, 255, 255, 0.5);
-    max-width: 80%;
+    max-width: calc(100% - 32px);
     overflow: hidden;
     text-overflow: ellipsis; }
     .task__tag::before, .popup-task__tag::before {

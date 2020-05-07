@@ -243,21 +243,21 @@ $(".task-form .close-btn").on("click", function() {
 });
 
 
+// Создание чата
 $(".chat.new-chat:not(.disabled)").on("click", function() {
     $(this).slideUp(500);
     $(".chat.new-chat-form").slideDown(500);
     $(".chat.new-chat-form").addClass("active");
 })
 
-
-$(".create-task-button").on("click", function() {
+$(".create-chat-button").on("click", function() {
     var title = $(".input-chat-title").val();
     if (title === '') {
         return;
     }
     $(".input-chat-title").val("");
 
-    params = {
+    var params = {
         project_id: parseInt($(".project").attr("data-id")),
         title: title
     };
@@ -286,6 +286,88 @@ $(".create-task-button").on("click", function() {
     })
 });
 
+
+// Добавление пользователей в проект
+$(".user.add-user:not(.disabled)").on("click", function() {
+    $(this).slideUp(500);
+    $(".user.add-user-form").slideDown(500);
+    $(".user.add-user-form").addClass("active");
+});
+
+$(".search-user-button").on("click", function() {
+    var username = $(".input-username").val();
+    if (username === ''){
+        $(".add-user-error-message").text("Введите хотя бы 1 символ");
+        $(".add-user-error-message").css("display", "block");
+        return;
+    } else {
+        $(".add-user-error-message").text("");
+        $(".add-user-error-message").css("display", "none");
+    }
+
+    $(".input-username").val("");
+    
+    $.ajax("/ajax/search_users", {
+        method: 'post',
+        dataType: 'json',
+        data: JSON.stringify({username: username, project_id: parseInt($(".project").attr("data-id"))}),
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+            if (data["success"]) {
+                var foundNum = data["found"];
+                $(".found-number").text(foundNum);
+                $(".select-outer").slideUp(500);
+                $(".select-outer").removeClass("active");
+                $(".users-select").empty();
+                for (var i = 0; i < foundNum; i++) {
+                    $(".users-select").append('<option value="' + data["users"][i]["id"] + '">' 
+                        + data["users"][i]["first_name"] + ' ' + data["users"][i]["last_name"] + ' @'
+                        + data["users"][i]["username"] + '</option>');
+                }
+                $(".found-users").slideDown(500);
+                $(".found-users").addClass("active");
+                if (foundNum > 0) {
+                    $(".select-outer").slideDown(500);
+                    $(".select-outer").addClass("active");
+                }
+            }
+        }
+    });
+});
+
+
+$(".add-user-button").on("click", function() {
+    var users = $(".users-select").val();
+    if (users.length == 0) {
+        return;
+    }
+    
+    $.ajax("/ajax/add_users_to_project", {
+        method: 'post',
+        dataType: 'json',
+        data: JSON.stringify({users: users, project_id: parseInt($(".project").attr("data-id"))}),
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+            console.log(data);
+            if (data["success"]) {
+                for (var i = 0; i < data["users"].length; i++) {
+                    $(".users-panel").append('<div class="user">\
+    <h3 class="user__name">' + data["users"][i]["first_name"] + ' '
+            + data["users"][i]["last_name"] + '</h3>\
+    <a class="user__username" href="/users/' + data["users"][i]["username"] + '">@'
+            + data["users"][i]["username"] + '</a>\
+    <p class="user__email">Email: <a class="email-link" href="mailto:'
+            + data["users"][i]["username"] + '">' + data["users"][i]["username"] + '</a></p>\
+</div>');
+                }
+                $(".select-outer").removeClass("active");
+                $(".user.add-user").slideDown(500);
+                $(".user.add-user-form").slideUp(500);
+                $(".user.add-user-form").removeClass("active");
+            }
+        }
+    });
+});
 
 // Создание TaskItem-ов
 const addItemForm = '<div class="popup-task__add-item-form">\

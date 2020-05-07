@@ -283,3 +283,20 @@ def create_task_items():
         r = requests.post(f'http://127.0.0.1:5000/api/task_items', headers=headers, json=item)
         response["items"].append(r.json())
     return jsonify(response)
+
+
+@app.route('/ajax/search_users', methods=["POST"])
+def search_users():
+    data = request.get_json()
+    r = requests.get(f'http://127.0.0.1:5000/api/users/search/{data["username"]}', params={"project_id": data["project_id"]}).json()
+    return jsonify(r)
+
+
+@app.route('/ajax/add_users_to_project', methods=["POST"])
+def add_users_to_project():
+    token = session.get("token")
+    data = request.get_json()
+    headers = {"Authorization": f"Bearer {token}"}
+    r = requests.post(f'http://127.0.0.1:5000/api/projects/{data["project_id"]}/add_user',
+                      headers=headers, data={'id': data['users']}).json()
+    return r

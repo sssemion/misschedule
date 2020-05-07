@@ -24,7 +24,7 @@
 
         <div class="users-panel">
             <h1>Пользователи</h1>
-            <a class="user new-user">
+            <div class="user add-user{% if myself['id'] != team_leader['id'] %} disabled{% endif %}">
                 <h3>Добавить пользователя</h3>
                 <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
                     <g>
@@ -34,7 +34,25 @@
                         <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
                     </g>
                 </svg>
-            </a>
+            </div>
+
+            {% if myself["id"] == team_leader["id"] %}
+                <div class="user add-user-form">
+                    <label for="input-username">Имя пользователя</label>
+                    <input type="text" class="input-username" id="input-username">
+                    <p class="add-user-error-message" style="display: none;"></p>
+                    <button class="button search-user-button">Найти</button>
+
+                    <div class="found-users">
+                        <p>Найдено: <span class="found-number"></span></p>
+                        <div class="select-outer">
+                            <select class="users-select" name="users-select" id="users-select" multiple></select>
+                            <button class="button add-user-button">Добавить</button>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
             {% for item in users %}
             <div class="user">
                 <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>
@@ -276,7 +294,7 @@
                     <label for="input-chat-title">Название чата</label>
                     <input type="text" class="input-chat-title" id="input-chat-title">
                     <p class="new-chat-error-message" style="display: none;"></p>
-                    <button class="button create-task-button">Создать</button>
+                    <button class="button create-chat-button">Создать</button>
                 </div>
             {% endif %}
             {% for chat in chats %}
