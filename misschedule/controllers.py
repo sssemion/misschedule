@@ -16,6 +16,10 @@ def request_get(*args, **kwargs):
     r = requests.get(*args, **kwargs)
     if r.status_code == 401:
         abort(401)
+    if r.status_code == 403:
+        abort(403)
+    if r.status_code == 404:
+        abort(404)
     return r
 
 
@@ -31,6 +35,22 @@ def request_post(*args, **kwargs):
 def unauthorized(*args, **kwargs):
     session.pop("token", None)
     return redirect("/")
+
+
+@app.errorhandler(403)
+def no_rights(*args, **kwargs):
+    token = session.get('token', None)
+    headers = {"Authorization": f"Bearer {token}"}
+    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    return render_template('error.html', ertype=403, message='Нет прав', myself=myself)
+
+
+@app.errorhandler(404)
+def not_found(*args, **kwargs):
+    token = session.get('token', None)
+    headers = {"Authorization": f"Bearer {token}"}
+    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    return render_template('error.html', ertype=404, messgae='Не найдено',myself=myself)
 
 
 @app.route("/")
@@ -218,7 +238,8 @@ def complete_item():
     headers = {"Authorization": f"Bearer {token}"}
     r = {"success": True}
     for item_id in data["item_ids"]:
-        r = request_post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/complete_item/{item_id}', headers=headers).json()
+        r = request_post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/complete_item/{item_id}',
+                         headers=headers).json()
     try:
         r["completed_by"] = user_by_id(r["completed_by_id"])
     except KeyError:
@@ -231,7 +252,8 @@ def set_task_condition():
     token = session.get("token")
     data = request.get_json()
     headers = {"Authorization": f"Bearer {token}"}
-    r = request_post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/set_condition/{data.get("condition", -1)}', headers=headers).json()
+    r = request_post(f'http://127.0.0.1:5000/api/tasks/{data["task_id"]}/set_condition/{data.get("condition", -1)}',
+                     headers=headers).json()
     return jsonify(r)
 
 
