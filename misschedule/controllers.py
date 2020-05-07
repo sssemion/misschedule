@@ -3,7 +3,7 @@ from base64 import b64encode
 
 import requests
 from flask import render_template, make_response, session, request, jsonify
-from werkzeug.exceptions import abort
+from werkzeug.exceptions import abort, HTTPException
 from werkzeug.utils import redirect
 from misschedule import app
 from misschedule.forms import RegisterForm, LoginForm, ProjectForm, TaskForm, AddUserForm
@@ -28,6 +28,10 @@ def request_post(*args, **kwargs):
     r = requests.post(*args, **kwargs)
     if r.status_code == 401:
         abort(401)
+    if r.status_code == 403:
+        abort(403)
+    if r.status_code == 404:
+        abort(404)
     return r
 
 
@@ -41,7 +45,10 @@ def unauthorized(*args, **kwargs):
 def no_rights(*args, **kwargs):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
-    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    try:
+        myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    except HTTPException:
+        myself = {}
     return render_template('error.html', ertype=403, message='Нет прав', myself=myself)
 
 
@@ -49,7 +56,10 @@ def no_rights(*args, **kwargs):
 def not_found(*args, **kwargs):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
-    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    try:
+        myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    except HTTPException:
+        myself = {}
     return render_template('error.html', ertype=404, messgae='Не найдено',myself=myself)
 
 
@@ -208,7 +218,7 @@ def chat_page(chat_id):
     form = AddUserForm(filter(lambda x: x["id"] not in user_ids, project["users"]))
     if form.validate_on_submit():
         params = {"id": list(map(int, form.users.data))}
-        response = request_post(f'http://127.0.0.1:5000/api/chats/{chat_id}/add_user', headers=headers, data=params)
+        request_post(f'http://127.0.0.1:5000/api/chats/{chat_id}/add_user', headers=headers, data=params)
         return redirect(f"/chat/{chat_id}")
     messages = request_get(f'http://127.0.0.1:5000/api/chats/{chat_id}/get_messages', headers=headers).json()
     myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
@@ -222,7 +232,10 @@ def user_page(username):
     headers = {"Authorization": f"Bearer {token}"}
     response = request_get(f'http://127.0.0.1:5000/api/users/get_user_by_name/{username}', headers=headers).json()
     user, projects = response['user'], response['projects']
-    myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    try:
+        myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
+    except HTTPException:
+        myself = {}
     return render_template('user-page.html', user=user, projects=projects, myself=myself)
 
 
