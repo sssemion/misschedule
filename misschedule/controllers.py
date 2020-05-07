@@ -60,7 +60,7 @@ def not_found(*args, **kwargs):
         myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
     except HTTPException:
         myself = {}
-    return render_template('error.html', ertype=404, messgae='Не найдено',myself=myself)
+    return render_template('error.html', ertype=404, messgae='Не найдено', myself=myself)
 
 
 @app.route("/")
