@@ -1,0 +1,85 @@
+.container {
+  margin: 32px 10%;
+  display: flex;
+  justify-content: space-between; }
+  .container .projects {
+    width: 60%; }
+  .container .user {
+    width: 30%; }
+
+.user__name {
+  position: relative;
+  margin-bottom: 16px; }
+  .user__name::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    height: 1px;
+    width: 75%;
+    background-color: #34bacc; }
+
+.user__username {
+  font-size: 18px;
+  text-decoration: none;
+  color: #2ea8b8; }
+  .user__username:hover {
+    text-decoration: underline; }
+
+.user__email {
+  font-size: 18px; }
+  .user__email .email-link {
+    text-decoration: none;
+    color: #2ea8b8; }
+    .user__email .email-link:hover {
+      text-decoration: underline; }
+
+.user__reg-date {
+  font-size: 18px; }
+
+.projects {
+  position: relative; }
+  .projects__inner {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 0 -15px; }
+    .projects__inner .project {
+      width: calc((100% - 128px) / 2);
+      padding: 8px 16px;
+      margin: 15px;
+      border: 1px solid #acacac;
+      box-shadow: 6px 6px 8px 0 rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      text-decoration: none;
+      color: #000;
+      transition: transform 0.5s ease; }
+      .projects__inner .project__description {
+        text-overflow: ellipsis;
+        overflow: hidden; }
+      .projects__inner .project .no-description {
+        color: #818181; }
+      .projects__inner .project__title {
+        overflow: hidden;
+        text-overflow: ellipsis; }
+      .projects__inner .project__name {
+        position: relative;
+        margin-bottom: 16px; }
+        .projects__inner .project__name::after {
+          content: "";
+          position: absolute;
+          bottom: -8px;
+          left: 0;
+          height: 1px;
+          width: 75%;
+          background-color: #34bacc; }
+      .projects__inner .project:hover {
+        transform: scale(1.1); }
+  .projects:before {
+    content: "";
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    top: 0;
+    left: -8.33%;
+    background-color: #34bacc; }
