@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% set style_file = url_for('static',filename='css/error.css') %}
+{% set jquery = true %}
+
+{% block content %}
+<body>
+    <h1>Ошибка {{ ertype }}</h1>
+    <h3>{{ message }}</h3>
+</body>
+{% endblock %}
