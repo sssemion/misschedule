@@ -22,3 +22,6 @@ Api протестирован с помощью Postman
 ![Скриншот один](misschedule/static/img/screenshots/project-main-page-fhd.png "Project-main-page")
 
 ![Скриншот один](misschedule/static/img/screenshots/main-page-fhd.png "main-page")
+
+#  
+*Version 1.1*
