@@ -133,7 +133,7 @@ def login():
     if form.validate_on_submit():
         user_and_pass = b64encode(bytes(f"{form.email.data}:{form.password.data}".encode('utf-8'))).decode("ascii")
         headers = {'Authorization': f'Basic {user_and_pass}'}
-        request = request_post('http://127.0.0.1:5000/api/login', headers=headers).json()
+        request = requests.post('http://127.0.0.1:5000/api/login', headers=headers).json()
         if not request['success']:
             return render_template('login.html', form=form, login_failed=True)
         session['token'] = request['authToken']['token']
@@ -153,17 +153,17 @@ def logout():
 def create_project():
     form = ProjectForm()
     if form.validate_on_submit():
-        try:
-            token = session['token']
-            headers = {"Authorization": f"Bearer {token}"}
-            data = request_post('http://127.0.0.1:5000/api/projects',
-                                 {'project_name': form.project_name.data, 'title': form.title.data,
-                                  'description': form.description.data},
-                                 headers=headers).json()
-            if data['success']:
-                return redirect('/')
-        except:
-            return render_template('create-project.html', form=form)
+        token = session.get('token', '')
+        headers = {"Authorization": f"Bearer {token}"}
+        data = request_post('http://127.0.0.1:5000/api/projects', {
+            'project_name': form.project_name.data, 'title': form.title.data,
+            'description': form.description.data}, headers=headers).json()
+        if data['success']:
+            return redirect('/')
+        else:
+            if data["message"].startswith("Project with name"):
+                form.project_name.render_kw["class"] = "input-str form-control is-invalid"
+                form.project_name.errors.append("Проект с таким именем уже существует")
     headers = {"Authorization": f"Bearer {session.get('token', '')}"}
     myself = request_get(f'http://127.0.0.1:5000/api/users/get_myself', headers=headers).json()["user"]
     return render_template('create-project.html', form=form, myself=myself)
@@ -226,7 +226,7 @@ def chat_page(chat_id):
                            myself=myself)
 
 
-@app.route('/users/<string:username>')
+@app.route('/<string:username>')
 def user_page(username):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}

@@ -202,6 +202,8 @@ def get_project(project_name):
 def get_user_by_name(username):
     session = db_session.create_session()
     user = session.query(User).filter(User.username == username).first()
+    if user is None:
+        abort(404, message=f"User {username} not found")
     return jsonify({
         'user': user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date')),
         'projects': [
@@ -226,6 +228,8 @@ def get_myself():
 def get_username_project(username, project_name):
     session = db_session.create_session()
     user = session.query(User).filter(User.username == username).first()
+    if user is None:
+        abort(404, message=f"User {username} not found")
     project = user.projects[list(map(lambda p: p.project_name, user.projects)).index(project_name)]
     return jsonify({
         'project': project.to_dict(only=('id', 'team_leader_id', 'project_name', 'title', 'description', 'reg_date')),

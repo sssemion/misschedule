@@ -63,10 +63,14 @@ class ProjectForm(FlaskForm):
                                render_kw={"class": "input-str form-control", "required": True})
     title = StringField('Заголовок', validators=[DataRequired()],
                         render_kw={"class": "input-str form-control", "required": True})
-    description = StringField('Описание', validators=[DataRequired()],
-                              render_kw={"class": "input-str form-control", "required": True})
+    description = StringField('Описание', render_kw={"class": "input-str form-control"})
 
     submit = SubmitField('Создать')
+
+    def __init__(self, *args, **kwargs):
+        super(ProjectForm, self).__init__(*args, **kwargs)
+        default = "input-str form-control"
+        self.project_name.render_kw["class"] = default
 
 
 class TaskForm(FlaskForm):
