@@ -226,7 +226,7 @@ def chat_page(chat_id):
                            myself=myself)
 
 
-@app.route('/<string:username>')
+@app.route('/users/<string:username>')
 def user_page(username):
     token = session.get('token', None)
     headers = {"Authorization": f"Bearer {token}"}
