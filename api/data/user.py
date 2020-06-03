@@ -3,6 +3,7 @@ import datetime
 import os
 
 import sqlalchemy
+from flask import jsonify
 from flask_login import UserMixin
 from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
@@ -63,3 +64,6 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
 
     def __eq__(self, other):
         return type(self) == type(other) and self.id == other.id
+
+    def to_dict_myself(self):
+        return self.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))

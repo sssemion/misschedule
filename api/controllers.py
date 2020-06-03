@@ -96,7 +96,7 @@ def add_users_to_project(project_id):
     session.commit()
     return jsonify({'success': True, "users": [
         user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name'))
-                    for user in added_users]})
+        for user in added_users]})
 
 
 @app.route('/api/chats/<int:chat_id>/add_user/<int:user_id>', methods=['POST'])
@@ -194,7 +194,7 @@ def get_project(project_name):
     user = g.current_user
     project = user.projects[list(map(lambda p: p.project_name, user.projects)).index(project_name)]
     return jsonify({
-        'project': project.to_dict(only=('id', 'team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
+        'project': project.to_dict_myself(),
         'users': [item.id for item in project.users]})
 
 
@@ -205,12 +205,12 @@ def get_user_by_name(username):
     if user is None:
         abort(404, message=f"User {username} not found")
     return jsonify({
-        'user': user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date')),
+        'user': user.to_dict_myself(),
         'projects': [
             {
                 'project':
-                    project.to_dict(only=('project_name', 'title', 'description', 'team_leader_id')),
-                'team_leader': project.team_leader.to_dict(only=('id', 'username', 'first_name', 'last_name'))
+                    project.to_dict_myself(),
+                'team_leader': project.team_leader.to_dict_myself()
             }
             for project in user.projects]
     })
@@ -220,8 +220,7 @@ def get_user_by_name(username):
 @token_auth.login_required
 def get_myself():
     user = g.current_user
-    return jsonify({'user': user.to_dict(
-        only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))})
+    return jsonify({'user': user.to_dict_myself()})
 
 
 @app.route('/api/users/<username>/<project_name>')
@@ -232,7 +231,7 @@ def get_username_project(username, project_name):
         abort(404, message=f"User {username} not found")
     project = user.projects[list(map(lambda p: p.project_name, user.projects)).index(project_name)]
     return jsonify({
-        'project': project.to_dict(only=('id', 'team_leader_id', 'project_name', 'title', 'description', 'reg_date')),
+        'project': project.to_dict_myself(),
         'users': [item.id for item in project.users]})
 
 
@@ -245,8 +244,8 @@ def get_chat_messages(chat_id):
     messages = sorted(messages, key=lambda x: x.date)
     return jsonify({
         'messages': [
-            {'message': message.to_dict(only=('chat_id', 'user_id', 'message', 'date')),
-             'user': message.user.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name'))}
+            {'message': message.to_dict_myself(),
+             'user': message.user.to_dict_myself()}
             for message in messages],
     })
 
@@ -264,12 +263,8 @@ def get_project_tasks(project_id):
     return jsonify(
         {'tasks': [
             {
-                'task': task.to_dict(only=(
-                    "id", "project_id", "title", "description", "duration", "worker_id", "creator_id",
-                    "tag", "color", "condition", "image", "date")),
-                'items': [item.to_dict(
-                    only=("id", "title", "description", "completed", "completed_by_id", "completion_date")) for
-                    item in task.items],
+                'task': task.to_dict_myself(),
+                'items': [item.to_dict_myself() for item in task.items],
                 'canYouEdit': g.current_user == task.worker or g.current_user == task.creator,
             } for task in tasks]})
 
@@ -287,7 +282,7 @@ def get_project_chats(project_id):
     return jsonify(
         {'chats': [
             {
-                'chat': chat.to_dict(only=('id', 'title', 'project_id', 'reg_date')),
+                'chat': chat.to_dict_myself(),
                 'users': [item.id for item in chat.users]
             } for chat in chats]})
 
@@ -303,8 +298,7 @@ def get_project_users(project_id):
         abort(403)
     users = project.users
     return jsonify(
-        {'users': [user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))
-                   for user in users]})
+        {'users': [user.to_dict_myself() for user in users]})
 
 
 @app.route('/api/projects/<int:project_id>/get_team_leader')
@@ -316,7 +310,7 @@ def get_project_team_leader(project_id):
         abort(404, message=f"Project {project_id} not found")
     if project not in g.current_user.projects:
         abort(403)
-    return jsonify(project.team_leader.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date')))
+    return jsonify(project.team_leader.to_dict_myself())
 
 
 @app.route('/api/users/search/<username>')
@@ -328,7 +322,4 @@ def search_user_by_username(username):
         users = users.filter(User.id.notin_(list(map(lambda x: x.id, project.users))))
     users = users.all()
 
-    return jsonify({"success": True, "users": [
-        user.to_dict(only=('id', 'email', 'username', 'first_name', 'last_name')) for user in users],
-                    'found': len(users)
-                })
+    return jsonify({"success": True, "users": [user.to_dict_myself() for user in users], 'found': len(users)})

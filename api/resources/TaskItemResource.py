@@ -28,8 +28,7 @@ class TaskItemResource(Resource):
         task_item = session.query(TaskItem).get(task_item_id)
         if not (g.current_user == task_item.task.creator or g.current_user == task_item.task.worker):
             abort(403, success=False)
-        return jsonify({'task_item': task_item.to_dict(only=("title", "description", "completed",
-                                                             "completed_by_id", "completion_date"))})
+        return jsonify({'task_item': task_item.to_dict_myself()})
 
     @abort_if_task_item_not_found
     @token_auth.login_required

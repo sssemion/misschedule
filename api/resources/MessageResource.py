@@ -29,7 +29,7 @@ class MessageResource(Resource):
         message = session.query(Message).get(message_id)
         if g.current_user not in message.chat.users:
             abort(403, success=False)
-        return jsonify({'message': message.to_dict(only=('chat_id', 'user_id', 'message'))})
+        return jsonify({'message': message.to_dict_myself()})
 
     @abort_if_message_not_found
     @token_auth.login_required
@@ -49,6 +49,7 @@ class MessageResource(Resource):
         # будет содержать поля, которых нет в парсере
         session = db_session.create_session()
         message = session.query(Message).get(message_id)
+        # Если пользователь пытается редактировать не свое сообщение
         if g.current_user != message.chat.user:
             abort(403, success=False)
         for key, value in args.items():
@@ -65,19 +66,22 @@ class MessageListResource(Resource):
         messages = session.query(Message).filter(Message.user_id == g.current_user.id)
         return jsonify({
             'messages': [
-                {'message': message.to_dict(only=('chat_id', 'user_id', 'message'))}
+                {'message': message.to_dict_myself()}
                 for message in messages],
         })
-    
+
     @token_auth.login_required
     def post(self):
         args = message_parser_for_adding.parse_args(strict=True)
         session = db_session.create_session()
         chat = session.query(Chat).get(args['chat_id'])
+        # Если чат не найден
         if chat is None:
             abort(404, success=False, message=f"Chat {args['chat_id']} not found")
+        # Если текущий пользователь не состоит в чате
         if chat not in g.current_user.chats:
             abort(403, success=False)
+        # Если пытаются отправить пустое сообщение
         if not args["message"]:
             abort(400, success=False, message="Message can not be empty")
         message = Message(
@@ -89,7 +93,6 @@ class MessageListResource(Resource):
         session.add(message)
         session.commit()
         return jsonify({'success': True,
-                        'user': message.user.to_dict(only=('id', 'username',
-                                                           'email', 'first_name', 'last_name')),
+                        'user': message.user.to_dict_myself(),
                         'date': ":".join(str(message.date).split(":")[:-1])
                         })

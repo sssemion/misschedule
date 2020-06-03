@@ -34,8 +34,7 @@ class UserResource(Resource):
     def get(self, user_id):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
-        return jsonify({'user': user.to_dict(
-            only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date'))})
+        return jsonify({'user': user.to_dict_myself()})
 
     @abort_if_user_not_found
     @token_auth.login_required
@@ -69,8 +68,7 @@ class UserListResource(Resource):
     def get(self):
         session = db_session.create_session()
         user = session.query(User).all()
-        return jsonify({'users': [item.to_dict(
-            only=('id', 'email', 'username', 'first_name', 'last_name', 'reg_date')) for item in user]})
+        return jsonify({'users': [item.to_dict_myself() for item in user]})
 
     def post(self):
         args = user_parser_for_adding.parse_args(strict=True)
