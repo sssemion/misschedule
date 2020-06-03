@@ -162,13 +162,13 @@
     .how-it-works .how-it-works__inner .slider {
       width: 100%; }
       .how-it-works .how-it-works__inner .slider .next {
-        right: 16px;
-        color: #fff; }
+        mix-blend-mode: multiply;
+        right: 16px; }
         .how-it-works .how-it-works__inner .slider .next:active {
           right: 0; }
       .how-it-works .how-it-works__inner .slider .prev {
-        left: 16px;
-        color: #fff; }
+        mix-blend-mode: multiply;
+        left: 16px; }
         .how-it-works .how-it-works__inner .slider .prev:active {
           left: 0; } }
 

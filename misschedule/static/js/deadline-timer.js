@@ -1,12 +1,17 @@
 $(".time-to-deadline").each(function() {
-    var element = $(this);
+    setDeadlineTimer($(this));
+});
+
+function setDeadlineTimer(element) {
     var seconds = parseInt(element.attr("data-seconds"));
     var total = parseInt(element.attr("data-duration"));
     var intervalId = setInterval(function() {
         seconds--;
+        element.attr("data-seconds", seconds);
         element.text(getTimeRemainingString(seconds));
-        if (seconds < total / 10)
-        element.addClass("close-to-passing")
+        if (seconds < total / 10) {
+            element.addClass("close-to-passing")
+        }
         if (seconds < 0) {
             element.text("дедлайн прошел");
             element.attr("data-seconds", "-1");
@@ -19,12 +24,12 @@ $(".time-to-deadline").each(function() {
             clearInterval(intervalId);
         }
     }, 1000);
-});
+}
 
-function getTimeRemainingString(seconds){
-    var minutes = Math.floor((seconds/60)) % 60;
-    var hours = Math.floor((seconds/(60*60))) % 24;
-    var days = Math.floor(seconds/(60*60*24));
+function getTimeRemainingString(seconds) {
+    var minutes = Math.floor((seconds / 60)) % 60;
+    var hours = Math.floor((seconds / (60 * 60))) % 24;
+    var days = Math.floor(seconds / (60 * 60 * 24));
 
     var ans = "";
     if (days > 0) 

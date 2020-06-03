@@ -252,8 +252,9 @@
                 width: 100%;
 
                 .next {
+                    mix-blend-mode: multiply;
+
                     right: 16px;
-                    color: #fff;
 
                     &:active {
                         right: 0;
@@ -261,8 +262,9 @@
                 }
 
                 .prev {
+                    mix-blend-mode: multiply;
+                    
                     left: 16px;
-                    color: #fff;
 
                     &:active {
                         left: 0;

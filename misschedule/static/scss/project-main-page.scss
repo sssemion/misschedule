@@ -24,6 +24,11 @@
             position: relative;
             margin-bottom: 16px;
 
+            *{
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
             &::after {
                 content: "";
                 position: absolute;
@@ -189,6 +194,22 @@
     }
 }
 
+.rightside-menu {
+    .chat-panel__heading h1 {
+        position: relative;
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            height: 1px;
+            width: 75%;
+            background-color: $main_blue;
+        }
+    }
+}
+
 .tasks {
     padding: 16px;
     
@@ -212,12 +233,204 @@
         justify-content: space-between;
 
         .tasks__column {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            align-items: center;
-            margin: 0;
             width: 32%;
+
+            .column-heading {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .task-list {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-items: center;
+                margin: 0;
+            }
+        }
+    }
+}
+
+@media(max-width: $ipad_horizontal) {
+    .container {
+        position: relative;
+        flex-wrap: wrap;
+
+        .leftside-menu, .rightside-menu {
+            order: 0;
+            width: calc(50% - 32px);
+
+            .users-panel, .chat-panel {
+                &__heading{
+
+                    h1 {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: left;
+
+                    .expand-button {
+                        margin: 0 16px;
+                        position: relative;
+                        width: 24px;
+                        height: 24px;
+
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            width: 4px;
+                            height: 24px;
+                            right: 10px;
+                            top: calc(50% - 12px);
+                            background-color: $main_blue;
+                            transition: width 0.5s ease,
+                                        height 0.5s ease,
+                                        top 0.5s ease,
+                                        right 0.5s ease;
+                        }
+
+                        &::after {
+                            content: "";
+                            position: absolute;
+                            width: 24px;
+                            height: 4px;
+                            right: 0;
+                            top: calc(50% - 2px);
+                            background-color: $main_blue;
+                        }
+                    }
+                }
+
+                &.expanned {
+                    .users-panel__heading, .chat-panel__heading {
+                        .expand-button {
+                            &::before {
+                                width: 24px;
+                                height: 4px;
+                                right: 0;
+                                top: calc(50% - 2px);
+                            }
+                        }
+                    }
+
+                    .user-list, .chat-list {
+                        display: block;
+                    }
+                }
+
+                .user-list, .chat-list {
+                    display: none;
+                }
+            }
+        }
+
+        .rightside-menu {
+            order: 1;
+            width: calc(50% - 32px);
+        }
+
+        .tasks {
+            order: 2;
+            width: 100% - $container-margin;
+            margin-top: 32px;
+        }
+    }
+}
+
+@media(max-width: 684px) {
+    .container {
+        flex-direction: column;
+        
+        .leftside-menu {
+            padding-bottom: 4px;
+            width: 100% - $container-margin;
+        }
+
+        .rightside-menu {
+            padding-top: 4px;
+            width: 100% - $container-margin;
+        }
+
+        .tasks {
+            height: 100vh;
+            min-height: 768px;
+            padding-top: 0;
+            padding-bottom: 0;
+
+            &__inner {
+                flex-direction: column;
+
+                height: calc(100% - 38px - 16px);
+
+                .tasks__column {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    width: 100%;
+                    height: 32%;
+                    
+                    padding: 0;
+
+                    overflow: hidden;
+
+                    .column-heading {
+                        writing-mode: tb-rl;
+                        min-width: 28px;
+                    }
+
+                    .task-list {
+                        display: flex;
+                        flex-wrap: wrap;
+                        height: 100%;
+                        align-content: flex-start;
+
+                        min-width: 320px;
+
+                        overflow-x: auto;
+                        overflow-y: hidden;
+                        
+                        &::-webkit-scrollbar {
+                            display: none;
+                        }
+                    }
+
+                    .task {
+                        height: calc(100% - 32px);
+                        min-width: 132px;
+                        width: auto;
+                        max-width: 256px;
+                        margin: 0 8px;
+
+                        position: relative;
+
+                        &:last-child {
+                            &::after {
+                                content: "";
+                                position: absolute;
+                                right: -64px;
+                                top: 0;
+                                width: 64px;
+                                height: 100%;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .popup-task-wrapper.new-task {
+        $form-padding: 10%;
+
+        .task-form {
+            padding: $form-padding / 2 $form-padding;
+            width: 90% - $form-padding * 2;
         }
     }
 }
@@ -247,19 +460,19 @@
     }
 
     &__description {
-        position: relative;
-        margin-bottom: 16px;
 
-        &::after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            height: 1px;
-            width: 75%;
-            background-color: $main_blue;
-            mix-blend-mode: multiply;
-        }
+        display: -webkit-box;
+        -webkit-box-orient: vertical;  
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+    }
+
+    .line {
+        margin: 8px 0;
+        height: 1px;
+        width: 75%;
+        background-color: $main_blue;
+        mix-blend-mode: multiply;
     }
 
     &__tag {
@@ -309,7 +522,7 @@
 }
 
 body {
-    overflow-y: scroll;
+    overflow-y: auto;
     &.scroll-locked {
         overflow-y: hidden;
     }
@@ -329,7 +542,6 @@ body {
 
     &.active {
         display: flex !important;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
     }
@@ -460,13 +672,14 @@ body {
         &__buttons {
             margin-top: 8px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: flex-end;
             margin: 8px -8px;
 
             .button {
                 background-color: $main_blue;
                 color: #fff;
-                margin: 0 8px;
+                margin: 4px 8px;
             }
         }
 

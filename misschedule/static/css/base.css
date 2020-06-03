@@ -196,13 +196,14 @@ h1, h2, h3, h4, h5, h6 {
           background-color: #fff; }
       .header .login-buttons {
         display: none;
-        grid-area: l; }
+        grid-area: l;
+        margin: -5px 0; }
         .header .login-buttons.active {
           display: flex;
           flex-direction: column;
           align-items: flex-end; }
-        .header .login-buttons .login {
-          margin: 0 0 10px 0; }
+        .header .login-buttons * {
+          margin: 5px 0; }
       .header .burger {
         display: block;
         position: absolute;
