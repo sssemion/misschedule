@@ -256,6 +256,8 @@
             max-width: 256px;
             margin: 0 8px;
             position: relative; }
+            .container .tasks__inner .tasks__column .task:hover {
+              transform: none; }
             .container .tasks__inner .tasks__column .task:last-child::after {
               content: "";
               position: absolute;
