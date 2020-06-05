@@ -428,8 +428,3 @@ $(".chat-panel__heading .expand-button").on("click", function() {
     }
     chatPanel.toggleClass("expanned");
 });
-
-function clearStyleDisplay() {
-    console.log($(this));
-    $(this).attr("style", $(this).attr("style").replace(/display:\s.+;/g, ""));
-}

@@ -57,17 +57,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .input-str {
-    transition: width 0.5s ease, height 0.5s ease, margin 0.5s ease;
     margin-top: 6px;
     margin-bottom: 6px;
-    &:focus {
-        border-color: $main_blue;
-        box-shadow: 0 0 0 0.2rem transparentize($color: $main_blue, $amount: 0.75);
-        margin-left: -5%;
-        width: 110%;
-        height: calc(1.5em + .75rem + 8px);
-        margin-top: 0;
-        margin-bottom: 0;
+
+    @media(min-width: 576px) {
+        transition: width 0.5s ease, height 0.5s ease, margin 0.5s ease;
+        &:focus {
+            border-color: $main_blue;
+            box-shadow: 0 0 0 0.2rem transparentize($color: $main_blue, $amount: 0.75);
+            margin-left: -5%;
+            width: 110%;
+            max-width: calc(100vw - #{$container-margin / 2});
+            height: calc(1.5em + .75rem + 8px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
     }
 }
 
@@ -84,6 +88,8 @@ h1, h2, h3, h4, h5, h6 {
     background: $main_gradient;
     
     padding: $header_padding 2.5%;
+
+    z-index: 1000;
 
     .logo {
         display: flex;
@@ -116,11 +122,6 @@ h1, h2, h3, h4, h5, h6 {
         }
 
         cursor: pointer;
-    }
-
-    transition: box-shadow 0.5s linear;
-    &.scrolled {
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25);
     }
 
     &__nav {
@@ -243,13 +244,12 @@ h1, h2, h3, h4, h5, h6 {
         grid-template-columns: repeat(2, 1fr);
         grid-template-areas: "i b";
 
-        transition: all 1s ease;
-
         &.active {
             grid-template-rows: repeat(3, auto);
             grid-template-areas: "i b"
                     "n n"
                     "l l";
+            box-shadow: 8px 8px 16px 8px transparentize($color: #000, $amount: 0.75);
         }
 
         .logo {

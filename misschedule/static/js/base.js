@@ -30,3 +30,7 @@ function formatDate(element) {
     s = s.replace(", ", " ");
     element.text(s);
 }
+
+function clearStyleDisplay() {
+    $(this).attr("style", $(this).attr("style").replace(/display:\s.+;/g, ""));
+}

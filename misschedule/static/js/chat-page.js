@@ -45,3 +45,14 @@ $(".user.add-user").on("click", function() {
     $(".user.add-user-form").slideDown(500);
     $(".user.add-user-form").addClass("active");
 })
+
+// Раскрывающийся список пользователей для маленьких экранов
+$(".users-column__heading .expand-button").on("click", function() {
+    var usersColumn = $(".users-column");
+    if (usersColumn.hasClass("expanned")) {
+        $(".users-column .user-list").slideUp(500, clearStyleDisplay);
+    } else {
+        $(".users-column .user-list").slideDown(500);
+    }
+    usersColumn.toggleClass("expanned");
+});
