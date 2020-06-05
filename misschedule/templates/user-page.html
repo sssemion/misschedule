@@ -7,7 +7,7 @@
         <h1 class="user__name">{{ user['first_name'] }} {{ user['last_name'] }}</h1>
         <a class="user__username" href="/users/{{  user['username']  }}">@{{ user['username'] }}</a>
         <p class="user__email">Email: <a class="email-link" href="mailto:{{  user['email']  }}">{{ user['email'] }}</a></p>
-        <p class="user__reg-date">Дата регистрации: <span>{{ user['reg_date'] }}</span></p>
+        <p class="user__reg-date">Дата регистрации: <span class="date-field">{{ user['reg_date'] }}</span></p>
     </div>
     <div class="projects">
         <h1>Проекты</h1>

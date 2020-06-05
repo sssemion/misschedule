@@ -42,6 +42,8 @@ function click_on_task() {
     // Дата создания
     $(".popup-task__creation-date").text($(this).attr("data-creation-date-formatted"));
     $(".popup-task__deadline-date").text($(this).attr("data-deadline-date-formatted"));
+    formatDate($(".popup-task__creation-date"));
+    formatDate($(".popup-task__deadline-date"));
 
     // Подзадачи
     $(".popup-task__items").html($(this).children(".task__items").html());
@@ -111,7 +113,8 @@ $(".popup-task__send-button").on("click", function() {
                     $(this).children(".item__completed").prop("disabled", true);
                     $(this).children(".item__info").append('<span>Кем выполнено: </span><a class="popup-task__worker" href="/' + data.completed_by.username + '">' +
                                    data.completed_by.first_name + ' ' + data.completed_by.last_name + '</a><br>');
-                    $(this).children(".item__info").append('<span>Когда выполнено: </span><span>' + data.completion_date + '</span><br>');
+                    $(this).children(".item__info").append('<span>Когда выполнено: </span><span class="date-field">' + data.completion_date + '</span><br>');
+                    formatDate($(this).children(".item__info").children(".date-field"));
 
                     // Изменяем ифнормацию и для элемента Задачи
                     var item = clickedTask.children(".task__items").children(".item[data-id=" + $(this).attr("data-id") + "]");
@@ -119,7 +122,8 @@ $(".popup-task__send-button").on("click", function() {
                     item.children(".item__completed").attr("checked", true);
                     item.children(".item__info").append('<span>Кем выполнено: </span><a class="popup-task__worker" href="/' + data.completed_by.username + '">' +
                                                         data.completed_by.first_name + ' ' + data.completed_by.last_name + '</a><br>');
-                    item.children(".item__info").append('<span>Когда выполнено: </span><span>' + data.completion_date + '</span><br>');
+                    item.children(".item__info").append('<span>Когда выполнено: </span><span class="date-field">' + data.completion_date + '</span><br>');
+                    formatDate(item.children(".item__info").children(".date-field"));
                 }
             });
         }

@@ -18,7 +18,7 @@
             {% else %}
                 <p class="project__description no-description">Нет описания</p>
             {% endif %}
-            <span class="project__reg-date">Дата создания: {{ project['reg_date'] }}</span>
+            <p class="project__reg-date">Дата создания: <span class="date-field">{{ project['reg_date'] }}</span></p>
         </div>
 
         <div class="users-panel">
@@ -144,7 +144,7 @@
                                             {% if item["completed"] %}
                                                 {% set user = item["completed_by_id"] | user_by_id %}
                                                 <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
-                                                <span>Когда выполнено: </span><span>{{ item["completion_date"] }}</span><br>
+                                                <span>Когда выполнено: </span><span class="date-field">{{ item["completion_date"] }}</span><br>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -216,7 +216,7 @@
                                             {% if item["completed"] %}
                                                 {% set user = item["completed_by_id"] | user_by_id %}
                                                 <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
-                                                <span>Когда выполнено: </span><span>{{ item["completion_date"] }}</span><br>
+                                                <span>Когда выполнено: </span><span class="date-field">{{ item["completion_date"] }}</span><br>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -280,7 +280,7 @@
                                             {% if item["completed"] %}
                                                 {% set user = item["completed_by_id"] | user_by_id %}
                                                 <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
-                                                <span>Когда выполнено: </span><span>{{ item["completion_date"] }}</span><br>
+                                                <span>Когда выполнено: </span><span class="date-field">{{ item["completion_date"] }}</span><br>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -339,8 +339,8 @@
         <p class="popup-task__tag"></p><br>
         <span>Создатель: </span><a class="popup-task__creator"></a><br>
         <span>Ответственный: </span><a class="popup-task__worker"></a><br>
-        <span>Дата создания: </span><p class="popup-task__creation-date"></p><br>
-        <span>Дедлайн: </span><p class="popup-task__deadline-date"></p>
+        <span>Дата создания: </span><p class="popup-task__creation-date date-field"></p><br>
+        <span>Дедлайн: </span><p class="popup-task__deadline-date date-field"></p>
         <h3 class="popup-task__items-title">Подзадачи: </h3>
         <div class="popup-task__items"></div>
         <div class="popup-task__add-item-form-container"></div>

@@ -27,11 +27,12 @@ $(".send-button").on("click", function() {
                 var html = '<div class="message">\
     <div>\
         <h3 class="message__addresser">' + data["user"]["first_name"] + ' ' + data["user"]["last_name"] + '</h3>\
-        <p class="message__date">' + data["date"] + '</p>\
+        <p class="message__date date-field">' + data["date"] + '</p>\
     </div>\
     <p class="message__text">' + messageText + '</p>\
 </div>';
                 $(".messages").append(html);
+                formatDate($(".messages .message:last-child .date-field"));
                 scorllChatToBottom();
             }
         }

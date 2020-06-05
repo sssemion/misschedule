@@ -6,12 +6,23 @@
   .container .messages-column {
     width: 50%; }
 
-.info-bar {
+.info-bar, .users-column {
   padding: 16px; }
-  .info-bar .project-info a {
+  .info-bar h1, .users-column h1 {
+    position: relative;
+    margin-bottom: 16px; }
+    .info-bar h1::after, .users-column h1::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      height: 1px;
+      width: 75%;
+      background-color: #34bacc; }
+  .info-bar .project-info a, .users-column .project-info a {
     text-decoration: none;
     color: #2ea8b8; }
-    .info-bar .project-info a:hover {
+    .info-bar .project-info a:hover, .users-column .project-info a:hover {
       text-decoration: underline; }
 
 .messages-column {
@@ -22,7 +33,7 @@
   .messages-column .messages {
     overflow-x: hidden;
     text-overflow: ellipsis;
-    overflow-y: scroll;
+    overflow-y: auto;
     flex-shrink: 1;
     padding: 16px 16px 16px 0; }
     .messages-column .messages .message {
@@ -42,7 +53,7 @@
         .messages-column .messages .message:not(.no-message):not(:last-child)::after {
           content: "";
           position: absolute;
-          width: 75%;
+          width: 100%;
           height: 1px;
           background-color: #acacac;
           bottom: -8px; }
@@ -52,7 +63,7 @@
     justify-self: flex-end;
     display: flex;
     align-items: center;
-    width: 75%;
+    width: 90%;
     margin: 0 auto; }
     .messages-column .input-outer .text-message {
       flex-grow: 1;
