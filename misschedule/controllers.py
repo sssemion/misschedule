@@ -70,9 +70,9 @@ def index():
         return make_response(render_template('main-page.html'))
 
     headers = {"Authorization": f"Bearer {token}"}
-    projects = request_get('{app.config["API_SERVER_NAME"]}/api/projects', headers=headers)
+    projects = request_get(f'{app.config["API_SERVER_NAME"]}/api/projects', headers=headers)
     projects_data = projects.json()
-    tasks = request_get('{app.config["API_SERVER_NAME"]}/api/tasks', headers=headers)
+    tasks = request_get(f'{app.config["API_SERVER_NAME"]}/api/tasks', headers=headers)
     tasks_data = tasks.json()
     myself = request_get(f'{app.config["API_SERVER_NAME"]}/api/users/get_myself', headers=headers).json()["user"]
 
@@ -103,7 +103,7 @@ def register():
             form.password.errors.append(e)
             return render_template('register.html', form=form)
 
-        response = request_post('{app.config["API_SERVER_NAME"]}/api/users', {
+        response = request_post(f'{app.config["API_SERVER_NAME"]}/api/users', {
             'username': form.username.data,
             'email': form.email.data,
             'first_name': form.first_name.data,
@@ -145,7 +145,7 @@ def login():
 @app.route('/logout')
 def logout():
     headers = {'Authorization': f'Bearer {session.get("token", "")}'}
-    request = request_post('{app.config["API_SERVER_NAME"]}/api/logout', headers=headers).json()
+    request = request_post(f'{app.config["API_SERVER_NAME"]}/api/logout', headers=headers).json()
     session.pop("token", None)
     return redirect('/')
 
@@ -156,7 +156,7 @@ def create_project():
     if form.validate_on_submit():
         token = session.get('token', '')
         headers = {"Authorization": f"Bearer {token}"}
-        data = request_post('{app.config["API_SERVER_NAME"]}/api/projects', {
+        data = request_post(f'{app.config["API_SERVER_NAME"]}/api/projects', {
             'project_name': form.project_name.data, 'title': form.title.data,
             'description': form.description.data}, headers=headers).json()
         if data['success']:
