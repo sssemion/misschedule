@@ -18,9 +18,16 @@ $(document).ready(function() {
 
 // Функция для перевода даты из GMT в локальный часовой пояс
 function formatDate(element) {
-    // Парсим дату из ISO формата с добавлением Z в конце, т.к. дата в GMT
-    var date = new Date(Date.parse(element.text() + "Z"));
+    // Парсим дату из ISO формата сначала в UTC формат, 
+    // а затем в формат локального часового пояса
 
+    var a = element.text().split(/[^0-9]/);
+    if (a.length < 6) {
+        a.push("0");
+    }
+    
+    var date = new Date(Date.UTC(a[0], a[1] - 1, a[2], a[3], a[4], a[5]));
+    
     var s = date.toLocaleString();
     
     // Убираем ненужные секунды
