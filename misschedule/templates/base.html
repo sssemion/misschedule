@@ -69,10 +69,8 @@
     <!-- Begin page content -->
     {% block content %}{% endblock %}
 
-    {% if jquery %}
-        <!-- jQuery -->
-        <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>    
-    {% endif %}
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>    
 
     <!-- js scripts -->
     <script src="{{ url_for('static', filename='js/base.js') }}"></script>

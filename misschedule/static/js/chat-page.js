@@ -27,11 +27,12 @@ $(".send-button").on("click", function() {
                 var html = '<div class="message">\
     <div>\
         <h3 class="message__addresser">' + data["user"]["first_name"] + ' ' + data["user"]["last_name"] + '</h3>\
-        <p class="message__date">' + data["date"] + '</p>\
+        <p class="message__date date-field">' + data["date"] + '</p>\
     </div>\
     <p class="message__text">' + messageText + '</p>\
 </div>';
                 $(".messages").append(html);
+                formatDate($(".messages .message:last-child .date-field"));
                 scorllChatToBottom();
             }
         }
@@ -44,3 +45,14 @@ $(".user.add-user").on("click", function() {
     $(".user.add-user-form").slideDown(500);
     $(".user.add-user-form").addClass("active");
 })
+
+// Раскрывающийся список пользователей для маленьких экранов
+$(".users-column__heading .expand-button").on("click", function() {
+    var usersColumn = $(".users-column");
+    if (usersColumn.hasClass("expanned")) {
+        $(".users-column .user-list").slideUp(500, clearStyleDisplay);
+    } else {
+        $(".users-column .user-list").slideDown(500);
+    }
+    usersColumn.toggleClass("expanned");
+});

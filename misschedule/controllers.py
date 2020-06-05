@@ -198,6 +198,8 @@ def project_page(username, project_name):
             if response.status_code == 400 and response_data.get("message", '').startswith("Task with title '"):
                 task_already_exists = True
                 start_with_form = True
+            elif response.status_code == 200 and response_data.get("success", False):
+                return redirect(f"/{username}/{project_name}")
 
         team_leader = request_get(f'{app.config["API_SERVER_NAME"]}/api/projects/{project["project"]["id"]}/get_team_leader',
                                   headers=headers).json()

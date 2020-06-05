@@ -13,6 +13,9 @@
     .leftside-menu .project__heading, .rightside-menu .project__heading {
       position: relative;
       margin-bottom: 16px; }
+      .leftside-menu .project__heading *, .rightside-menu .project__heading * {
+        overflow: hidden;
+        text-overflow: ellipsis; }
       .leftside-menu .project__heading::after, .rightside-menu .project__heading::after {
         content: "";
         position: absolute;
@@ -114,6 +117,17 @@
         .leftside-menu .users-panel .user__email .email-link:hover, .leftside-menu .users-panel .chat__email .email-link:hover, .leftside-menu .chat-panel .user__email .email-link:hover, .leftside-menu .chat-panel .chat__email .email-link:hover, .rightside-menu .users-panel .user__email .email-link:hover, .rightside-menu .users-panel .chat__email .email-link:hover, .rightside-menu .chat-panel .user__email .email-link:hover, .rightside-menu .chat-panel .chat__email .email-link:hover {
           text-decoration: underline; }
 
+.rightside-menu .chat-panel__heading h1 {
+  position: relative; }
+  .rightside-menu .chat-panel__heading h1::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    height: 1px;
+    width: 75%;
+    background-color: #34bacc; }
+
 .tasks {
   padding: 16px; }
   .tasks h1 {
@@ -131,12 +145,129 @@
     display: flex;
     justify-content: space-between; }
     .tasks .tasks__inner .tasks__column {
-      display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
-      align-items: center;
-      margin: 0;
       width: 32%; }
+      .tasks .tasks__inner .tasks__column .column-heading {
+        overflow: hidden;
+        text-overflow: ellipsis; }
+      .tasks .tasks__inner .tasks__column .task-list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+        margin: 0; }
+
+@media (max-width: 1024px) {
+  .container {
+    position: relative;
+    flex-wrap: wrap; }
+    .container .leftside-menu, .container .rightside-menu {
+      order: 0;
+      width: calc(50% - 32px); }
+      .container .leftside-menu .users-panel__heading, .container .leftside-menu .chat-panel__heading, .container .rightside-menu .users-panel__heading, .container .rightside-menu .chat-panel__heading {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: left; }
+        .container .leftside-menu .users-panel__heading h1, .container .leftside-menu .chat-panel__heading h1, .container .rightside-menu .users-panel__heading h1, .container .rightside-menu .chat-panel__heading h1 {
+          overflow: hidden;
+          text-overflow: ellipsis; }
+        .container .leftside-menu .users-panel__heading .expand-button, .container .leftside-menu .chat-panel__heading .expand-button, .container .rightside-menu .users-panel__heading .expand-button, .container .rightside-menu .chat-panel__heading .expand-button {
+          margin: 0 16px;
+          position: relative;
+          width: 24px;
+          height: 24px; }
+          .container .leftside-menu .users-panel__heading .expand-button::before, .container .leftside-menu .chat-panel__heading .expand-button::before, .container .rightside-menu .users-panel__heading .expand-button::before, .container .rightside-menu .chat-panel__heading .expand-button::before {
+            content: "";
+            position: absolute;
+            width: 4px;
+            height: 24px;
+            right: 10px;
+            top: calc(50% - 12px);
+            background-color: #34bacc;
+            transition: width 0.5s ease, height 0.5s ease, top 0.5s ease, right 0.5s ease; }
+          .container .leftside-menu .users-panel__heading .expand-button::after, .container .leftside-menu .chat-panel__heading .expand-button::after, .container .rightside-menu .users-panel__heading .expand-button::after, .container .rightside-menu .chat-panel__heading .expand-button::after {
+            content: "";
+            position: absolute;
+            width: 24px;
+            height: 4px;
+            right: 0;
+            top: calc(50% - 2px);
+            background-color: #34bacc; }
+      .container .leftside-menu .users-panel.expanned .users-panel__heading .expand-button::before, .container .leftside-menu .users-panel.expanned .chat-panel__heading .expand-button::before, .container .leftside-menu .chat-panel.expanned .users-panel__heading .expand-button::before, .container .leftside-menu .chat-panel.expanned .chat-panel__heading .expand-button::before, .container .rightside-menu .users-panel.expanned .users-panel__heading .expand-button::before, .container .rightside-menu .users-panel.expanned .chat-panel__heading .expand-button::before, .container .rightside-menu .chat-panel.expanned .users-panel__heading .expand-button::before, .container .rightside-menu .chat-panel.expanned .chat-panel__heading .expand-button::before {
+        width: 24px;
+        height: 4px;
+        right: 0;
+        top: calc(50% - 2px); }
+      .container .leftside-menu .users-panel.expanned .user-list, .container .leftside-menu .users-panel.expanned .chat-list, .container .leftside-menu .chat-panel.expanned .user-list, .container .leftside-menu .chat-panel.expanned .chat-list, .container .rightside-menu .users-panel.expanned .user-list, .container .rightside-menu .users-panel.expanned .chat-list, .container .rightside-menu .chat-panel.expanned .user-list, .container .rightside-menu .chat-panel.expanned .chat-list {
+        display: block; }
+      .container .leftside-menu .users-panel .user-list, .container .leftside-menu .users-panel .chat-list, .container .leftside-menu .chat-panel .user-list, .container .leftside-menu .chat-panel .chat-list, .container .rightside-menu .users-panel .user-list, .container .rightside-menu .users-panel .chat-list, .container .rightside-menu .chat-panel .user-list, .container .rightside-menu .chat-panel .chat-list {
+        display: none; }
+    .container .rightside-menu {
+      order: 1;
+      width: calc(50% - 32px); }
+    .container .tasks {
+      order: 2;
+      width: 94%;
+      margin-top: 32px; } }
+
+@media (max-width: 684px) {
+  .container {
+    flex-direction: column; }
+    .container .leftside-menu {
+      padding-bottom: 4px;
+      width: 94%; }
+    .container .rightside-menu {
+      padding-top: 4px;
+      width: 94%; }
+    .container .tasks {
+      height: 100vh;
+      min-height: 768px;
+      padding-top: 0;
+      padding-bottom: 0; }
+      .container .tasks__inner {
+        flex-direction: column;
+        height: calc(100% - 38px - 16px); }
+        .container .tasks__inner .tasks__column {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          width: 100%;
+          height: 32%;
+          padding: 0;
+          overflow: hidden; }
+          .container .tasks__inner .tasks__column .column-heading {
+            writing-mode: tb-rl;
+            min-width: 28px; }
+          .container .tasks__inner .tasks__column .task-list {
+            display: flex;
+            flex-wrap: wrap;
+            height: 100%;
+            align-content: flex-start;
+            min-width: 320px;
+            overflow-x: auto;
+            overflow-y: hidden; }
+            .container .tasks__inner .tasks__column .task-list::-webkit-scrollbar {
+              display: none; }
+          .container .tasks__inner .tasks__column .task {
+            height: calc(100% - 32px);
+            min-width: 132px;
+            width: auto;
+            max-width: 256px;
+            margin: 0 8px;
+            position: relative; }
+            .container .tasks__inner .tasks__column .task:hover {
+              transform: none; }
+            .container .tasks__inner .tasks__column .task:last-child::after {
+              content: "";
+              position: absolute;
+              right: -64px;
+              top: 0;
+              width: 64px;
+              height: 100%; }
+  .popup-task-wrapper.new-task .task-form {
+    padding: 5% 10%;
+    width: 70%; } }
 
 .task, .popup-task {
   width: calc(100% - 34px);
@@ -155,17 +286,16 @@
     overflow: hidden;
     text-overflow: ellipsis; }
   .task__description, .popup-task__description {
-    position: relative;
-    margin-bottom: 16px; }
-    .task__description::after, .popup-task__description::after {
-      content: "";
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      height: 1px;
-      width: 75%;
-      background-color: #34bacc;
-      mix-blend-mode: multiply; }
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden; }
+  .task .line, .popup-task .line {
+    margin: 8px 0;
+    height: 1px;
+    width: 75%;
+    background-color: #34bacc;
+    mix-blend-mode: multiply; }
   .task__tag, .popup-task__tag {
     position: relative;
     display: inline-block;
@@ -197,7 +327,7 @@
     align-items: center; }
 
 body {
-  overflow-y: scroll; }
+  overflow-y: auto; }
   body.scroll-locked {
     overflow-y: hidden; }
 
@@ -213,7 +343,6 @@ body {
   height: 100vh; }
   .popup-task-wrapper.active {
     display: flex !important;
-    flex-direction: column;
     justify-content: center;
     align-items: center; }
   .popup-task-wrapper .popup-task, .popup-task-wrapper form {
@@ -296,12 +425,13 @@ body {
     .popup-task-wrapper .popup-task__buttons, .popup-task-wrapper form__buttons {
       margin-top: 8px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: flex-end;
       margin: 8px -8px; }
       .popup-task-wrapper .popup-task__buttons .button, .popup-task-wrapper form__buttons .button {
         background-color: #34bacc;
         color: #fff;
-        margin: 0 8px; }
+        margin: 4px 8px; }
     .popup-task-wrapper .popup-task__add-item-button:active, .popup-task-wrapper form__add-item-button:active {
       letter-spacing: 0; }
 

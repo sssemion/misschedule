@@ -72,6 +72,8 @@ form {
             margin-bottom: 4px;
             $h: calc(1.5em + .75rem + 2px);
             height: $h;
+            transition: width 0.5s ease, height 0.5s ease, margin 0.5s ease;
+        
             &:hover {
                 margin-left: -2.5%;
                 width: 105%;

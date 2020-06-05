@@ -5,7 +5,10 @@
   position: sticky;
   top: 0;
   left: 0;
-  z-index: 1000; }
+  z-index: 1000;
+  transition: box-shadow 0.5s linear; }
+  .header.scrolled {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25); }
 
 .intro {
   background: linear-gradient(90deg, #34bacc 0%, #00ffaf 100%); }
@@ -162,13 +165,13 @@
     .how-it-works .how-it-works__inner .slider {
       width: 100%; }
       .how-it-works .how-it-works__inner .slider .next {
-        right: 16px;
-        color: #fff; }
+        mix-blend-mode: multiply;
+        right: 16px; }
         .how-it-works .how-it-works__inner .slider .next:active {
           right: 0; }
       .how-it-works .how-it-works__inner .slider .prev {
-        left: 16px;
-        color: #fff; }
+        mix-blend-mode: multiply;
+        left: 16px; }
         .how-it-works .how-it-works__inner .slider .prev:active {
           left: 0; } }
 

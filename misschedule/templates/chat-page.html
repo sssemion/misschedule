@@ -1,6 +1,5 @@
 {% set style_file = url_for('static', filename='css/chat-page.css') %}
 {% set script_file = url_for('static', filename='js/chat-page.js') %}
-{% set jquery = true %}
 
 {% set title = project["project"]["project_name"]
     + " | " + chat["chat"]["title"] %}
@@ -11,7 +10,7 @@
 <main class="container">
     <div class="info-bar">
         <h1 class="chat-name" data-id="{{ chat['chat']['id'] }}">{{chat['chat']['title']}}</h1>
-        <p>Дата создания: {{ chat['chat']['reg_date'] }}</p>
+        <p>Дата создания: <span class="date-field">{{ chat['chat']['reg_date'] }}</span></p>
         <p class="project-info" data-id="{{ project['project']['project_id'] }}">Проект: <a href="/{{ project['team_leader']['username'] }}/{{ project['project']['project_name'] }}">{{ project["project"]["project_name"] }}</a></p>
     </div>
 
@@ -22,7 +21,7 @@
                 <div class="message">
                     <div>
                         <h3 class="message__addresser">{{ message['user']['first_name'] }} {{ message['user']['last_name'] }}</h3>
-                        <p class="message__date">{{ message['message']['date'] }}</p>
+                        <p class="message__date date-field">{{ message['message']['date'] }}</p>
                     </div>
                     <p class="message__text">{{ message['message']['message'] }}</p>
                 </div>
@@ -38,33 +37,39 @@
     </div>
 
     <div class="users-column">
-        <a class="user add-user">
-            <h3>Добавить пользователя</h3>
-            <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                <g>
-                    <title>Layer 1</title>
-                    <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
-                    <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
-                    <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
-                </g>
-            </svg>
-        </a>
-        <form action="" method="POST" class="user add-user-form" style="display: none;">
-            {{ form.hidden_tag() }}
+        <div class="users-column__heading">
+            <h1>Пользователи</h1>
+            <div class="expand-button"></div>
+        </div>
+        <div class="user-list">
+            <a class="user add-user">
+                <h3>Добавить пользователя</h3>
+                <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <title>Layer 1</title>
+                        <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
+                        <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
+                        <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
+                    </g>
+                </svg>
+            </a>
+            <form action="" method="POST" class="user add-user-form" style="display: none;">
+                {{ form.hidden_tag() }}
 
-            {{ form.users.label }}
-            {{ form.users() }}
+                {{ form.users.label }}
+                {{ form.users() }}
 
-            {{ form.submit(class="button") }}
-        </form>
-        {% for item in chat['users'] %}
-            <div class="user">
-                <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>
-                <a class="user__username" href="/users/{{  item['username']  }}">@{{ item['username'] }}</a>
-                <p class="user__email">Email: <a class="email-link" href="mailto:{{  item['email']  }}">{{ item['email'] }}</a>
-                </p>
-            </div>
-        {% endfor %}
+                {{ form.submit(class="button") }}
+            </form>
+            {% for item in chat['users'] %}
+                <div class="user">
+                    <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>
+                    <a class="user__username" href="/users/{{  item['username']  }}">@{{ item['username'] }}</a>
+                    <p class="user__email">Email: <a class="email-link" href="mailto:{{  item['email']  }}">{{ item['email'] }}</a>
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </main>
 {% endblock %}

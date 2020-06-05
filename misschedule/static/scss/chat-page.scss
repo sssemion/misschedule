@@ -14,8 +14,23 @@
     }
 }
 
-.info-bar {
+.info-bar, .users-column {
     padding: 16px;
+
+    h1 {
+        position: relative;
+        margin-bottom: 16px;
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            height: 1px;
+            width: 75%;
+            background-color: $main_blue;
+        }
+    }
 
     .project-info a {
         text-decoration: none;
@@ -36,7 +51,7 @@
     .messages {
         overflow-x: hidden;
         text-overflow: ellipsis;
-        overflow-y: scroll;
+        overflow-y: auto;
         ;
         flex-shrink: 1;
         padding: 16px 16px 16px 0;
@@ -66,7 +81,7 @@
                 &::after {
                     content: "";
                     position: absolute;
-                    width: 75%;
+                    width: 100%;
                     height: 1px;
                     background-color: #acacac;
                     bottom: -8px;
@@ -83,7 +98,7 @@
         justify-self: flex-end;
         display: flex;
         align-items: center;
-        width: 75%;
+        width: 90%;
         margin: 0 auto;
 
         .text-message {
@@ -182,6 +197,102 @@
             border-radius: 8px 0 0 8px;
             border: 1px solid $main_blue;
             padding: 8px;
+        }
+    }
+}
+
+
+@media(max-width: $ipad_horizontal) {
+    .messages-column {
+        padding: 16px;
+    }
+}
+
+@media(max-width: $ipad_vertical) {
+    .container {
+        position: relative;
+        flex-direction: column;
+
+        .info-bar, .users-column, .messages-column {
+            order: 0;
+            width: calc(#{100% - $container-margin / 2} - 32px);
+        }
+
+        .users-column {
+            order: 1;
+            padding-top: 0;
+
+            
+            &__heading {
+
+                h1 {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    margin: 0;
+                }
+
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: left;
+
+                .expand-button {
+                    margin: 0 16px;
+                    position: relative;
+                    width: 24px;
+                    height: 24px;
+
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        width: 4px;
+                        height: 24px;
+                        right: 10px;
+                        top: calc(50% - 12px);
+                        background-color: $main_blue;
+                        transition: width 0.5s ease,
+                                    height 0.5s ease,
+                                    top 0.5s ease,
+                                    right 0.5s ease;
+                    }
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        width: 24px;
+                        height: 4px;
+                        right: 0;
+                        top: calc(50% - 2px);
+                        background-color: $main_blue;
+                    }
+                }
+            }
+
+            &.expanned {
+                .users-column__heading {
+                    .expand-button {
+                        &::before {
+                            width: 24px;
+                            height: 4px;
+                            right: 0;
+                            top: calc(50% - 2px);
+                        }
+                    }
+                }
+
+                .user-list {
+                    display: block;
+                }
+            }
+
+            .user-list {
+                display: none;
+            }
+        }
+
+        .messages-column {
+            order: 2;
+            max-height: calc(100vh - 32px);
         }
     }
 }
