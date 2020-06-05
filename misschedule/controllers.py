@@ -134,7 +134,7 @@ def login():
     if form.validate_on_submit():
         user_and_pass = b64encode(bytes(f"{form.email.data}:{form.password.data}".encode('utf-8'))).decode("ascii")
         headers = {'Authorization': f'Basic {user_and_pass}'}
-        request = requests.post('{app.config["API_SERVER_NAME"]}/api/login', headers=headers).json()
+        request = requests.post(f'{app.config["API_SERVER_NAME"]}/api/login', headers=headers).json()
         if not request['success']:
             return render_template('login.html', form=form, login_failed=True)
         session['token'] = request['authToken']['token']
