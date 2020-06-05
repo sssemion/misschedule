@@ -42,17 +42,20 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: 2px; }
 
 .input-str {
-  transition: width 0.5s ease, height 0.5s ease, margin 0.5s ease;
   margin-top: 6px;
   margin-bottom: 6px; }
-  .input-str:focus {
-    border-color: #34bacc;
-    box-shadow: 0 0 0 0.2rem rgba(52, 186, 204, 0.25);
-    margin-left: -5%;
-    width: 110%;
-    height: calc(1.5em + .75rem + 8px);
-    margin-top: 0;
-    margin-bottom: 0; }
+  @media (min-width: 576px) {
+    .input-str {
+      transition: width 0.5s ease, height 0.5s ease, margin 0.5s ease; }
+      .input-str:focus {
+        border-color: #34bacc;
+        box-shadow: 0 0 0 0.2rem rgba(52, 186, 204, 0.25);
+        margin-left: -5%;
+        width: 110%;
+        max-width: calc(100vw - 3%);
+        height: calc(1.5em + .75rem + 8px);
+        margin-top: 0;
+        margin-bottom: 0; } }
 
 .header {
   display: flex;
@@ -64,7 +67,7 @@ h1, h2, h3, h4, h5, h6 {
   background: -webkit- linear-gradient(90deg, #34bacc 0%, #00ffaf 100%);
   background: linear-gradient(90deg, #34bacc 0%, #00ffaf 100%);
   padding: 8px 2.5%;
-  transition: box-shadow 0.5s linear; }
+  z-index: 1000; }
   .header .logo {
     display: flex;
     justify-content: center;
@@ -85,8 +88,6 @@ h1, h2, h3, h4, h5, h6 {
       @media (max-width: 1024px) {
         .header .logo span {
           font-size: 28px; } }
-  .header.scrolled {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.25); }
   .header__nav .nav__link {
     margin: 0 10px;
     position: relative;
@@ -169,11 +170,11 @@ h1, h2, h3, h4, h5, h6 {
       padding-right: 28px;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      grid-template-areas: "i b";
-      transition: all 1s ease; }
+      grid-template-areas: "i b"; }
       .header.active {
         grid-template-rows: repeat(3, auto);
-        grid-template-areas: "i b" "n n" "l l"; }
+        grid-template-areas: "i b" "n n" "l l";
+        box-shadow: 8px 8px 16px 8px rgba(0, 0, 0, 0.25); }
       .header .logo {
         grid-area: i;
         display: flex;
@@ -196,13 +197,14 @@ h1, h2, h3, h4, h5, h6 {
           background-color: #fff; }
       .header .login-buttons {
         display: none;
-        grid-area: l; }
+        grid-area: l;
+        margin: -5px 0; }
         .header .login-buttons.active {
           display: flex;
           flex-direction: column;
           align-items: flex-end; }
-        .header .login-buttons .login {
-          margin: 0 0 10px 0; }
+        .header .login-buttons * {
+          margin: 5px 0; }
       .header .burger {
         display: block;
         position: absolute;

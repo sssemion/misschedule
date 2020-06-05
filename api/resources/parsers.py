@@ -1,5 +1,7 @@
 import datetime
 
+# Файл с парсерами для POST и PUT запросов в ресурсы (названия говорят сами за себя)
+
 from flask_restful import reqparse
 
 user_parser_for_adding = reqparse.RequestParser()
@@ -52,6 +54,7 @@ chat_parser_for_adding.add_argument('project_id', required=True, type=int)
 chat_parser_for_adding.add_argument('title', required=True)
 
 chat_parser_for_updating = reqparse.RequestParser()
+chat_parser_for_adding.add_argument('project_id', required=True, type=int)
 chat_parser_for_updating.add_argument('title')
 
 message_parser_for_adding = reqparse.RequestParser()

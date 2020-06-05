@@ -1,6 +1,5 @@
 {% set style_file = url_for('static', filename='css/project-main-page.css') %}
 {% set script_file = url_for('static', filename='js/project-main-page.js') %}
-{% set jquery = true %}
 {% set bootstrap = false %}
 
 {% set title = team_leader['username'] + " | " + project['title'] %}
@@ -19,123 +18,17 @@
             {% else %}
                 <p class="project__description no-description">Нет описания</p>
             {% endif %}
-            <span class="project__reg-date">Дата создания: {{ project['reg_date'] }}</span>
+            <p class="project__reg-date">Дата создания: <span class="date-field">{{ project['reg_date'] }}</span></p>
         </div>
 
         <div class="users-panel">
-            <h1>Пользователи</h1>
-            <div class="user add-user{% if myself['id'] != team_leader['id'] %} disabled{% endif %}">
-                <h3>Добавить пользователя</h3>
-                <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                        <title>Layer 1</title>
-                        <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
-                        <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
-                        <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
-                    </g>
-                </svg>
+            <div class="users-panel__heading">
+                <h1>Пользователи</h1>
+                <div class="expand-button"></div>
             </div>
-
-            {% if myself["id"] == team_leader["id"] %}
-                <div class="user add-user-form">
-                    <label for="input-username">Имя пользователя</label>
-                    <input type="text" class="input-username" id="input-username">
-                    <p class="add-user-error-message" style="display: none;"></p>
-                    <button class="button search-user-button">Найти</button>
-
-                    <div class="found-users">
-                        <p>Найдено: <span class="found-number"></span></p>
-                        <div class="select-outer">
-                            <select class="users-select" name="users-select" id="users-select" multiple></select>
-                            <button class="button add-user-button">Добавить</button>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% for item in users %}
-            <div class="user">
-                <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>
-                <a class="user__username" href="/users/{{  item['username']  }}">@{{ item['username'] }}</a>
-                <p class="user__email">Email: <a class="email-link" href="mailto:{{  item['email']  }}">{{ item['email'] }}</a></p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="tasks">
-        <h1>Задачи</h1>
-        <div class="tasks__inner">
-            {% set planned, in_progress, finished = tasks | sort_tasks_by_status %}
-            <div class="tasks__column planned">
-                <h2 class="column-heading planned">Запланировано</h2>
-                {% for task_data in planned %}
-                    {% set task = task_data["task"] %}
-                    {% set items = task_data["items"] %}
-                    {% set creator = task["creator_id"] | user_by_id %}
-                    {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}
-                    {% endif %}
-                    {% set bgcolor = task["color"] | transparentize(0.25) %}
-                    <div class="task planned" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
-                        data-creation-date-formatted="{{ task['date'] | format_date }}"
-                        data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
-                        data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
-                        data-id="{{ task['id'] }}"
-                        {% if worker %}
-                            data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
-                        {% endif %}
-                        data-can-you-edit="{% if task_data['canYouEdit'] %}1{% else %}0{% endif %}"
-                        >
-                        <h2 class="task__title">{{ task["title"] }}</h2>
-                        {% if task["description"] %}
-                            <p class="task__description">{{ task["description"] }}</p>
-                        {% else %}
-                            <p class="task__description no-description">Нет описания</p>
-                        {% endif %}
-                        <!-- Line -->
-
-                        {% if task["tag"] %}
-                            <p class="task__tag">{{ task["tag"] }}</p>
-                        {% endif %}
-
-                        {% if task["duration"] %}
-                            <div class="task__deadline">
-                                <span>До дедлайна: </span>
-                                <span class="time-to-deadline"
-                                    data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
-                                    data-duration="{{ task['duration'] }}"></span>
-                            </div>
-                        {% endif %}
-
-                        <div class="task__items" style="display: none;">
-                            {% for item in items %}
-                                <div class="item" data-id="{{ item['id'] }}">
-                                    <input class="item__completed" type="checkbox"
-                                    {% if item['completed'] %}checked disabled title="Выполнено"{% else %}title="Не выполнено"{% endif %}
-                                    {% if not task_data['canYouEdit'] %}disabled{% endif %}
-                                    >
-                                    <div class="item__info">
-                                        <h4 class="item__title">{{ item["title"] }}</h4>
-                                        {% if item["description"] %}
-                                            <p class="item__description">{{ item["description"] }}</p>
-                                        {% else %}
-                                            <p class="item-descriprion no-descrption">Нет описания</p>
-                                        {% endif %}
-
-                                        {% if item["completed"] %}
-                                            {% set user = item["completed_by_id"] | user_by_id %}
-                                            <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
-                                            <span>Когда выполнено: </span><span>{{ item["completion_date"] }}</span><br>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endfor %}
-                <div class="task new-task">
-                    <h3>Добавить</h3>
+            <div class="user-list">
+                <div class="user add-user{% if myself['id'] != team_leader['id'] %} disabled{% endif %}">
+                    <h3>Добавить пользователя</h3>
                     <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
                         <g>
                             <title>Layer 1</title>
@@ -145,163 +38,293 @@
                         </g>
                     </svg>
                 </div>
+
+                {% if myself["id"] == team_leader["id"] %}
+                    <div class="user add-user-form">
+                        <label for="input-username">Имя пользователя</label>
+                        <input type="text" class="input-username" id="input-username">
+                        <p class="add-user-error-message" style="display: none;"></p>
+                        <button class="button search-user-button">Найти</button>
+
+                        <div class="found-users">
+                            <p>Найдено: <span class="found-number"></span></p>
+                            <div class="select-outer">
+                                <select class="users-select" name="users-select" id="users-select" multiple></select>
+                                <button class="button add-user-button">Добавить</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% for item in users %}
+                <div class="user">
+                    <h3 class="user__name">{{ item['first_name'] }} {{ item['last_name'] }}</h3>
+                    <a class="user__username" href="/users/{{  item['username']  }}">@{{ item['username'] }}</a>
+                    <p class="user__email">Email: <a class="email-link" href="mailto:{{  item['email']  }}">{{ item['email'] }}</a></p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="tasks">
+        <h1>Задачи</h1>
+        <div class="tasks__inner">
+            {% set planned, in_progress, finished = tasks | sort_tasks_by_status %}
+            <div class="tasks__column planned">
+                <h2 class="column-heading planned">Запланировано</h2>
+                <div class="task-list planned">
+                    <div class="task new-task">
+                        <h3>Добавить</h3>
+                        <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                                <title>Layer 1</title>
+                                <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
+                                <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
+                                <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
+                            </g>
+                        </svg>
+                    </div>
+                    {% for task_data in planned %}
+                        {% set task = task_data["task"] %}
+                        {% set items = task_data["items"] %}
+                        {% set creator = task["creator_id"] | user_by_id %}
+                        {% if task["worker_id"] %}
+                            {% set worker = task["worker_id"] | user_by_id %}
+                        {% endif %}
+                        {% set bgcolor = task["color"] | transparentize(0.25) %}
+                        <div class="task planned" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
+                            data-creation-date-formatted="{{ task['date'] | format_date }}"
+                            data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
+                            data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
+                            data-id="{{ task['id'] }}"
+                            {% if worker %}
+                                data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
+                            {% endif %}
+                            data-can-you-edit="{% if task_data['canYouEdit'] %}1{% else %}0{% endif %}"
+                            >
+                            <h2 class="task__title">{{ task["title"] }}</h2>
+                            {% if task["description"] %}
+                                <p class="task__description">{{ task["description"] }}</p>
+                            {% else %}
+                                <p class="task__description no-description">Нет описания</p>
+                            {% endif %}
+
+                            <!-- Line -->
+                            <div class="line"></div>
+
+                            {% if task["tag"] %}
+                                <p class="task__tag">{{ task["tag"] }}</p>
+                            {% endif %}
+
+                            {% if task["duration"] %}
+                                <div class="task__deadline">
+                                    <span>До дедлайна: </span>
+                                    <span class="time-to-deadline"
+                                        data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
+                                        data-duration="{{ task['duration'] }}"></span>
+                                </div>
+                            {% endif %}
+
+                            <div class="task__items" style="display: none;">
+                                {% for item in items %}
+                                    <div class="item" data-id="{{ item['id'] }}">
+                                        <input class="item__completed" type="checkbox"
+                                        {% if item['completed'] %}checked disabled title="Выполнено"{% else %}title="Не выполнено"{% endif %}
+                                        {% if not task_data['canYouEdit'] %}disabled{% endif %}
+                                        >
+                                        <div class="item__info">
+                                            <h4 class="item__title">{{ item["title"] }}</h4>
+                                            {% if item["description"] %}
+                                                <p class="item__description">{{ item["description"] }}</p>
+                                            {% else %}
+                                                <p class="item-descriprion no-descrption">Нет описания</p>
+                                            {% endif %}
+
+                                            {% if item["completed"] %}
+                                                {% set user = item["completed_by_id"] | user_by_id %}
+                                                <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
+                                                <span>Когда выполнено: </span><span class="date-field">{{ item["completion_date"] }}</span><br>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
             <div class="tasks__column in-progress">
-                <h2 class="column-heading in-progress">В процессе</h2>
-                {% for task_data in in_progress %}
-                    {% set task = task_data["task"] %}
-                    {% set items = task_data["items"] %}
-                    {% set creator = task["creator_id"] | user_by_id %}
-                    {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}
-                    {% endif %}
-                    {% set bgcolor = task["color"] | transparentize(0.25) %}
-                    <div class="task in-progress" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
-                        data-creation-date-formatted="{{ task['date'] | format_date }}"
-                        data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
-                        data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
-                        {% if worker %}
-                            data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
+                <h2 class="column-heading in-progress">В&nbsp;процессе</h2>
+                <div class="task-list in-progress">
+                    {% for task_data in in_progress %}
+                        {% set task = task_data["task"] %}
+                        {% set items = task_data["items"] %}
+                        {% set creator = task["creator_id"] | user_by_id %}
+                        {% if task["worker_id"] %}
+                            {% set worker = task["worker_id"] | user_by_id %}
                         {% endif %}
-                        data-id="{{ task['id'] }}"
-                        >
-                        <h2 class="task__title">{{ task["title"] }}</h2>
-                        {% if task["description"] %}
-                            <p class="task__description">{{ task["description"] }}</p>
-                        {% else %}
-                            <p class="task__description no-description">Нет описания</p>
-                        {% endif %}
-                        <!-- Line -->
+                        {% set bgcolor = task["color"] | transparentize(0.25) %}
+                        <div class="task in-progress" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
+                            data-creation-date-formatted="{{ task['date'] | format_date }}"
+                            data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
+                            data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
+                            {% if worker %}
+                                data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
+                            {% endif %}
+                            data-id="{{ task['id'] }}"
+                            >
+                            <h2 class="task__title">{{ task["title"] }}</h2>
+                            {% if task["description"] %}
+                                <p class="task__description">{{ task["description"] }}</p>
+                            {% else %}
+                                <p class="task__description no-description">Нет описания</p>
+                            {% endif %}
 
-                        {% if task["tag"] %}
-                            <p class="task__tag">{{ task["tag"] }}</p>
-                        {% endif %}
+                            <!-- Line -->
+                            <div class="line"></div>
 
-                        {% if task["duration"] %}
-                            <div class="task__deadline">
-                                <span>До дедлайна: </span>
-                                <span class="time-to-deadline"
-                                    data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
-                                    data-duration="{{ task['duration'] }}"></span>
-                            </div>
-                        {% endif %}
+                            {% if task["tag"] %}
+                                <p class="task__tag">{{ task["tag"] }}</p>
+                            {% endif %}
 
-                        <div class="task__items" style="display: none;">
-                            {% for item in items %}
-                                <div class="item" data-id="{{ item['id'] }}">
-                                    <input class="item__completed" type="checkbox"
-                                    {% if item['completed'] %}checked disabled title="Выполнено"{% else %}title="Не выполнено"{% endif %}
-                                    {% if not task_data['canYouEdit'] %}disabled{% endif %}
-                                    >
-                                    <div class="item__info">
-                                        <h4 class="item__title">{{ item["title"] }}</h4>
-                                        {% if item["description"] %}
-                                            <p class="item__description">{{ item["description"] }}</p>
-                                        {% else %}
-                                            <p class="item-descriprion no-descrption">Нет описания</p>
-                                        {% endif %}
-
-                                        {% if item["completed"] %}
-                                            {% set user = item["completed_by_id"] | user_by_id %}
-                                            <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
-                                            <span>Когда выполнено: </span><span>{{ item["completion_date"] }}</span><br>
-                                        {% endif %}
-                                    </div>
+                            {% if task["duration"] %}
+                                <div class="task__deadline">
+                                    <span>До дедлайна: </span>
+                                    <span class="time-to-deadline"
+                                        data-seconds="{{ task['date'] | time_to_deadline(task['duration']) }}"
+                                        data-duration="{{ task['duration'] }}"></span>
                                 </div>
-                            {% endfor %}
+                            {% endif %}
+
+                            <div class="task__items" style="display: none;">
+                                {% for item in items %}
+                                    <div class="item" data-id="{{ item['id'] }}">
+                                        <input class="item__completed" type="checkbox"
+                                        {% if item['completed'] %}checked disabled title="Выполнено"{% else %}title="Не выполнено"{% endif %}
+                                        {% if not task_data['canYouEdit'] %}disabled{% endif %}
+                                        >
+                                        <div class="item__info">
+                                            <h4 class="item__title">{{ item["title"] }}</h4>
+                                            {% if item["description"] %}
+                                                <p class="item__description">{{ item["description"] }}</p>
+                                            {% else %}
+                                                <p class="item-descriprion no-descrption">Нет описания</p>
+                                            {% endif %}
+
+                                            {% if item["completed"] %}
+                                                {% set user = item["completed_by_id"] | user_by_id %}
+                                                <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
+                                                <span>Когда выполнено: </span><span class="date-field">{{ item["completion_date"] }}</span><br>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
 
             <div class="tasks__column finished">
                 <h2 class="column-heading finished">Завершено</h2>
-                {% for task_data in finished %}
-                    {% set task = task_data["task"] %}
-                    {% set items = task_data["items"] %}
-                    {% set creator = task["creator_id"] | user_by_id %}
-                    {% if task["worker_id"] %}
-                        {% set worker = task["worker_id"] | user_by_id %}
-                    {% endif %}
-                    {% set bgcolor = task["color"] | transparentize(0.25) %}
-                    <div class="task finished" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
-                        data-creation-date-formatted="{{ task['date'] | format_date }}"
-                        data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
-                        data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
-                        {% if worker %}
-                            data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
-                        {% endif %}
-                        data-id="{{ task['id'] }}"
-                        >
-                        <h2 class="task__title">{{ task["title"] }}</h2>
-                        {% if task["description"] %}
-                            <p class="task__description">{{ task["description"] }}</p>
-                        {% else %}
-                            <p class="task__description no-description">Нет описания</p>
-                        {% endif %}
-                        <!-- Line -->
+                <div class="task-list finished">
 
-                        {% if task["tag"] %}
-                            <p class="task__tag">{{ task["tag"] }}</p>
+                    {% for task_data in finished %}
+                        {% set task = task_data["task"] %}
+                        {% set items = task_data["items"] %}
+                        {% set creator = task["creator_id"] | user_by_id %}
+                        {% if task["worker_id"] %}
+                            {% set worker = task["worker_id"] | user_by_id %}
                         {% endif %}
+                        {% set bgcolor = task["color"] | transparentize(0.25) %}
+                        <div class="task finished" style="background-color: #fff; background-image: linear-gradient(0, {{ bgcolor }}, {{ bgcolor }})"
+                            data-creation-date-formatted="{{ task['date'] | format_date }}"
+                            data-deadline-date-formatted="{{ task['date'] | format_date(offset=task['duration']) }}"
+                            data-creator-username="{{ creator['username'] }}" data-creator-name="{{ creator['first_name'] }} {{ creator['last_name'] }}"
+                            {% if worker %}
+                                data-worker-username="{{ worker['username'] }}" data-worker-name="{{ worker['first_name'] }} {{ worker['last_name'] }}"
+                            {% endif %}
+                            data-id="{{ task['id'] }}"
+                            >
+                            <h2 class="task__title">{{ task["title"] }}</h2>
+                            {% if task["description"] %}
+                                <p class="task__description">{{ task["description"] }}</p>
+                            {% else %}
+                                <p class="task__description no-description">Нет описания</p>
+                            {% endif %}
 
-                        <div class="task__items" style="display: none;">
-                            {% for item in items %}
-                                <div class="item" data-id="{{ item['id'] }}">
-                                    <input class="item__completed" type="checkbox"
-                                    {% if item['completed'] %}checked disabled title="Выполнено"{% else %}title="Не выполнено"{% endif %}
-                                    {% if not task_data['canYouEdit'] %}disabled{% endif %}
-                                    >
-                                    <div class="item__info">
-                                        <h4 class="item__title">{{ item["title"] }}</h4>
-                                        {% if item["description"] %}
-                                            <p class="item__description">{{ item["description"] }}</p>
-                                        {% else %}
-                                            <p class="item-descriprion no-descrption">Нет описания</p>
-                                        {% endif %}
+                            <!-- Line -->
+                            <div class="line"></div>
 
-                                        {% if item["completed"] %}
-                                            {% set user = item["completed_by_id"] | user_by_id %}
-                                            <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
-                                            <span>Когда выполнено: </span><span>{{ item["completion_date"] }}</span><br>
-                                        {% endif %}
+                            {% if task["tag"] %}
+                                <p class="task__tag">{{ task["tag"] }}</p>
+                            {% endif %}
+
+                            <div class="task__items" style="display: none;">
+                                {% for item in items %}
+                                    <div class="item" data-id="{{ item['id'] }}">
+                                        <input class="item__completed" type="checkbox"
+                                        {% if item['completed'] %}checked disabled title="Выполнено"{% else %}title="Не выполнено"{% endif %}
+                                        {% if not task_data['canYouEdit'] %}disabled{% endif %}
+                                        >
+                                        <div class="item__info">
+                                            <h4 class="item__title">{{ item["title"] }}</h4>
+                                            {% if item["description"] %}
+                                                <p class="item__description">{{ item["description"] }}</p>
+                                            {% else %}
+                                                <p class="item-descriprion no-descrption">Нет описания</p>
+                                            {% endif %}
+
+                                            {% if item["completed"] %}
+                                                {% set user = item["completed_by_id"] | user_by_id %}
+                                                <span>Кем выполнено: </span><a class="popup-task__worker" href="/{{ user['username'] }}">{{ user['first_name'] }} {{ user['last_name'] }}</a><br>
+                                                <span>Когда выполнено: </span><span class="date-field">{{ item["completion_date"] }}</span><br>
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
 
     <div class="rightside-menu">
         <div class="chat-panel">
-            <div class="chat new-chat{% if myself['id'] != team_leader['id'] %} disabled{% endif %}">
-                <h3>Создать чат</h3>
-                <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                        <title>Layer 1</title>
-                        <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
-                        <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
-                        <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
-                    </g>
-                </svg>
+            <div class="chat-panel__heading">
+                <h1>Чаты</h1>
+                <div class="expand-button"></div>
             </div>
-            {% if myself["id"] == team_leader["id"] %}
-                <div class="chat new-chat-form">
-                    <label for="input-chat-title">Название чата</label>
-                    <input type="text" class="input-chat-title" id="input-chat-title">
-                    <p class="new-chat-error-message" style="display: none;"></p>
-                    <button class="button create-chat-button">Создать</button>
+            <div class="chat-list">
+                <div class="chat new-chat{% if myself['id'] != team_leader['id'] %} disabled{% endif %}">
+                    <h3>Создать чат</h3>
+                    <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <title>Layer 1</title>
+                            <ellipse ry="22.267443" rx="22.267443" id="svg_1" cy="23.851927" cx="23.854651" stroke-width="1.5" stroke="#34bacc" fill="none"/>
+                            <rect stroke="#34bacc" id="svg_4" height="8" width="31.976745" y="20" x="8.011627" stroke-opacity="null" stroke-width="1.5" fill="#34bacc"/>
+                            <rect id="svg_5" height="32" width="8" y="8" x="19.999999" stroke-opacity="null" stroke-width="1.5" stroke="#34bacc" fill="#34bacc"/>
+                        </g>
+                    </svg>
                 </div>
-            {% endif %}
-            {% for chat in chats %}
-                <div class="chat">
-                    <a class="chat-link" href="/chat/{{chat['chat']['id']}}">{{  chat['chat']['title']  }}</a>
-                </div>
-            {% endfor %}
+                {% if myself["id"] == team_leader["id"] %}
+                    <div class="chat new-chat-form">
+                        <label for="input-chat-title">Название чата</label>
+                        <input type="text" class="input-chat-title" id="input-chat-title">
+                        <p class="new-chat-error-message" style="display: none;"></p>
+                        <button class="button create-chat-button">Создать</button>
+                    </div>
+                {% endif %}
+                {% for chat in chats %}
+                    <div class="chat">
+                        <a class="chat-link" href="/chat/{{chat['chat']['id']}}">{{  chat['chat']['title']  }}</a>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </main>
@@ -312,11 +335,12 @@
         <h2 class="popup-task__title"></h2>
         <p class="popup-task__description"></p>
         <!-- Line -->
+        <div class="line"></div>
         <p class="popup-task__tag"></p><br>
         <span>Создатель: </span><a class="popup-task__creator"></a><br>
         <span>Ответственный: </span><a class="popup-task__worker"></a><br>
-        <span>Дата создания: </span><p class="popup-task__creation-date"></p><br>
-        <span>Дедлайн: </span><p class="popup-task__deadline-date"></p>
+        <span>Дата создания: </span><p class="popup-task__creation-date date-field"></p><br>
+        <span>Дедлайн: </span><p class="popup-task__deadline-date date-field"></p>
         <h3 class="popup-task__items-title">Подзадачи: </h3>
         <div class="popup-task__items"></div>
         <div class="popup-task__add-item-form-container"></div>

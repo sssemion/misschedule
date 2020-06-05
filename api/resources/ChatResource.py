@@ -38,8 +38,8 @@ class ChatResource(Resource):
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
         return jsonify({
-            'chat': chat.to_dict(only=('id', 'title', 'project_id', 'reg_date')),
-            'users': [item.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for item in
+            'chat': chat.to_dict_myself(),
+            'users': [item.to_dict_myself() for item in
                       chat.users]})
 
     @abort_if_chat_not_found
@@ -60,8 +60,11 @@ class ChatResource(Resource):
         # будет содержать поля, которых нет в парсере
         session = db_session.create_session()
         chat = session.query(Chat).get(chat_id)
-        if 'title' in args and args['title'] in map(lambda x: x.title, g.current_user.chats):
+        project = session.query(Project).get(args['project_id'])
+        # Чат с таким именем уже существует
+        if 'title' in args and args['title'] in map(lambda x: x.title, project.chats):
             abort(400, success=False, message=f"Chat '{args['title']}' already exists")
+        # Пользователь не является создателем чата
         if chat.creator != g.current_user:
             abort(403, success=False)
         for key, value in args.items():
@@ -74,14 +77,11 @@ class ChatResource(Resource):
 class ChatListResource(Resource):
     @token_auth.login_required
     def get(self):
-        session = db_session.create_session()
-        chats = session.query(Chat).all()
         return jsonify({
             'chats': [
                 {
-                    'chat': chat.to_dict(only=('id', 'title', 'project_id', 'reg_date')),
-                    'users': [user.to_dict(only=('id', 'username', 'email', 'first_name', 'last_name')) for user in
-                              chat.users]
+                    'chat': chat.to_dict_myself(),
+                    'users': [user.to_dict_myself() for user in chat.users]
                 }
                 for chat in g.current_user.chats],
         })
@@ -90,12 +90,14 @@ class ChatListResource(Resource):
     def post(self):
         args = chat_parser_for_adding.parse_args(strict=True)
         session = g.db_session
-        # noinspection PyArgumentList
         project = session.query(Project).get(args['project_id'])
+        # Проект не найден
         if project is None:
             abort(404, success=False, message=f"Project {args['project_id']} not found")
+        # Пользователь не состоит в проекте
         if project not in g.current_user.projects:
             abort(403, success=False)
+        # Пользователь не является тимлидом проекта
         if project.team_leader != g.current_user:
             abort(403, success=False)
         if 'title' in args and args['title'] in map(lambda x: x.title, project.chats):

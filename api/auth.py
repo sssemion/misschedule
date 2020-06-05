@@ -10,6 +10,8 @@ basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
 
 
+# Авторизация может происходить по логину и паролю и по токену. Евли авторизоваться по логину и паролю,
+# то вернется токен
 @basic_auth.verify_password
 def verify_password(username, password):
     session = db_session.create_session()
@@ -23,6 +25,7 @@ def verify_password(username, password):
     return False
 
 
+# Авторизация также может происходить по токену
 @token_auth.verify_token
 def verify_token(token):
     session = db_session.create_session()

@@ -32,12 +32,9 @@ class TaskResource(Resource):
         if g.current_user not in task.project.users:
             abort(403, success=False)
         return jsonify({
-            'task': task.to_dict(only=(
-                "project_id", "title", "description", "duration", "worker_id", "creator_id", "tag",
-                "color", "condition", "image", "date")),
-            'items': [item.to_dict(
-                only=("title", "description", "completed", "completed_by_id", "completion_date")) for
-                item in task.items],
+            'task': task.to_dict_myself(),
+            'items': [item.to_dict_myself()
+                      for item in task.items],
             'canYouEdit': g.current_user == task.worker or g.current_user == task.creator,
         })
 
@@ -76,14 +73,9 @@ class TaskListResource(Resource):
         return jsonify({
             'tasks': [
                 {
-                    'task': task.to_dict(only=(
-                        "project_id", "title", "description", "duration", "worker_id", "creator_id",
-                        "tag", "color",
-                        "condition", "image", "date")),
-                    'items': [item.to_dict(only=(
-                        "title", "description", "completed", "completed_by_id", "completion_date"))
-                        for
-                        item in task.items],
+                    'task': task.to_dict_myself(),
+                    'items': [item.to_dict_myself()
+                              for item in task.items],
                     'canYouEdit': g.current_user == task.worker or g.current_user == task.creator,
                 } for task in filter(lambda x: x.condition != 2, g.current_user.performing_tasks)
             ],

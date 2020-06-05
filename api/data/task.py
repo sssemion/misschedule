@@ -28,3 +28,8 @@ class Task(SqlAlchemyBase, SerializerMixin):
 
     def __eq__(self, other):
         return type(self) == type(other) and self.id == other.id
+
+    def to_dict_myself(self):
+        return self.to_dict(
+            only=("id", "project_id", "title", "description", "duration", "worker_id", "creator_id",
+                  "tag", "color", "condition", "image", "date"))

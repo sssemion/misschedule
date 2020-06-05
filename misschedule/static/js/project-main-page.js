@@ -42,6 +42,8 @@ function click_on_task() {
     // Дата создания
     $(".popup-task__creation-date").text($(this).attr("data-creation-date-formatted"));
     $(".popup-task__deadline-date").text($(this).attr("data-deadline-date-formatted"));
+    formatDate($(".popup-task__creation-date"));
+    formatDate($(".popup-task__deadline-date"));
 
     // Подзадачи
     $(".popup-task__items").html($(this).children(".task__items").html());
@@ -61,14 +63,15 @@ function click_on_task() {
     } else {
         $(".popup-task__add-item-button").css("display", "block");
     }
-
-    checkTaskHeight();
-
+    
     popup.children(".popup-task").attr("style", $(this).attr("style")); // Цвет фона
     popup.children(".popup-task").attr("data-id", $(this).attr("data-id")); // id
     popup.fadeIn(500);
     popup.addClass("active");
     $("body").addClass("scroll-locked");
+
+    // Проверяем, не вылезает ли окно за границы экрана
+    checkTaskHeight();
 }
 
 $(".popup-task .close-btn").on("click", function() {
@@ -110,7 +113,8 @@ $(".popup-task__send-button").on("click", function() {
                     $(this).children(".item__completed").prop("disabled", true);
                     $(this).children(".item__info").append('<span>Кем выполнено: </span><a class="popup-task__worker" href="/' + data.completed_by.username + '">' +
                                    data.completed_by.first_name + ' ' + data.completed_by.last_name + '</a><br>');
-                    $(this).children(".item__info").append('<span>Когда выполнено: </span><span>' + data.completion_date + '</span><br>');
+                    $(this).children(".item__info").append('<span>Когда выполнено: </span><span class="date-field">' + data.completion_date + '</span><br>');
+                    formatDate($(this).children(".item__info").children(".date-field"));
 
                     // Изменяем ифнормацию и для элемента Задачи
                     var item = clickedTask.children(".task__items").children(".item[data-id=" + $(this).attr("data-id") + "]");
@@ -118,7 +122,8 @@ $(".popup-task__send-button").on("click", function() {
                     item.children(".item__completed").attr("checked", true);
                     item.children(".item__info").append('<span>Кем выполнено: </span><a class="popup-task__worker" href="/' + data.completed_by.username + '">' +
                                                         data.completed_by.first_name + ' ' + data.completed_by.last_name + '</a><br>');
-                    item.children(".item__info").append('<span>Когда выполнено: </span><span>' + data.completion_date + '</span><br>');
+                    item.children(".item__info").append('<span>Когда выполнено: </span><span class="date-field">' + data.completion_date + '</span><br>');
+                    formatDate(item.children(".item__info").children(".date-field"));
                 }
             });
         }
@@ -204,16 +209,15 @@ $(".popup-task__move-button").on("click", function() {
         success: function(data) {
             if (data.success) {
                 var taskHtml = clickedTask[0].outerHTML;
-                console.log(taskHtml);
-                console.log(data);
                 clickedTask.remove();
                 if (data.condition == 1) {
-                    $(".tasks__column.in-progress").append(taskHtml);
+                    $(".task-list.in-progress").append(taskHtml);
                     clickedTask = $(".tasks__column.in-progress .task.planned");
+                    setDeadlineTimer($(".tasks__column.in-progress .task.planned .time-to-deadline"));
                     clickedTask.removeClass("planned");
                     clickedTask.addClass("in-progress");
                 } else if (data.condition == 2) {
-                    $(".tasks__column.finished").append(taskHtml);
+                    $(".task-list.finished").append(taskHtml);
                     clickedTask = $(".tasks__column.finished .task.in-progress");
                     clickedTask.removeClass("in-progress");
                     clickedTask.addClass("finished");
@@ -272,7 +276,7 @@ $(".create-chat-button").on("click", function() {
                 var html = '<div class="chat">\
     <a class="chat-link" href="/chat/' + data["chat"]["id"] + '">' + data["chat"]["title"] + '</a>\
 </div>';
-                $(".chat-panel").append(html);
+                $(".chat-panel .chat-list").append(html);
                 $(".chat.new-chat-form").slideUp(500);
                 $(".chat.new-chat-form").removeClass("active");
                 $(".chat.new-chat").slideDown(500);
@@ -351,7 +355,7 @@ $(".add-user-button").on("click", function() {
             console.log(data);
             if (data["success"]) {
                 for (var i = 0; i < data["users"].length; i++) {
-                    $(".users-panel").append('<div class="user">\
+                    $(".users-panel .user-list").append('<div class="user">\
     <h3 class="user__name">' + data["users"][i]["first_name"] + ' '
             + data["users"][i]["last_name"] + '</h3>\
     <a class="user__username" href="/users/' + data["users"][i]["username"] + '">@'
@@ -402,3 +406,25 @@ function checkTaskHeight() {
         $(".popup-task-wrapper").css("justify-content", "center");
     }
 }
+
+// Раскрывающийся список пользователей для маленьких экранов
+$(".users-panel__heading .expand-button").on("click", function() {
+    var usersPanel = $(".users-panel");
+    if (usersPanel.hasClass("expanned")) {
+        $(".users-panel .user-list").slideUp(500, clearStyleDisplay);
+    } else {
+        $(".users-panel .user-list").slideDown(500);
+    }
+    usersPanel.toggleClass("expanned");
+});
+
+// Раскрывающийся список чатов для маленьких экранов
+$(".chat-panel__heading .expand-button").on("click", function() {
+    var chatPanel = $(".chat-panel");
+    if (chatPanel.hasClass("expanned")) {
+        $(".chat-list").slideUp(500, clearStyleDisplay);
+    } else {
+        $(".chat-list").slideDown(500);
+    }
+    chatPanel.toggleClass("expanned");
+});

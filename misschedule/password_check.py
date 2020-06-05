@@ -59,6 +59,7 @@ def nums_check(password):
     raise DigitError
 
 
+# Проверяет нет ли в пароле три подряд идущих символа
 def three_row_check(password):
     for i in range(0, len(password) - 2):
         for row in banned:

@@ -10,6 +10,14 @@ $(document).ready(function() {
     $(".slider-dots__item").on("click", function() {
         currentSlide($(".slider-dots__item").index($(this)) + 1);
     });
+
+    $(window).scroll(function(){
+        if ($(window).scrollTop() > 0) {
+            $(".header").addClass("scrolled");
+        } else {
+            $(".header").removeClass("scrolled");
+        }
+    });
 })
 // slider
 var slideIndex = 1;

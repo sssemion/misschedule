@@ -21,7 +21,7 @@ def project_title_by_id(project_id):
         return ""
 
     headers = {"Authorization": f"Bearer {token}"}
-    project = requests.get(f'http://127.0.0.1:5000/api/projects/{project_id}', headers=headers).json()
+    project = requests.get(f'{app.config["API_SERVER_NAME"]}/api/projects/{project_id}', headers=headers).json()
     return project["project"]["title"]
 
 
@@ -31,7 +31,7 @@ def project_by_id(project_id):
         return ""
 
     headers = {"Authorization": f"Bearer {token}"}
-    project = requests.get(f'http://127.0.0.1:5000/api/projects/{project_id}', headers=headers).json()
+    project = requests.get(f'{app.config["API_SERVER_NAME"]}/api/projects/{project_id}', headers=headers).json()
     return project
 
 
@@ -57,7 +57,7 @@ def user_by_id(user_id):
         return ""
 
     headers = {"Authorization": f"Bearer {token}"}
-    user = requests.get(f'http://127.0.0.1:5000/api/users/{user_id}', headers=headers).json()
+    user = requests.get(f'{app.config["API_SERVER_NAME"]}/api/users/{user_id}', headers=headers).json()
     return user["user"]
 
 

@@ -48,7 +48,8 @@ form {
     form .form-item .input-str {
       margin-top: 4px;
       margin-bottom: 4px;
-      height: calc(1.5em + .75rem + 2px); }
+      height: calc(1.5em + .75rem + 2px);
+      transition: width 0.5s ease, height 0.5s ease, margin 0.5s ease; }
       form .form-item .input-str:hover {
         margin-left: -2.5%;
         width: 105%;
