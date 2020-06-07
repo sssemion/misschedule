@@ -35,7 +35,7 @@
     <!-- Стили -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="stylesheet" href="{{ style_file }}">
-    
+
     <title>Misschedule
         {% if title  %}
             {{ " | " + title  }}
@@ -70,12 +70,12 @@
     {% block content %}{% endblock %}
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>    
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
 
     <!-- js scripts -->
     <script src="{{ url_for('static', filename='js/base.js') }}"></script>
     {% if script_file %}
-        <script src="{{ script_file }}"></script>    
+        <script src="{{ script_file }}"></script>
     {% endif %}
     <script type='text/javascript'>
         (function () {
@@ -100,5 +100,28 @@
         })();
         </script>
     {% block script %}{% endblock script %}
+
+    <script type='text/javascript'>
+    (function () {
+        window['yandexChatWidgetCallback'] = function() {
+            try {
+                window.yandexChatWidget = new Ya.ChatWidget({
+                    guid: '34011409-4bb9-907c-54ee-d3a22d52de2b',
+                    buttonText: 'Ответим на ваши вопросы',
+                    title: 'Чат с разработчиками',
+                    theme: 'dark',
+                    collapsedDesktop: 'hover',
+                    collapsedTouch: 'always'
+                });
+            } catch(e) { }
+        };
+        var n = document.getElementsByTagName('script')[0],
+            s = document.createElement('script');
+        s.async = true;
+        s.charset = 'UTF-8';
+        s.src = 'https://yastatic.net/s3/chat/widget.js';
+        n.parentNode.insertBefore(s, n);
+    })();
+    </script>
 </body>
 </html>
