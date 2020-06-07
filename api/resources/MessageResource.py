@@ -94,5 +94,6 @@ class MessageListResource(Resource):
         session.commit()
         return jsonify({'success': True,
                         'user': message.user.to_dict_myself(),
-                        'date': ":".join(str(message.date).split(":")[:-1])
+                        'date': ":".join(str(message.date).split(":")[:-1]),
+                        'id': message.id,
                         })

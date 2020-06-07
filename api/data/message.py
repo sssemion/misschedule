@@ -21,4 +21,4 @@ class Message(SqlAlchemyBase, SerializerMixin):
         return type(self) == type(other) and self.id == other.id
 
     def to_dict_myself(self):
-        return self.to_dict(only=('chat_id', 'user_id', 'message', 'date'))
+        return self.to_dict(only=('id', 'chat_id', 'user_id', 'message', 'date'))

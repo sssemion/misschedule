@@ -240,7 +240,10 @@ def get_username_project(username, project_name):
 def get_chat_messages(chat_id):
     session = db_session.create_session()
     chat = session.query(Chat).get(chat_id)
-    messages = chat.messages
+    # Если передан параметр last_message_id, возвращаем только те сообщения, которые были после
+    # сообщения с этим id. Иначе - возвращаем все
+    last_message_id = int(request.args.get("last_message_id", 0))
+    messages = filter(lambda message: message.id > last_message_id, chat.messages)
     messages = sorted(messages, key=lambda x: x.date)
     return jsonify({
         'messages': [

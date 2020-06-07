@@ -1,9 +1,22 @@
-$(document).ready(scorllChatToBottom);
+$(document).ready(function() {
+    scorllChatToBottom();
+    setInterval(checkForNewMessages, 5000);
+    $(".text-message").focus();
+});
+
+var pollingPaused = false;
 
 function scorllChatToBottom(){
     var chatResult = $('.messages');
     chatResult.scrollTop(chatResult.prop('scrollHeight'));
 }
+
+$(".text-message").keyup(function(e) {
+    if (e.keyCode == 13 && !e.shiftKey) {
+        $(this).val($(this).val().slice(0, -1));
+        $(".send-button").click();
+    }
+});
 
 $(".send-button").on("click", function() {
     var messageText = $(".text-message").val();
@@ -16,27 +29,25 @@ $(".send-button").on("click", function() {
         chat_id: parseInt($(".chat-name").attr("data-id")),
         message: messageText
     };
-    
-    $.ajax("/ajax/send_message", {
-        method: 'post',
-        dataType: 'json',
-        data: JSON.stringify(params),
-        contentType: "application/json; charset=utf-8",
-        success: function(data) {
-            if(data.success) {
-                var html = '<div class="message">\
-    <div>\
-        <h3 class="message__addresser">' + data["user"]["first_name"] + ' ' + data["user"]["last_name"] + '</h3>\
-        <p class="message__date date-field">' + data["date"] + '</p>\
-    </div>\
-    <p class="message__text">' + messageText + '</p>\
-</div>';
-                $(".messages").append(html);
-                formatDate($(".messages .message:last-child .date-field"));
-                scorllChatToBottom();
+
+    pollingPaused = true;
+    checkForNewMessages(true, function() {
+        $.ajax("/ajax/send_message", {
+            method: 'post',
+            dataType: 'json',
+            data: JSON.stringify(params),
+            contentType: "application/json; charset=utf-8",
+            success: function(data) {
+                if(data.success) {
+                    addMessage(data["id"], messageText, data["date"], data["user"]);
+                }
+            },
+            complete: function() {
+                pollingPaused = false;
             }
-        }
-    })
+        })
+    });
+    
 });
 
 
@@ -56,3 +67,41 @@ $(".users-column__heading .expand-button").on("click", function() {
     }
     usersColumn.toggleClass("expanned");
 });
+
+function checkForNewMessages(force=false, callback=function(){}) {
+    if (pollingPaused && !force) {
+        return;
+    }
+    var params = {
+        chat_id: parseInt($(".chat-name").attr("data-id")),
+        last_message_id: parseInt($(".message:last-child").attr("data-id"))
+    };
+    $.ajax("/ajax/check_for_new_messages", {
+        method: 'post',
+        dataType: 'json',
+        data: JSON.stringify(params),
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    addMessage(data.messages[i].message.id, data.messages[i].message.message,
+                        data.messages[i].message.date, data.messages[i].user);
+                }
+            }
+            callback();
+        }
+    })
+}
+
+function addMessage(id, message, date, user) {
+    var html = '<div class="message" data-id="' + id + '">\
+    <div>\
+        <h3 class="message__addresser">' + user["first_name"] + ' ' + user["last_name"] + '</h3>\
+        <p class="message__date date-field">' + date + '</p>\
+    </div>\
+    <p class="message__text">' + message + '</p>\
+</div>';
+    $(".messages").append(html);
+    formatDate($(".messages .message:last-child .date-field"));
+    scorllChatToBottom();
+}

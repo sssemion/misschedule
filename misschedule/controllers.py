@@ -324,3 +324,17 @@ def add_users_to_project():
     r = requests.post(f'{app.config["API_SERVER_NAME"]}/api/projects/{data["project_id"]}/add_user',
                       headers=headers, data={'id': data['users']}).json()
     return r
+
+
+@app.route('/ajax/check_for_new_messages', methods=["POST"])
+def check_for_new_messages():
+    token = session.get("token")
+    data = request.get_json()
+    headers = {"Authorization": f"Bearer {token}"}
+    r = requests.get(f'{app.config["API_SERVER_NAME"]}/api/chats/{data["chat_id"]}/get_messages',
+                     params={"last_message_id": data["last_message_id"]},
+                     headers=headers).json()
+    return jsonify({
+        "length": len(r.get("messages", [])),
+        **r
+    })
