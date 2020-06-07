@@ -6,6 +6,7 @@
 **/*.log
 
 /runner.py
+/app_runner.py
 /api/db/
 **/logs/
 /venv/
