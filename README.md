@@ -42,4 +42,4 @@ Api протестирован с помощью Postman
 ![Скриншот один](misschedule/static/img/screenshots/main-page-fhd.png "main-page")
 
 #  
-*Version 1.5*
+*Version 1.5.1*
