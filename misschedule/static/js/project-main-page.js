@@ -1,3 +1,8 @@
+$(document).ready(function() {
+    $("#task-form-timezone-offset").val(-1 * new Date().getTimezoneOffset() / 60);
+})
+
+
 // Всплывающее окно с детальной информацией
 var popup = $($(".popup-task-wrapper.detail-info")[0]);
 var clickedTask = null;

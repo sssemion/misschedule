@@ -1,4 +1,4 @@
-from wtforms import PasswordField, StringField, SubmitField, SelectField, SelectMultipleField
+from wtforms import PasswordField, StringField, SubmitField, SelectField, SelectMultipleField, HiddenField
 from wtforms.fields.html5 import EmailField, DateTimeLocalField
 from wtforms.widgets.html5 import ColorInput
 from wtforms.validators import DataRequired
@@ -77,6 +77,7 @@ class TaskForm(FlaskForm):
     title = StringField('Название', validators=[DataRequired()],
                         render_kw={"class": "input-str", "required": True})
     description = StringField('Описание', render_kw={"class": "input-str"})
+    timezone_offset = HiddenField(render_kw={"id": "task-form-timezone-offset"})
     deadline = DateTimeLocalField('Дата дедлайна', format='%Y-%m-%dT%H:%M', validators=[DataRequired()],
                                   render_kw={"class": "input-str", "required": True})
     worker = SelectField('Ответственный за работу', choices=[('1', 'aba'), ('2', 'abacaba'), ('3', 'abacabadabacaba')],
