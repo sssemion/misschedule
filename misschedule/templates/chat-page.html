@@ -18,7 +18,7 @@
         <div class="messages">
             {% if messages['messages'] %}
                 {% for message in messages['messages'] %}
-                <div class="message">
+                <div class="message" data-id="{{ message['message']['id'] }}">
                     <div>
                         <h3 class="message__addresser">{{ message['user']['first_name'] }} {{ message['user']['last_name'] }}</h3>
                         <p class="message__date date-field">{{ message['message']['date'] }}</p>

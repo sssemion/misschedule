@@ -77,6 +77,28 @@
     {% if script_file %}
         <script src="{{ script_file }}"></script>
     {% endif %}
+    <script type='text/javascript'>
+        (function () {
+            window['yandexChatWidgetCallback'] = function() {
+                try {
+                    window.yandexChatWidget = new Ya.ChatWidget({
+                        guid: '34011409-4bb9-907c-54ee-d3a22d52de2b',
+                        buttonText: 'Ответим на ваши вопросы',
+                        title: 'Чат с разработчиками',
+                        theme: 'light',
+                        collapsedDesktop: 'hover',
+                        collapsedTouch: 'always'
+                    });
+                } catch(e) { }
+            };
+            var n = document.getElementsByTagName('script')[0],
+                s = document.createElement('script');
+            s.async = true;
+            s.charset = 'UTF-8';
+            s.src = 'https://yastatic.net/s3/chat/widget.js';
+            n.parentNode.insertBefore(s, n);
+        })();
+    </script>
     {% block script %}{% endblock script %}
 
     <script type='text/javascript'>
