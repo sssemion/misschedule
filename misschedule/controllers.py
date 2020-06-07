@@ -183,11 +183,15 @@ def project_page(username, project_name):
         task_already_exists = False
         start_with_form = False
         if form.validate_on_submit():
+            try:
+                tz_offset = int(form.timezone_offset.data)
+            except ValueError:
+                tz_offset = 0
             params = {
                 "project_id": project["project"]["id"],
                 "title": form.title.data,
                 "description": form.description.data,
-                "duration": (form.deadline.data - datetime.datetime.now()).total_seconds(),
+                "duration": (form.deadline.data - datetime.timedelta(hours=tz_offset) - datetime.datetime.now()).total_seconds(),
                 "worker_id": int(form.worker.data),
                 "tag": form.tag.data,
                 "color": form.color_field.data,
